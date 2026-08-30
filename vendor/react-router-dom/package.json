@@ -1,0 +1,20 @@
+{
+  "name": "react-router-dom",
+  "version": "7.18.3",
+  "type": "module",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.mjs"
+    },
+    "./server.js": {
+      "types": "./server.d.ts",
+      "default": "./server.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "react-router": "^7.0.0"
+  }
+}

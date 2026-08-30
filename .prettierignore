@@ -1,0 +1,21 @@
+dist
+node_modules
+package-lock.json
+
+# Generated assets
+public/brand
+brand/source
+
+# SOURCE DOCUMENTS — NEVER REFORMAT.
+# master.md and wireframe.md are the approved sources of truth. A formatter
+# rewrote 1575 lines of master.md once; it must never get the chance again.
+# implementation.md is the companion record and is kept in the same hand.
+master.md
+wireframe.md
+implementation.md
+
+# The @ts-expect-error directives in this file must sit on the line the
+# compiler flags. Each invalid case is deliberately written on ONE line so the
+# directive lands correctly; wrapping them breaks the assertions and the
+# typecheck fails. See src/types/content.typetest.ts.
+src/types/content.typetest.ts

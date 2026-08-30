@@ -1,0 +1,277 @@
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { Link } from 'react-router';
+import { m } from 'framer-motion';
+import { ArrowRight, ChevronDown } from 'lucide-react';
+import { cn } from '../../lib/cn';
+import { Icon } from '../ui';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { LOOP_LINK, MEGA_MENU_CTA, PRACTICE_NAV } from '../../data/navigation';
+
+/* ---------------------------------------------------------------------------
+   MEGA MENU — master.md §26.2, §11.2, §15.1
+
+   §11.2 justifies the pattern: "the mega-menu is the only place the
+   three-practice model can be taught to a visitor who arrived on a deep page
+   and never saw the homepage. That is a genuine information job, which is the
+   only justification for the pattern."
+
+   §15.1 — "Services opens a three-column mega-menu on hover *and* on
+   click/keyboard, with a 150ms intent delay to prevent accidental opening."
+
+   §15.1 keyboard — "a proper disclosure widget: Escape closes and returns
+   focus, arrow keys move within the menu, Tab exits it."
+
+   §27.2 #5 — 180ms height + fade, 150ms intent delay. Disabled under reduced
+   motion (§27.4).
+
+   Deliberately NOT role="menu": that ARIA pattern implies application-style
+   keyboard semantics where Tab does not move between items. This is a
+   navigation disclosure containing links, which is what §30.6 means by "ARIA is
+   used only where native HTML cannot express the semantics".
+--------------------------------------------------------------------------- */
+
+const INTENT_DELAY_MS = 150; // §15.1, §27.2 #5
+const OPEN_DURATION_S = 0.18; // §27.2 #5 — 180ms
+
+export interface MegaMenuProps {
+  /** Header is overlaying a dark hero, so links must render light. §15.1 */
+  onDark: boolean;
+}
+
+export function MegaMenu({ onDark }: MegaMenuProps) {
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const intentTimer = useRef<number | undefined>(undefined);
+  const reducedMotion = useReducedMotion();
+
+  const clearIntent = () => {
+    if (intentTimer.current !== undefined) {
+      window.clearTimeout(intentTimer.current);
+      intentTimer.current = undefined;
+    }
+  };
+
+  // §15.1 — 150ms intent delay "to prevent accidental opening".
+  const openWithIntent = () => {
+    clearIntent();
+    intentTimer.current = window.setTimeout(() => setOpen(true), INTENT_DELAY_MS);
+  };
+  const closeWithIntent = () => {
+    clearIntent();
+    intentTimer.current = window.setTimeout(() => setOpen(false), INTENT_DELAY_MS);
+  };
+
+  useEffect(() => clearIntent, []);
+
+  /** §15.1 — Escape closes and returns focus to the trigger. */
+  const closeAndRestore = useCallback(() => {
+    setOpen(false);
+    triggerRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeAndRestore();
+      }
+    };
+
+    // Tab exits the menu (§15.1): closing on focus leaving the wrapper is what
+    // makes that true without trapping focus.
+    const onFocusIn = (event: FocusEvent) => {
+      if (!wrapperRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+
+    // A pointer press anywhere outside closes it. focusin alone was not
+    // enough: clicking a non-focusable area (or tapping on a touch device)
+    // left the panel open with no way to dismiss it but Escape.
+    const onPointerDown = (event: Event) => {
+      if (!wrapperRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('focusin', onFocusIn);
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('focusin', onFocusIn);
+      document.removeEventListener('pointerdown', onPointerDown);
+    };
+  }, [open, closeAndRestore]);
+
+  /** §15.1 — arrow keys move within the menu. */
+  const links = () =>
+    Array.from(panelRef.current?.querySelectorAll<HTMLAnchorElement>('a[href]') ?? []);
+
+  const onPanelKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+    const items = links();
+    if (items.length === 0) return;
+    event.preventDefault();
+    const index = items.indexOf(document.activeElement as HTMLAnchorElement);
+    const next =
+      event.key === 'ArrowDown'
+        ? items[(index + 1 + items.length) % items.length]
+        : items[(index - 1 + items.length) % items.length];
+    next?.focus();
+  };
+
+  /**
+   * §15.1 — ArrowDown from the trigger opens the menu and moves into it.
+   *
+   * The focus must wait for the panel to mount. requestAnimationFrame is too
+   * early: AnimatePresence renders the panel on the next React commit, so the
+   * frame callback still sees an empty panel. A ref consumed by an effect keyed
+   * on `open` runs after that commit, which is the first moment the links exist.
+   */
+  const focusFirstOnOpen = useRef(false);
+
+  useEffect(() => {
+    if (!open || !focusFirstOnOpen.current) return;
+    focusFirstOnOpen.current = false;
+    links()[0]?.focus();
+    // links() reads panelRef, which is stable; open is the real trigger.
+  }, [open]);
+
+  const onTriggerKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      focusFirstOnOpen.current = true;
+      setOpen(true);
+    }
+  };
+
+  return (
+    /*
+      §15.1 requires the menu to open on hover AS WELL AS on click and keyboard.
+
+      jsx-a11y flags mouse handlers on a non-interactive element because they
+      normally hide functionality from keyboard users. They do not here: the
+      trigger below is a real <button> carrying the full click and keyboard
+      path, and hover is pure enhancement. This wrapper exists only so that
+      leaving BOTH the trigger and the panel can be detected as one region.
+    */
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div ref={wrapperRef} onMouseEnter={openWithIntent} onMouseLeave={closeWithIntent}>
+      <button
+        ref={triggerRef}
+        type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => {
+          clearIntent();
+          setOpen((v) => !v);
+        }}
+        onKeyDown={onTriggerKeyDown}
+        className={cn(
+          'inline-flex items-center gap-1 text-small font-medium',
+          '[min-height:var(--touch-min)] px-2',
+          'focus-visible:outline-2 focus-visible:outline-offset-2',
+          onDark
+            ? 'text-onpunct focus-visible:outline-blue-500'
+            : 'text-primary focus-visible:outline-accent',
+        )}
+      >
+        Services
+        <Icon
+          icon={ChevronDown}
+          className={cn('transition-transform duration-[180ms]', open && 'rotate-180')}
+        />
+      </button>
+
+      {/*
+        Rendered conditionally with NO exit animation, so the panel unmounts the
+        instant it closes.
+
+        An AnimatePresence exit left the node connected at height:0 / opacity:0
+        with visibility:visible — which keeps its nine links in the tab order.
+        A keyboard user would tab into invisible navigation, breaking §30.2. The
+        exit was also undocumented: §27.2 #5 specifies the OPEN transition
+        ("180ms height + fade, 150ms intent delay") and nothing else, and §27.3
+        ships no motion that is not on that list. Removing it is both the
+        correct fix and the more faithful one. Recorded in implementation.md §5.3.
+      */}
+      {open && (
+        <m.div
+          id={panelId}
+          ref={panelRef}
+          onKeyDown={onPanelKeyDown}
+          // §27.2 #5 — 180ms height + fade. §27.4 — disabled under reduced motion.
+          initial={reducedMotion ? false : { opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          transition={{ duration: reducedMotion ? 0 : OPEN_DURATION_S, ease: 'easeOut' }}
+          className="absolute inset-x-0 top-full z-50 overflow-hidden"
+        >
+          {/*
+              Anchored to the header, not the trigger. Centring a 928px panel
+              on the Services button pushed its left edge to -170px at 1024,
+              clipping the Media column off-screen. Spanning the header and
+              constraining inside cannot overflow at any width.
+
+              §22.2 principle 4 — structure is visible: hairlines, not shadows.
+            */}
+          <div className="mx-auto mt-3 w-full [max-width:var(--container-default)] [padding-inline:var(--gutter)]">
+            <div className="border border-hairline bg-base">
+              <div className="grid grid-cols-3">
+                {PRACTICE_NAV.map((practice, i) => (
+                  <div
+                    key={practice.id}
+                    className={cn('p-6', i > 0 && 'border-l border-hairline')}
+                  >
+                    <p className="font-mono text-label uppercase [letter-spacing:var(--tracking-label)] text-secondary">
+                      {practice.name}
+                    </p>
+                    <ul className="mt-4 space-y-1">
+                      {practice.services.map((service) => (
+                        <li key={service.href}>
+                          <Link
+                            to={service.href}
+                            onClick={() => setOpen(false)}
+                            className="flex items-center text-body text-primary [min-height:var(--touch-min)] hover:text-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                          >
+                            {service.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+
+              {/* §11.2 — "the highest-value pixel in the navigation". */}
+              <div className="flex flex-wrap items-center justify-between gap-4 border-t border-hairline p-6">
+                <Link
+                  to={LOOP_LINK.href}
+                  onClick={() => setOpen(false)}
+                  className="group inline-flex items-center gap-2 text-body text-primary [min-height:var(--touch-min)] hover:text-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  <span className="font-mono text-label uppercase [letter-spacing:var(--tracking-label)]">
+                    The Loop
+                  </span>
+                  <span className="text-secondary">
+                    — how the three practices work as one system
+                  </span>
+                  <Icon icon={ArrowRight} />
+                </Link>
+
+                <Link
+                  to={MEGA_MENU_CTA.href}
+                  onClick={() => setOpen(false)}
+                  className="inline-flex items-center border border-hairline px-6 text-small font-medium text-primary [min-height:var(--touch-min)] hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  {MEGA_MENU_CTA.label}
+                </Link>
+              </div>
+            </div>
+          </div>
+        </m.div>
+      )}
+    </div>
+  );
+}

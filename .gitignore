@@ -1,0 +1,25 @@
+node_modules
+dist
+.vite
+*.local
+
+# secrets / environment
+.env
+.env.*
+!.env.example
+
+# Source video masters — 10.6MB of raw footage that `npm run video` compresses
+# into public/video/. The COMPRESSED output is committed, so the site builds
+# and deploys from a clean clone without them. The masters are not: binaries
+# this size live in a git history forever and can never really be removed.
+# Keep them in your own storage; drop them back into media-source/ if you ever
+# need to re-encode.
+media-source/
+
+# Internal specification and planning documents. These carry Trenvo's business
+# model, positioning and pricing, and this repository is public — so they are
+# deliberately kept out of it. They live on disk and in the local `master`
+# branch's history; they are NOT published.
+master.md
+wireframe.md
+implementation.md

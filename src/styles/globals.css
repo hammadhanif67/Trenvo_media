@@ -1,0 +1,153 @@
+/* ---------------------------------------------------------------------------
+   TRENVO MEDIA — TAILWIND WIRING
+
+   This file maps the tokens in tokens.css onto Tailwind's theme namespaces.
+   It defines NO new design values. Every value below is either a var() pointing
+   at tokens.css, or a string transcribed from master.md with the section cited.
+
+   The `: initial` resets are the mechanism described in implementation.md §3.2:
+   a Tailwind default scale is removed so a value outside the approved system
+   cannot be expressed, and an off-system utility yields no rule at all.
+
+   Each reset below is annotated with its basis, because they are not equally
+   mandated:
+
+     REQUIRED — the document forbids off-scale values in those words
+     IMPLIED  — the document names a closed set without the word "permitted"
+     (no reset) — the document does not support one; Phase 4 decides
+
+   Nothing is reset on taste. Where the documents are silent, the Tailwind
+   default is left alone rather than guessed at.
+--------------------------------------------------------------------------- */
+
+@import 'tailwindcss';
+@import './tokens.css';
+
+@theme inline {
+  /* -- Colour --------------------------------------------------- IMPLIED - */
+  /* master.md §23.4 prohibits "Purple, teal, coral, or any second accent".   */
+  /* A closed palette is the only way to hold that, so the default palette is */
+  /* removed in full and replaced by the §23.1 tokens.                        */
+  --color-*: initial;
+
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line-dark: var(--line-dark);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-muted-dark: var(--muted-dark);
+  --color-line: var(--line);
+  --color-surface: var(--surface);
+  --color-paper: var(--paper);
+
+  /* Semantic, theme-aware roles (§23.5). Components address these rather than
+     the raw palette, because --ink means "dark surface" AND "text on light"
+     and one variable cannot carry both meanings across two themes. */
+  --color-base: var(--bg-base);
+  --color-alt: var(--bg-alt);
+  --color-punct: var(--bg-punct);
+  --color-primary: var(--fg-primary);
+  --color-secondary: var(--fg-secondary);
+  --color-onpunct: var(--fg-onpunct);
+  --color-onpunct-2: var(--fg-onpunct-2);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-hairline: var(--hairline);
+
+  --color-blue-50: var(--blue-50);
+  --color-blue-500: var(--blue-500);
+  --color-blue-600: var(--blue-600);
+  --color-blue-700: var(--blue-700);
+
+  --color-pos: var(--pos);
+  --color-warn: var(--warn);
+  --color-neg: var(--neg);
+
+  /* -- Type scale ----------------------------------------------- IMPLIED - */
+  /* master.md §24.2 defines a complete nine-step scale but does not use the  */
+  /* word "permitted" as §25.1 does for spacing. The reset is held because a  */
+  /* partial scale invites off-system sizes, and is flagged in the M0 report  */
+  /* as the one reset resting on inference rather than explicit wording.      */
+  --text-*: initial;
+
+  --text-display: var(--fs-display);
+  --text-h1: var(--fs-h1);
+  --text-h2: var(--fs-h2);
+  --text-h3: var(--fs-h3);
+  --text-h4: var(--fs-h4);
+  --text-lead: var(--fs-lead);
+  --text-body: var(--fs-body);
+  --text-small: var(--fs-small);
+  --text-label: var(--fs-label);
+
+  /* -- Typefaces ------------------------------------------------ IMPLIED - */
+  /* master.md §24.1 names exactly two faces and explicitly rejects serifs.   */
+  /* Stacks transcribed verbatim from that table.                             */
+  /* Geist is self-hosted (§31.5). No @font-face is declared yet: the font    */
+  /* files are a Phase 4 deliverable (implementation.md Part 8, P4), so the   */
+  /* fallback stack is what currently renders.                                */
+  --font-*: initial;
+
+  --font-sans:
+    'Geist', Inter, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* -- Font weights -------------------------------------------- REQUIRED - */
+  /* master.md §24.3: 400, 500, 600, 700. "No other weights ship."            */
+  --font-weight-*: initial;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* -- Spacing ------------------------------------------------- REQUIRED - */
+  /* master.md §25.1, in those words: "Values outside the scale are not       */
+  /* permitted." Removes Tailwind's dynamic multiplier, which would otherwise */
+  /* generate every step on demand.                                           */
+  --spacing-*: initial;
+  --spacing: initial;
+
+  /* Zero is not a scale step — it is the absence of spacing, and §25.1's
+     enumeration of positive steps does not speak to it. Without it Tailwind
+     emits NO rule for inset-0, top-0, p-0, gap-0 or mt-0, which silently
+     un-positions `sticky top-0` headers and `fixed inset-0` overlays. Found by
+     measurement at M3; see implementation.md §5.3. */
+  --spacing-0: 0px;
+
+  --spacing-1: var(--s-1);
+  --spacing-2: var(--s-2);
+  --spacing-3: var(--s-3);
+  --spacing-4: var(--s-4);
+  --spacing-5: var(--s-5);
+  --spacing-6: var(--s-6);
+  --spacing-8: var(--s-8);
+  --spacing-10: var(--s-10);
+  --spacing-12: var(--s-12);
+  --spacing-16: var(--s-16);
+  --spacing-20: var(--s-20);
+  --spacing-24: var(--s-24);
+  --spacing-32: var(--s-32);
+  --spacing-40: var(--s-40);
+  --spacing-50: var(--s-50);
+
+  /* -- Radii and shadows: NOT RESET, and NOT DEFINED ---------------------- */
+  /*                                                                          */
+  /* No project-specific radius or shadow value exists yet. The source        */
+  /* documents do not define one, and none is invented here.                  */
+  /*                                                                          */
+  /* What the documents actually say:                                         */
+  /*   §22.2 principle 5  "Nothing rounds much. Radii stay small."            */
+  /*                      — this PERMITS small radii; it defines no token.    */
+  /*   §23.4              prohibits "Coloured shadows, glows, neon."          */
+  /*   §27.2 #4 and wireframe.md §04                                          */
+  /*                      "no lift, no shadow" — scoped to CARD HOVER.        */
+  /*                                                                          */
+  /* None of that amounts to a system-wide ban, so Tailwind's default radius  */
+  /* and shadow utilities are deliberately left in place rather than removed. */
+  /* An earlier reset to `initial` was an implementation assumption stricter  */
+  /* than the documents and was withdrawn on 30 August 2026.                  */
+  /*                                                                          */
+  /* Phase 4 establishes the final radius and shadow design tokens. Until     */
+  /* then the card-hover rule above is a review constraint, not a build one.  */
+}

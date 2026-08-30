@@ -1,0 +1,271 @@
+/* ---------------------------------------------------------------------------
+   TRENVO MEDIA — DESIGN TOKENS
+
+   Transcribed verbatim from the approved project documents. No value in this
+   file was added, removed, renamed or rounded.
+
+     Colour     master.md §23.1
+     Type scale master.md §24.2
+     Spacing    master.md §25.1
+
+   Any change to this file is a change to master.md and must be approved there
+   first. Values outside these scales are not permitted (master.md §25.1).
+--------------------------------------------------------------------------- */
+
+:root {
+  /* -- master.md §23.1 ---------------------------------------------------- */
+
+  /* Neutrals */
+  --ink: #0a0a0b; /* primary text, dark surfaces */
+  --ink-soft: #1a1a1e; /* elevated dark surface */
+  --line-dark: #2a2a30; /* hairline on dark */
+  --muted: #4b5563; /* secondary text on light */
+  --subtle: #6b7280; /* tertiary text on light — minimum size 16px */
+  --muted-dark: #a1a1aa; /* secondary text on dark */
+  --line: #e4e6eb; /* hairline on light */
+  --surface: #f5f6f8; /* alternate light section */
+  --paper: #ffffff;
+
+  /* Blue — the only accent */
+  --blue-50: #eff4ff; /* tint background, selection */
+  --blue-500: #4d8dff; /* blue on dark surfaces */
+  --blue-600: #0b5fff; /* primary action on light */
+  --blue-700: #0847c4; /* hover / pressed / links in body copy */
+
+  /* Data-only signals — never used for brand or decoration */
+  --pos: #0e9f6e;
+  --warn: #b45309;
+  --neg: #dc2626;
+
+  /* -- master.md §24.2 ---------------------------------------------------- */
+
+  --fs-display: clamp(2.75rem, 1.6rem + 5.6vw, 6rem); /* 44 → 96px  hero H1 */
+  --fs-h1: clamp(2.25rem, 1.5rem + 3.4vw, 4rem); /* 36 → 64px  page H1 */
+  --fs-h2: clamp(1.75rem, 1.3rem + 2.1vw, 3rem); /* 28 → 48px  section */
+  --fs-h3: clamp(1.375rem, 1.15rem + 1vw, 2rem); /* 22 → 32px  block */
+  --fs-h4: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem); /* 18 → 22px  card */
+  --fs-lead: clamp(1.125rem, 1.05rem + 0.5vw, 1.5rem); /* 18 → 24px  hero sub */
+  --fs-body: 1.0625rem; /* 17px */
+  --fs-small: 0.9375rem; /* 15px */
+  --fs-label: 0.8125rem; /* 13px  mono, uppercase, 0.08em tracking */
+
+  /* -- master.md §25.1 ---------------------------------------------------- */
+  /* 4px base unit. Values outside this scale are not permitted.             */
+
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-20: 80px;
+  --s-24: 96px;
+  --s-32: 128px;
+  --s-40: 160px;
+  --s-50: 200px;
+
+  /* -- SEMANTIC LAYER — theme-dependent roles ------------------------------ */
+  /*                                                                          */
+  /* master.md §23.5 says dark mode is "not recommended for launch", and that  */
+  /* IF added "it must invert surfaces while preserving the punctuation        */
+  /* logic". It was requested, so it is built to that constraint.              */
+  /*                                                                          */
+  /* The palette above encodes LIGHT-MODE semantics in its names: --ink is     */
+  /* both the dark surface AND the text colour on light. One variable cannot   */
+  /* hold both meanings across two themes, so components address these         */
+  /* SEMANTIC roles instead. No new colour value is introduced — every role    */
+  /* below resolves to a §23.1 token.                                          */
+
+  --bg-base: var(--paper); /* the default page surface        */
+  --bg-alt: var(--surface); /* the alternating section surface */
+  --bg-punct: var(--ink); /* §22.2 p7 — punctuation sections */
+
+  --fg-primary: var(--ink); /* body and display text           */
+  --fg-secondary: var(--muted); /* secondary text                  */
+  --fg-onpunct: var(--paper); /* text on a punctuation surface   */
+  --fg-onpunct-2: var(--muted-dark);
+
+  --accent: var(--blue-600); /* action colour on the base surface */
+  --accent-strong: var(--blue-700); /* hover, and links in body copy     */
+  --hairline: var(--line);
+
+  /* -- master.md §24.3 — tracking ----------------------------------------- */
+  /* The four tracking values §24.3 states as single figures.                 */
+
+  --tracking-display: -0.03em; /* Display / H1 */
+  --tracking-heading: -0.02em; /* H2 / H3 */
+  --tracking-body: 0; /* Body */
+  --tracking-label: 0.08em; /* Mono label, uppercase */
+
+  /* -- master.md §24.3 — line-height and measure -------------------------- */
+  /* M1 deliberately omitted these because nothing needed them yet. Heading   */
+  /* and Prose now require a rendered value, so they are defined here.        */
+  /*                                                                          */
+  /* §24.3 gives display and heading as RANGES, not values:                   */
+  /*   display 0.98–1.05   heading 1.1–1.2   body 1.6 (a single value)        */
+  /*                                                                          */
+  /* Each range token below takes the TIGHTER end — never a midpoint, which   */
+  /* would be a number that appears nowhere in the documents. §24.3's own      */
+  /* rationale points the same way: "tight is what makes large type read as   */
+  /* editorial rather than as a slide". Phase 4 sets the final value; changing */
+  /* it is a one-line edit here and nowhere else.                             */
+
+  --lh-display: 0.98; /* §24.3 range 0.98–1.05, tighter end */
+  --lh-heading: 1.1; /* §24.3 range 1.1–1.2, tighter end   */
+  --lh-body: 1.6; /* §24.3 — stated exactly             */
+
+  /* §24.3: "62–72ch body maximum". The upper bound is the cap. */
+  --measure-body: 72ch;
+
+  /* -- master.md §25.3 — containers --------------------------------------- */
+
+  --container-default: 1280px; /* Max content width */
+  --container-wide: 1440px; /* Wide / full-bleed max */
+  --container-narrow: 720px; /* Narrow prose — teardowns, legal */
+
+  /* -- master.md §25.4 — component spacing --------------------------------- */
+
+  --space-heading-body: 16px; /* Heading-to-body   (= --s-4)  */
+  --space-body-cta: 24px; /* Body-to-CTA       (= --s-6)  */
+  --space-card-card: 24px; /* Card-to-card      (= --s-6)  */
+  --space-label-heading: 12px; /* Label-to-heading  (= --s-3)  */
+
+  /* Button padding — master.md §25.4.                                        */
+  /*                                                                          */
+  /* DOCUMENTED EXCEPTION TO §25.1. Read this before changing either value.   */
+  /*                                                                          */
+  /* §25.1 states: "4px base unit. Full scale: 4, 8, 12, 16, 20, 24, 32, 40,  */
+  /* 48, 64, 80, 96, 128, 160, 200. Values outside the scale are not          */
+  /* permitted." §25.4 then specifies primary button padding as 14px/28px.    */
+  /*                                                                          */
+  /*   28px  is on the 4px base unit (4 x 7) but NOT in the enumerated scale, */
+  /*         which steps 24 -> 32.                                            */
+  /*   14px  is NOT on the 4px base unit (3.5 x 4) and NOT in the scale.      */
+  /*                                                                          */
+  /* No exception for buttons exists anywhere in master.md or wireframe.md.   */
+  /* The contradiction is real. It is resolved for implementation only, by    */
+  /* letting the more-specific §25.4 Button rule govern the general §25.1     */
+  /* scale rule. The values are transcribed verbatim: they were NOT rounded   */
+  /* to the scale, and no replacement value was invented.                     */
+  /*                                                                          */
+  /* These are COMPONENT tokens. The global scale above is untouched, and     */
+  /* 14px/28px must never be added to it. See implementation.md §5.1.1.       */
+
+  --btn-pad-primary: 14px 28px; /* §25.4 — off-scale, see note above */
+  --btn-pad-secondary: 12px 24px; /* §25.4 — on-scale (= --s-3 --s-6)  */
+
+  /* Accessibility dimension, not a spacing-scale step. §25.4 states it and   */
+  /* §30 commits the project to WCAG 2.2 AA, which is what justifies 44px.    */
+  --touch-min: 44px;
+
+  /* -- master.md §25.2 / §25.3 — responsive defaults (mobile-first) --------- */
+  /* Breakpoint tiers are §29.1's: mobile < 768, tablet 768–1023,             */
+  /* desktop >= 1024, large >= 1440. Values below are the mobile tier.        */
+
+  --section-pad: var(--s-16); /* §25.2  <= 767px */
+  /* §25.2: "Dark sections take one step more than adjacent light sections."  */
+  /* Implemented as the next step up the §25.1 scale at every tier. The rule   */
+  /* says "adjacent", which is contextual; a per-tier step is the smallest     */
+  /* faithful reading and is reversible. See implementation.md §5.1.2.         */
+  --section-pad-ink: var(--s-20);
+  --gutter: 20px; /* §25.3  mobile   */
+  --col-gap: 16px; /* §25.3  mobile   */
+  --cols: 4; /* §25.3  mobile   */
+  --card-pad: 24px; /* §25.4  mobile   */
+}
+
+/* -- master.md §25.2 / §25.3 / §25.4 — responsive steps -------------------- */
+
+@media (min-width: 768px) {
+  :root {
+    --section-pad: var(--s-20); /* §25.2  768–1023px */
+    --section-pad-ink: var(--s-24);
+    --gutter: 32px; /* §25.3  tablet     */
+    --col-gap: 24px; /* §25.3  tablet     */
+    --cols: 8; /* §25.3  tablet     */
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --section-pad: var(--s-24); /* §25.2  1024–1439px */
+    --section-pad-ink: var(--s-32);
+    --gutter: 48px; /* §25.3  desktop     */
+    --col-gap: 32px; /* §25.3  desktop     */
+    --cols: 12; /* §25.3  desktop     */
+    --card-pad: 32px; /* §25.4  desktop     */
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --section-pad: var(--s-32); /* §25.2  >= 1440px */
+    --section-pad-ink: var(--s-40);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   DELIBERATE OMISSIONS — recorded rather than resolved (M1, 30 August 2026)
+
+   1. LINE-HEIGHT / MEASURE — resolved at M2, see the tokens above. §24.3
+      gives ranges; the tighter end is used and Phase 4 sets the final value.
+      §24.3 still assigns no font-size and no line-height to BUTTONS
+      specifically, which is why Button enforces the 44px touch target with
+      min-height/min-width rather than padding arithmetic — implementation.md
+      §5.1.1.
+
+   2. DARK-SECTION PADDING — §25.2 says dark sections "take one step more than
+      adjacent light sections". That is relative to whatever sits next to it,
+      so it is a Section-component rule, not a standalone token value.
+--------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------------
+   DARK THEME — master.md §23.5
+
+   §23.5, verbatim: "If added later, it must invert surfaces while preserving
+   the PUNCTUATION LOGIC — a decision to defer, not to design around now."
+
+   That constraint forces a real trade-off, because §23.1 contains exactly TWO
+   dark surfaces (--ink #0A0A0B and --ink-soft #1A1A1E), only 1.14:1 apart,
+   while the system has THREE surface roles. Two values cannot express three
+   roles, so one distinction has to collapse.
+
+   §22.2 principle 7 decides which: "Dark sections are punctuation ... so they
+   retain force." Punctuation is the load-bearing distinction, the base/alt
+   alternation is secondary rhythm. Punctuation is therefore preserved and the
+   alternation collapses: --bg-base and --bg-alt both resolve to --ink-soft,
+   while punctuation stays on the deepest surface, --ink.
+
+   RESTORING THE ALTERNATION NEEDS ONE NEW DARK SURFACE VALUE, which is a
+   Phase 4 colour decision and is not invented here. See implementation.md §5.7.
+
+   Contrast, computed not estimated — every pairing passes AA:
+     --paper      on --ink-soft   17.35:1
+     --paper      on --ink        19.79:1
+     --muted-dark on --ink-soft    6.77:1
+     --muted-dark on --ink         7.72:1
+     --blue-500   on --ink-soft    5.43:1
+     --blue-500   on --ink         6.19:1
+
+   In dark mode EVERY surface is dark, so the accent is --blue-500 throughout —
+   which is exactly §23.2's rule that --blue-600 never touches a dark surface.
+--------------------------------------------------------------------------- */
+
+:root[data-theme='dark'] {
+  --bg-base: var(--ink-soft);
+  --bg-alt: var(--ink-soft);
+  --bg-punct: var(--ink);
+
+  --fg-primary: var(--paper);
+  --fg-secondary: var(--muted-dark);
+  --fg-onpunct: var(--paper);
+  --fg-onpunct-2: var(--muted-dark);
+
+  --accent: var(--blue-500);
+  --accent-strong: var(--blue-500);
+  --hairline: var(--line-dark);
+}

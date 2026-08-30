@@ -1,0 +1,449 @@
+import type { PracticeId } from '../types/content';
+
+/* ---------------------------------------------------------------------------
+   HOMEPAGE CONTENT — wireframe.md Part 2 and master.md §13.
+
+   Every string below is transcribed from those two documents. wireframe.md
+   states its own status: "Copy shown is directional, not final — final copy is
+   produced in Phase 5." Anything NOT supplied by either document is marked
+   DIRECTIONAL and is written to make no claim.
+
+   The rule that governs this file, from wireframe.md Part 2:
+   "Nothing below asserts a client, a result, or a statistic."
+--------------------------------------------------------------------------- */
+
+/* -- 01 HERO — wireframe.md §01, master.md §13 §1 -------------------------- */
+
+/**
+ * ⚠ The hero background video contradicts the approved documents — §22.2 p6
+ * ("no stock"), §27.3 ("looping ambient animation", "anything that moves while
+ * the user is reading"), §23.4 ("glows, neon") and §22.1's placement of
+ * "dark cinematic video-led" in the price-competitive territory §4.3 rejects.
+ *
+ * It was requested explicitly and is built. THIS IS THE OFF SWITCH: set it to
+ * false and the documented hero returns exactly as specified, with no other
+ * edit anywhere. See implementation.md §5.15.
+ */
+export const HERO_VIDEO_ENABLED = true;
+
+/**
+ * ⚠ Hero loop motion beyond §27.2 #1's documented draw: a continuous travel
+ * around the path, and a scroll-linked grow-and-fade as the hero leaves.
+ *
+ * §27.2 #1 says the draw "plays once ... never loops"; §27.3 does not ship
+ * "looping ambient animation" or "parallax backgrounds"; §27.2 #2 gives the
+ * scroll-scrub to section 03, not the hero. Requested explicitly and built.
+ *
+ * OFF SWITCH. false leaves §27.2 #1's draw-once behaviour and nothing more.
+ * Reduced motion disables all of it regardless (§27.4).
+ */
+export const HERO_LOOP_MOTION = true;
+
+/**
+ * ⚠ Hero typewriter. §27.3 does not ship "text scramble effects" or "anything
+ * that moves while the user is reading". Requested; off switch below.
+ */
+export const HERO_TYPEWRITER = true;
+
+/**
+ * ⚠ Hero capability rows — skills and tools, counter-travelling, where
+ * wireframe.md §13 §1's trust row used to sit. §27.3 does not ship "marquees at
+ * launch"; recorded in implementation.md §5.18. Off switch.
+ */
+export const HERO_CAPABILITY_ROWS = true;
+
+/**
+ * What the hero types. The owner asked for the ads platforms and the video
+ * types by name, so the line now runs the SERVICE LIST rather than the three
+ * practice names — each still tagged with its §6.2 practice, so the line keeps
+ * teaching the structure instead of becoming a flat list of words.
+ *
+ * Everything here is a capability the business claims for itself. No client,
+ * result or number is asserted, so §2.8 is not engaged.
+ */
+export const HERO_PRACTICE_WORDS = [
+  { word: 'Meta Ads', practice: 'Media' },
+  { word: 'Google Ads', practice: 'Media' },
+  { word: 'Social Media Ads', practice: 'Media' },
+  { word: 'AI Video Generation', practice: 'Studio' },
+  { word: 'AI UGC Ads', practice: 'Studio' },
+  { word: 'Cinematic Brand Ads', practice: 'Studio' },
+  { word: 'Short-Form Video Ads', practice: 'Studio' },
+  { word: 'Video Editing', practice: 'Studio' },
+  { word: 'Web Development', practice: 'Engineering' },
+  { word: 'Landing Pages', practice: 'Engineering' },
+];
+
+export const HERO = {
+  /** master.md §7.2 Option A, the approved headline. Two sentences. */
+  headline: [
+    'Your ads, your creative, and your landing page are one system.',
+    'Most brands buy them from three companies.',
+  ],
+  subheadline:
+    'Trenvo Media runs all three — media, creative production, and the pages the traffic lands on — with a named specialist on each.',
+  /**
+   * §13 §1: "three plain statements, not logos". §7.3 confirms every one is
+   * honest at launch. No number, no logo, no client (wireframe.md §01).
+   */
+  trustRow: ['Nine disciplines', 'Named specialists', 'One accountable loop'],
+};
+
+/* -- 02 THE PROBLEM — wireframe.md §02, master.md §13 §2 ------------------- */
+
+export const PROBLEM = {
+  eyebrow: 'The problem',
+  headline: 'Three vendors. One funnel. Nobody owns the number.',
+  /** §13 §2: "each written as a quotation the visitor has heard before". */
+  voices: [
+    { source: 'The media buyer says', quote: 'The creative is fatigued.' },
+    { source: 'The creative team says', quote: 'The targeting is wrong.' },
+    { source: 'The developer says', quote: 'Nobody told us the page was for ads.' },
+  ],
+  closing: 'All three are correct. That is the problem.',
+};
+
+/* -- 03 THE LOOP — wireframe.md §03, master.md §6.3, §13 §3 ---------------- */
+
+export interface LoopStage {
+  id: string;
+  index: string;
+  name: string;
+  definition: string;
+  /** wireframe.md §03 — discipline chips tying the loop to the specialist model. */
+  disciplines: string[];
+}
+
+export const LOOP = {
+  eyebrow: 'How we work',
+  headline: 'One loop. Four stages. Run continuously.',
+  cta: { label: 'See how we work', href: '/process' },
+  stages: [
+    {
+      id: 'read',
+      index: '01',
+      name: 'Read',
+      definition:
+        'Instrument and diagnose. Account structure, creative performance by hook and hold, destination behaviour, measurement integrity.',
+      disciplines: ['Meta Ads', 'Google Ads', 'Conversion Specialist'],
+    },
+    {
+      id: 'make',
+      index: '02',
+      name: 'Make',
+      definition:
+        'Produce the specific creative and the specific page the diagnosis calls for.',
+      disciplines: [
+        'Creative Strategist',
+        'AI Video Producer',
+        'Editor',
+        'Motion Designer',
+        'UI/UX Designer',
+        'Frontend Engineer',
+      ],
+    },
+    {
+      id: 'run',
+      index: '03',
+      name: 'Run',
+      definition: 'Deploy, distribute, control spend against a target.',
+      disciplines: ['Meta Ads', 'Google Ads'],
+    },
+    {
+      id: 'learn',
+      index: '04',
+      name: 'Learn',
+      definition:
+        'Attribute results to decisions. Retire what failed. Brief the next cycle.',
+      disciplines: ['Conversion Specialist', 'Creative Strategist'],
+    },
+  ] satisfies LoopStage[],
+};
+
+/* -- 04 THE THREE PRACTICES — wireframe.md §04, master.md §6.2, §9.5 ------- */
+
+export interface PracticeCardContent {
+  id: PracticeId;
+  name: string;
+  /** §6.2 — "Owns the question". */
+  question: string;
+  /**
+   * wireframe.md §04's bullet list. NOT all of these are routed pages —
+   * implementation.md §1.4 (D6): measurement & attribution, motion design and
+   * frontend engineering have no service page, so they render as text.
+   */
+  capabilities: string[];
+  /** §9.2 — the mechanism line, "where a real practitioner is distinguishable". */
+  mechanism: string;
+  cta: { label: string; href: string };
+}
+
+export const PRACTICES = {
+  eyebrow: 'What we do',
+  headline: 'Media. Studio. Engineering.',
+  cards: [
+    {
+      id: 'media',
+      name: 'Media',
+      question: 'Is the money going to the right place?',
+      capabilities: ['Meta Ads', 'Google Ads', 'Measurement & attribution'],
+      mechanism: 'Creative is the only lever left. We pull it hard.',
+      cta: { label: 'Explore Media', href: '/services/meta-ads' },
+    },
+    {
+      id: 'studio',
+      name: 'Studio',
+      question: 'Is there anything worth showing when it gets there?',
+      capabilities: [
+        'Performance Creative',
+        'AI Video',
+        'Video Editing',
+        'Motion Design',
+      ],
+      mechanism: 'Variants differ by hypothesis, not by filter.',
+      cta: { label: 'Explore Studio', href: '/services/performance-creative' },
+    },
+    {
+      id: 'engineering',
+      name: 'Engineering',
+      question: 'Does anything happen after the click?',
+      capabilities: ['Web Development', 'Landing Pages', 'Frontend Engineering'],
+      mechanism: 'Message match is a build rule, not a review comment.',
+      cta: { label: 'Explore Engineering', href: '/services/web-development' },
+    },
+  ] satisfies PracticeCardContent[],
+};
+
+/* -- 05 SPECIALISTS — wireframe.md §05, master.md §13 §5 ------------------- */
+
+export const SPECIALISTS_SECTION = {
+  eyebrow: 'The difference',
+  headline:
+    'Nine disciplines. You will know the name of every person who touches your account.',
+  hint: 'Select a discipline to see what it owns — and what it does not.',
+  cta: { label: 'How we assign specialists', href: '/specialists' },
+};
+
+/* -- 06 HOW A PROJECT STARTS — wireframe.md §06, master.md §13 §6 ---------- */
+
+export interface StartStep {
+  index: string;
+  /** wireframe.md §06's bracketed label under each step. */
+  label: string;
+  body: string;
+}
+
+export const HOW_IT_STARTS = {
+  eyebrow: 'Getting started',
+  headline: 'Week one is a diagnosis, not a discovery call.',
+  cta: { label: 'Read the full process', href: '/process' },
+  steps: [
+    { index: '01', label: 'What we need', body: 'You send access.' },
+    {
+      index: '02',
+      label: 'What we do',
+      body: 'We read the account, the creative, and the page.',
+    },
+    {
+      index: '03',
+      label: 'What you get',
+      body: 'We show you what we found and what we would change.',
+    },
+    { index: '04', label: 'What happens next', body: 'We agree the first cycle.' },
+  ] satisfies StartStep[],
+  /**
+   * wireframe.md §06: "Each with a stated time boundary." §13 §6 requires
+   * "concrete deliverables and time boundaries".
+   *
+   * DIRECTIONAL — no time boundary is stated anywhere in master.md or
+   * wireframe.md, and inventing one would be a commitment Trenvo has not made.
+   * Phase 5 supplies the actual windows. Recorded in implementation.md §5.4.
+   */
+  timeBoundaryNote:
+    'Each step carries a stated time boundary, agreed before week one begins.',
+};
+
+/* -- 07 WHAT WE MEASURE — wireframe.md §07, master.md §13 §7 --------------- */
+
+export interface MeasurementRow {
+  metric: string;
+  ownedBy: PracticeId;
+  ownedByLabel: string;
+  howWeUseIt: string;
+}
+
+export const MEASUREMENT = {
+  eyebrow: 'Measurement',
+  headline: 'These are the numbers we argue about.',
+  columns: { metric: 'Metric', owner: 'Owned by', usage: 'How we use it' },
+  /** wireframe.md §07, all eight rows, verbatim. No value is attached to any. */
+  rows: [
+    {
+      metric: 'Hook rate',
+      ownedBy: 'studio',
+      ownedByLabel: 'Studio',
+      howWeUseIt:
+        '3s views ÷ impressions. Tells us whether the first frame earned the next two seconds.',
+    },
+    {
+      metric: 'Hold rate',
+      ownedBy: 'studio',
+      ownedByLabel: 'Studio',
+      howWeUseIt: 'Where attention drops — the edit point that needs rebuilding.',
+    },
+    {
+      metric: 'CTR',
+      ownedBy: 'media',
+      ownedByLabel: 'Media',
+      howWeUseIt: 'Interest, not intent. Read with CPA, never alone.',
+    },
+    {
+      metric: 'CPM',
+      ownedBy: 'media',
+      ownedByLabel: 'Media',
+      howWeUseIt: 'Auction pressure and creative quality, entangled. Diagnostic.',
+    },
+    {
+      metric: 'CPA / ROAS',
+      ownedBy: 'media',
+      ownedByLabel: 'Media',
+      howWeUseIt: 'The target. Reconciled against a source outside the platform.',
+    },
+    {
+      metric: 'LP conversion',
+      ownedBy: 'engineering',
+      ownedByLabel: 'Engineering',
+      howWeUseIt: 'The half of the ad that happens after the click.',
+    },
+    {
+      metric: 'LCP / INP',
+      ownedBy: 'engineering',
+      ownedByLabel: 'Engineering',
+      howWeUseIt: 'Speed is a conversion variable, not an engineering vanity.',
+    },
+    {
+      metric: 'Contribution margin',
+      ownedBy: 'media',
+      ownedByLabel: 'Media',
+      howWeUseIt: "The only number the client's finance team recognises.",
+    },
+  ] satisfies MeasurementRow[],
+};
+
+/* -- 08 TEARDOWNS — wireframe.md §08 -------------------------------------- */
+
+export const TEARDOWNS_SECTION = {
+  eyebrow: 'Proof',
+  headline: 'We publish our thinking. Read it before you hire us.',
+  primaryCta: { label: 'All teardowns', href: '/teardowns' },
+  secondaryCta: { label: 'Get a teardown of your own', href: '/contact' },
+};
+
+/* -- 09 WORK — wireframe.md §09 ------------------------------------------- */
+
+export const WORK_SECTION = {
+  eyebrow: 'Work',
+  headline: 'Selected work.',
+  cta: { label: 'See all work', href: '/work' },
+};
+
+/* -- 10 FIT — wireframe.md §10, master.md §8.4 ---------------------------- */
+
+export const FIT = {
+  eyebrow: 'Fit',
+  headline: 'We are a good fit for some companies and a bad fit for others.',
+  positiveTitle: 'Work with us if',
+  negativeTitle: 'Do not work with us if',
+  positive: [
+    'You are already spending on paid acquisition and it has plateaued',
+    'Creative volume is your bottleneck',
+    'Your landing page is a theme template nobody has touched',
+    'One person can make the decision',
+    'You want to know who is doing the work, by name',
+  ],
+  negative: [
+    'You are shopping on monthly price',
+    "You want SEO or content marketing — we don't do it",
+    'You are running an RFP with a procurement committee',
+    'You want us to buy media but keep creative elsewhere — the loop is the product',
+  ],
+};
+
+/* -- 11 QUESTIONS — wireframe.md §11, master.md §13 §11 -------------------- */
+
+export interface HomeFaq {
+  question: string;
+  answer: string;
+  /** True where no answer exists in master.md or wireframe.md. */
+  directional: boolean;
+}
+
+/**
+ * All eight questions are documented. Only two answers are: account ownership
+ * and what Trenvo does not do (wireframe.md §11). A third is documented in
+ * §10.3's assignment model.
+ *
+ * The rest are marked `directional`. They state a shape without asserting a
+ * number, a term or a commitment Trenvo has not made — §18.3 rule 2 bars any
+ * number that is not Trenvo's and true. Phase 5 replaces them.
+ */
+export const QUESTIONS = {
+  eyebrow: 'Questions',
+  headline: 'Questions we get asked before the first call.',
+  items: [
+    {
+      question: 'What time zones do you work across, and when do we overlap?',
+      answer:
+        'We work with brands in the US, UK, EU, GCC, Australia and Canada, and state the daily overlap window in writing before a project starts.',
+      directional: true,
+    },
+    {
+      question: 'Who owns the ad accounts and the assets?',
+      answer:
+        'You. Always. Accounts and assets are yours, created in your name, and they stay with you if we stop working together.',
+      directional: false,
+    },
+    {
+      question: 'How long is the contract, and what notice applies?',
+      answer:
+        'Engagement bands and notice terms are published on the process page and agreed before week one.',
+      directional: true,
+    },
+    {
+      question: 'What happens if the specialist on my account changes?',
+      answer:
+        'You are told who and why before the change takes effect. You have direct contact with the specialists doing the work, not an account manager relaying messages.',
+      directional: false,
+    },
+    {
+      question: 'What is the minimum engagement?',
+      answer:
+        'There is a stated minimum, published as a band on the process page rather than quoted per enquiry.',
+      directional: true,
+    },
+    {
+      question: 'How do you use AI, and how is it disclosed?',
+      answer:
+        'AI is a production capability inside Studio, never a positioning claim. Synthetic presenters and generated footage are labelled to you, every asset gets a human editorial pass, and platform disclosure requirements are respected.',
+      directional: false,
+    },
+    {
+      question: 'What do you not do?',
+      answer: 'SEO. Content marketing. Standalone brand identity.',
+      directional: false,
+    },
+    {
+      question: 'What do you need from us to start?',
+      answer:
+        'Access to the ad account, the site, and whatever is not working. Week one is a diagnosis, not a discovery call.',
+      directional: true,
+    },
+  ] satisfies HomeFaq[],
+};
+
+/* -- 12 CLOSE — wireframe.md §12, master.md §13 §12 ------------------------ */
+
+export const CLOSE = {
+  headline: 'Tell us what you are building.',
+  body: "Send the site, the ad account, and what is not working. You will get a specialist's read, not a sales deck.",
+};

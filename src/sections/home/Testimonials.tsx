@@ -126,7 +126,7 @@ export function Testimonials() {
                       </span>
                     </div>
 
-                    <h3 className="mt-8">
+                    <h3 className="client-card__name mt-8">
                       <BrandWordmark brand={brand} />
                     </h3>
 
@@ -190,7 +190,7 @@ export function Testimonials() {
                   </span>
                 </div>
 
-                <h3 className="client-card__cta mt-8 text-[1.35rem] font-semibold leading-none tracking-tight">
+                <h3 className="client-card__cta client-card__name mt-8 text-[1.35rem] font-semibold leading-none tracking-tight">
                   Your brand next
                 </h3>
 

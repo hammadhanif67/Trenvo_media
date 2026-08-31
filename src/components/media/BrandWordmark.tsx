@@ -8,7 +8,15 @@ import type { TrustBrand } from '../hero/heroContent';
    lettering their name honestly, so each mark keeps its own face and colour and
    is real HTML text — crawlable, translatable, and scalable.
 
-   TWO DIFFERENCES FROM THE HERO ROW, both forced by contrast:
+   NO GLYPH HERE, and that is an alignment decision. Only Healthify carries a
+   symbol, and inline it pushed that one name to x=49 while the other four sat
+   at x=25 — one indented name in a grid of six reads as a mistake. The names
+   are `<h3>`s in a column and their left edge has to be a straight line, so the
+   glyph stays in the hero row where the marks sit side by side and nothing is
+   in a column. Nothing is lost: it is decorative, `aria-hidden`, and the brand
+   is still named, coloured and lettered as its own.
+
+   TWO FURTHER DIFFERENCES FROM THE HERO ROW, both forced by contrast:
 
      1. It carries no `splitAt` fade. NutriPure sets "Nutri" at 72% opacity in
         the hero, which composites to 3.35:1 on white. That is fine for the
@@ -31,28 +39,10 @@ const FACE: Record<TrustBrand['face'], string> = {
   sans: 'font-sans',
 };
 
-/** The four-dot glyph beside the Healthify wordmark. Decorative. */
-function HealthifyMark() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      focusable="false"
-      className="size-4 shrink-0"
-      fill="#f0353b"
-    >
-      <circle cx="7" cy="7" r="4.4" />
-      <circle cx="17" cy="7" r="4.4" />
-      <circle cx="7" cy="17" r="4.4" />
-      <circle cx="17" cy="17" r="4.4" />
-    </svg>
-  );
-}
-
 export function BrandWordmark({ brand }: { brand: TrustBrand }) {
   return (
     <span
-      className="client-card__mark inline-flex items-center gap-2"
+      className={`client-card__mark ${FACE[brand.face]} text-[1.35rem] font-semibold leading-none tracking-tight`}
       style={
         {
           '--mark-light': brand.light,
@@ -60,12 +50,7 @@ export function BrandWordmark({ brand }: { brand: TrustBrand }) {
         } as React.CSSProperties
       }
     >
-      {brand.mark === 'healthify' && <HealthifyMark />}
-      <span
-        className={`${FACE[brand.face]} text-[1.35rem] font-semibold leading-none tracking-tight`}
-      >
-        {brand.name}
-      </span>
+      {brand.name}
     </span>
   );
 }

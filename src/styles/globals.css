@@ -721,6 +721,19 @@ html::-webkit-scrollbar {
   }
 }
 
+/*
+  THE NAME ROW IS A FIXED BOX. The five wordmarks are set in three different
+  faces and the sixth tile is plain sans, so their line boxes measured 25px and
+  22px — enough to drop that card's sector line 4px below the other five.
+  A fixed row height with the name centred in it makes every card hand the line
+  underneath the same starting y, whatever face it is set in.
+*/
+.client-card__name {
+  display: flex;
+  align-items: center;
+  min-height: 1.75rem;
+}
+
 /* -- the fill ------------------------------------------------------------- */
 
 .client-card__fill {

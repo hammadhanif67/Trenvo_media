@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button, Container, Icon, Section } from '../../components/ui';
 import { HeroVisual } from '../../components/hero/HeroVisual';
@@ -32,8 +33,32 @@ import { HERO_BACKGROUND } from '../../data/home';
  *
  * Copy lives in heroContent.ts; nothing here is hard-coded.
  */
+/** Longest delay (450ms) plus the longest run (820ms), plus a little slack. */
+const CURTAIN_TOTAL_MS = 1400;
+
 export function HeroHome() {
   const c = HERO_CONTENT;
+
+  /*
+    The curtain runs on every page load, which is what "on refresh" means here.
+
+    The class ships IN THE HTML rather than being added on mount, for two
+    reasons: adding it later costs a frame in which the content is visible
+    un-animated, which reads as a flicker; and shipping it means the entrance
+    still plays with no JavaScript at all, since it is pure CSS.
+
+    JavaScript's only job is to take the class away once the run is over, so
+    nothing is left depending on an animation that has already finished. The
+    timer is a plain setTimeout, which keeps running in a backgrounded tab — so
+    even if the animation itself never plays, the class is gone and the content
+    sits in its natural state.
+  */
+  const [curtain, setCurtain] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setCurtain(false), CURTAIN_TOTAL_MS);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <Section
@@ -50,7 +75,7 @@ export function HeroHome() {
         */}
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
           {/* -------- LEFT: content -------- */}
-          <div className="[container-type:inline-size]">
+          <div className={`[container-type:inline-size] ${curtain ? 'hero-curtain' : ''}`}>
             <p className="font-mono text-label uppercase tracking-[var(--tracking-label)] text-accent">
               {c.eyebrow}
             </p>
@@ -106,7 +131,7 @@ export function HeroHome() {
 
           {/* -------- RIGHT: the visual -------- */}
           {HERO_BACKGROUND && (
-            <div className="order-last w-full">
+            <div className={`order-last w-full ${curtain ? 'hero-curtain-visual' : ''}`}>
               <HeroVisual />
             </div>
           )}

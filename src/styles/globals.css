@@ -246,3 +246,79 @@ html::-webkit-scrollbar {
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   HERO CURTAIN
+
+   Requested: on refresh the hero's main content should arrive like a curtain
+   coming down from the top.
+
+   The reveal edge travels DOWNWARD — `inset(0 0 100% 0)` shows nothing and
+   opens toward the bottom — while each block drifts down a few pixels into
+   place. Staggering the blocks makes the edge read as one curtain passing
+   through the column rather than five separate fades.
+
+   FAIL-SAFE, the same rule as everything else here. A CSS keyframe applies its
+   `from` state only WHILE RUNNING, and `backwards` extends that only across the
+   delay. So if the animation never runs — no CSS animation support, or the
+   engine refusing — the content is simply already in place. HeroHome also drops
+   the class once the run is over, so nothing is left depending on it.
+
+   The clip is on the border box, which fully contains its glyphs, so no
+   descender is ever cut.
+--------------------------------------------------------------------------- */
+@keyframes hero-curtain {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-14px);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+
+.hero-curtain > * {
+  animation: hero-curtain 720ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+/* The curtain passes through the column top to bottom, block by block. */
+.hero-curtain > *:nth-child(1) {
+  animation-delay: 40ms;
+}
+.hero-curtain > *:nth-child(2) {
+  animation-delay: 140ms;
+}
+.hero-curtain > *:nth-child(3) {
+  animation-delay: 250ms;
+}
+.hero-curtain > *:nth-child(4) {
+  animation-delay: 350ms;
+}
+.hero-curtain > *:nth-child(5) {
+  animation-delay: 450ms;
+}
+
+/* The visual follows the copy in, without the clip — it is one solid object. */
+@keyframes hero-curtain-visual {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-curtain-visual {
+  animation: hero-curtain-visual 820ms cubic-bezier(0.22, 1, 0.36, 1) 260ms backwards;
+}
+
+/* §27.4 — no entrance at all, and nothing hidden waiting for one. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-curtain > *,
+  .hero-curtain-visual {
+    animation: none;
+  }
+}

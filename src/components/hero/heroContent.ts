@@ -29,7 +29,6 @@ import { PRIMARY_CTA } from '../../data/navigation';
 --------------------------------------------------------------------------- */
 
 export interface HeroContent {
-  eyebrow: string;
   /** The fixed half of the H1; the animated keyword follows it. */
   titleLead: string;
   /** Typed in and out, in order, forever. */
@@ -66,11 +65,15 @@ export interface TrustBrand {
 }
 
 export const HERO_CONTENT: HeroContent = {
-  eyebrow: 'AI-Powered Growth',
-
   titleLead: 'Turn Attention Into Growth With',
   keywords: ['AI Video Ads', 'Creative', 'Paid Media'],
-  titleSpoken: 'Turn attention into growth with AI Video Ads, Creative and Paid Media.',
+  /*
+    The H1's indexable text. The animated span is aria-hidden, so THIS is what a
+    crawler and a screen reader both read — which is why it names all three
+    services in a full sentence rather than echoing one frame of the animation.
+  */
+  titleSpoken:
+    'Turn attention into growth with AI video ads, creative production and paid media.',
 
   description:
     'We combine AI-powered video advertising, creative strategy, and paid media to help ambitious brands capture attention, convert demand, and scale with confidence.',
@@ -103,7 +106,7 @@ export const HERO_CONTENT: HeroContent = {
   trustLabel: 'Trusted by growth-focused brands',
   trustBrands: [
     { name: 'Soralune', category: 'Hair Oil', face: 'script', light: '#1a7f3c', dark: '#4ade80' },
-    { name: 'HOLY', category: 'Mouthwash', face: 'serif', light: '#1a4fd6', dark: '#7aa2ff' },
+    { name: 'HOLY', category: 'Multivitamin', face: 'serif', light: '#1a4fd6', dark: '#7aa2ff' },
     { name: 'Healthify', category: '', face: 'sans', light: '#0a0a0b', dark: '#ffffff', mark: 'healthify' },
     { name: 'Glowri', category: 'Skincare', face: 'serif', light: '#1a7f3c', dark: '#4ade80' },
     { name: 'NutriPure', category: 'Wellness', face: 'sans', light: '#1e5fd0', dark: '#7aa2ff', splitAt: 5 },

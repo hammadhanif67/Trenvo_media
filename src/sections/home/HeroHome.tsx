@@ -72,7 +72,18 @@ export function HeroHome() {
         this element, so the global dark theme cannot reach inside. See the
         block of the same name in globals.css.
       */
-      className="hero-surface relative overflow-x-clip"
+      /*
+        The hero FILLS the first screen rather than being shrunk to fit inside
+        it. Shrinking it was the wrong fix: it made the hero short enough that
+        the dark section below showed above the fold, which is worse than the
+        problem it solved.
+
+        min-height takes the header out of the calculation (--header-h is
+        published by Navbar from a real measurement), and the content is centred
+        in what remains. So the hero owns the first screen at any height, the
+        next section starts exactly at the fold, and the type stays large.
+      */
+      className="hero-surface relative flex overflow-x-clip [padding-block:var(--s-12)] lg:min-h-[calc(100dvh-var(--header-h,84px))] lg:items-center lg:[padding-block:var(--s-16)]"
     >
       {/*
         Section publishes its surface from the THEME, so in dark mode it would
@@ -93,10 +104,6 @@ export function HeroHome() {
             <div
               className={`[container-type:inline-size] ${curtain ? 'hero-curtain' : ''}`}
             >
-              <p className="font-mono text-label uppercase tracking-[var(--tracking-label)] text-accent">
-                {c.eyebrow}
-              </p>
-
               {/*
               The clamp measures against the COLUMN (cqi), not the viewport:
               against the viewport a 96px display size rendered ~12 characters
@@ -109,7 +116,7 @@ export function HeroHome() {
             */}
               <h1
                 id="hero-heading"
-                className="mt-5 font-sans font-bold text-primary [font-size:clamp(2.5rem,1rem+3.6cqi,3.25rem)] lg:[font-size:clamp(2.5rem,1rem+5.5cqi,4.25rem)] [letter-spacing:var(--tracking-display)] [line-height:var(--lh-display)]"
+                className="font-sans font-bold text-primary [font-size:clamp(2.5rem,1rem+3.8cqi,3.5rem)] lg:[font-size:clamp(2.75rem,1rem+6cqi,4.75rem)] [letter-spacing:-0.035em] [line-height:0.96]"
               >
                 {/*
                 The heading's accessible name: stable, complete, and naming all
@@ -125,12 +132,12 @@ export function HeroHome() {
                 </span>
               </h1>
 
-              <p className="mt-7 max-w-[46ch] text-lead text-secondary [line-height:var(--lh-body)]">
+              <p className="mt-6 max-w-[46ch] text-lead text-secondary [letter-spacing:0.005em] [line-height:1.5]">
                 {c.description}
               </p>
 
               {/* §17.3 — the one place two conversion CTAs share a viewport. */}
-              <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <Button href={c.primaryCta.href}>
                   <span className="inline-flex items-center gap-2">
                     {c.primaryCta.label}

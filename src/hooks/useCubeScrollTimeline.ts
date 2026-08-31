@@ -12,12 +12,24 @@ import type { CubeHandle } from '../components/motion/CubeScene';
        no DOM box, so it cannot push, pull or reflow anything.
      · the CONTENT, through a GSAP tween on a single wrapper's `y`.
 
-   THE ORDER IS THE POINT. The content is held at y = 0 for the first 75% of the
+   THE ORDER IS THE POINT. The content is held at y = 0 for the first 70% of the
    pin while the cube travels right → centre and grows. Only after the cube has
    reached its peak does the content start moving up. That is why the two are
    separate tweens on one timeline rather than one animation of a shared parent:
    a shared parent would make the content's movement a side effect of the cube's,
    which is exactly what the brief rules out.
+
+   THREE THINGS KILL THE JOLT the first version had:
+
+     1. `anticipatePin` — ScrollTrigger switches the section to fixed one frame
+        BEFORE the pin starts. Without it a fast wheel step lands past the start
+        and the section visibly snaps into place.
+     2. The travel phase eases IN (`power2.in`). A linear tween starting after a
+        hold is a step change in velocity: the content is stationary one frame
+        and moving at full speed the next, which reads as a kick. `power2.in`
+        leaves the hold at zero velocity, so the two phases join smoothly.
+     3. `invalidateOnRefresh` — the start values are re-read on resize instead
+        of being replayed from a stale measurement.
 
    The cube's progress is mapped from the timeline's own progress rather than
    tweened, so it stays exact at any scrub value and cannot drift out of step
@@ -29,7 +41,14 @@ import type { CubeHandle } from '../components/motion/CubeScene';
 --------------------------------------------------------------------------- */
 
 /** How much scroll the pin consumes. Long enough to feel deliberate, not a trek. */
-const PIN_LENGTH = '+=1800';
+const PIN_LENGTH = '+=1600';
+
+/**
+ * How far the content rises in the last phase. Small on purpose: the section is
+ * exactly one viewport tall with the content centred, so a large rise would
+ * open the dead band under the rows that the first version had.
+ */
+const RISE = 130;
 
 export function useCubeScrollTimeline(
   sectionRef: RefObject<HTMLElement | null>,
@@ -49,6 +68,16 @@ export function useCubeScrollTimeline(
     // short, the cube is small, and a long pin reads as the page being stuck.
     if (typeof window !== 'undefined' && window.innerWidth < 1024) return;
 
+    /*
+      A pinned section taller than the viewport can never sit flush: its bottom
+      stays cut off for the entire pin, and the rise then opens a dead band
+      under the rows. The section is `min-h-svh`, so it measures exactly one
+      viewport whenever the content fits. If it does not fit — a short laptop,
+      a large text-zoom setting — there is no pin at all and the section scrolls
+      like any other. Better no choreography than a broken one.
+    */
+    if (section.offsetHeight > window.innerHeight + 2) return;
+
     let cleanup = () => {};
     let cancelled = false;
 
@@ -65,7 +94,10 @@ export function useCubeScrollTimeline(
             start: 'top top',
             end: PIN_LENGTH,
             pin: true,
-            scrub: 0.8,
+            pinSpacing: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            scrub: 1,
             // The cube reads the timeline directly, so it is exact at any
             // scrub value rather than lagging a tween of its own.
             onUpdate: (self) => cubeRef.current?.setProgress(self.progress),
@@ -73,14 +105,15 @@ export function useCubeScrollTimeline(
         });
 
         /*
-          Phases 1–3, 0% → 75%: the content does not move. Stated explicitly as
+          Phases 1–3, 0% → 70%: the content does not move. Stated explicitly as
           a held tween rather than left implicit, so the timeline's shape says
           what the brief asks for and a later edit cannot shorten it by accident.
         */
-        timeline.to(content, { y: 0, duration: 0.75, ease: 'none' });
+        timeline.to(content, { y: 0, duration: 0.7, ease: 'none' });
 
-        /* Phase 4, 75% → 100%: only now does the content travel. */
-        timeline.to(content, { y: -260, duration: 0.25, ease: 'none' });
+        /* Phase 4, 70% → 100%: only now does the content travel, and it leaves
+           the hold at zero velocity so the transition cannot be felt. */
+        timeline.to(content, { y: -RISE, duration: 0.3, ease: 'power2.in' });
       }, section);
 
       cleanup = () => ctx.revert();

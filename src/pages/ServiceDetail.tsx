@@ -48,7 +48,6 @@ import type { PracticeId } from '../types/content';
 const PRACTICE_LABEL: Record<PracticeId, string> = {
   media: 'Media',
   studio: 'Studio',
-  engineering: 'Engineering',
 };
 
 export function ServiceDetail() {

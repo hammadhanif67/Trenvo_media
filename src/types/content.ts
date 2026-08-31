@@ -18,7 +18,14 @@
 
 /* -- master.md §28.3, verbatim --------------------------------------------- */
 
-export type PracticeId = 'media' | 'studio' | 'engineering';
+/**
+ * ⚠ TWO practices, not §6.2's three. Engineering is removed: Trenvo sells
+ * digital marketing, and neither web development nor landing pages is offered.
+ * Recorded in implementation.md §5.22. Narrowing the union is what makes the
+ * removal enforceable — every practice map and every service now fails to
+ * compile if it still references engineering.
+ */
+export type PracticeId = 'media' | 'studio';
 
 export interface Discipline {
   id: string;

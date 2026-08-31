@@ -3,14 +3,10 @@ import type { PracticeId, Service } from '../types/content';
 /* ---------------------------------------------------------------------------
    THE SERVICES — master.md §9.4, §9.3, §18.2, §21.2.
 
-   ⚠ SIX, not §9.4's seven. Trenvo sells digital marketing and does not offer
-   web development, so §9.3's `web-development` service is removed on request
-   (implementation.md §5.21). Its two disciplines were already carried by
-   `landing-pages`, so nothing is orphaned, and Engineering keeps that service:
-   the page a campaign points at is a conversion asset, not a build contract.
-
-   Landing pages stays separate because §9.4 calls it "a distinct commercial
-   offer ... the most common entry point for a first project."
+   ⚠ FIVE, not §9.4's seven. Trenvo sells digital marketing, so the two
+   Engineering services are gone: `web-development` (§5.21) and now
+   `landing-pages` with the Engineering practice itself (§5.22). What remains is
+   Media and Studio — the ads, and the creative that runs in them.
 
    Each entry carries what §9.2 requires: "name by capability, describe by
    outcome, prove by mechanism." The mechanism lines are transcribed from §9.3
@@ -30,7 +26,6 @@ export const SERVICE_PRACTICE: Record<string, PracticeId> = {
   'performance-creative': 'studio',
   'ai-video': 'studio',
   'video-editing': 'studio',
-  'landing-pages': 'engineering',
 };
 
 /** §17.2 Tier 3 — the contextual CTA, per service, from §18.2. */
@@ -40,7 +35,6 @@ export const SERVICE_CTA: Record<string, string> = {
   'performance-creative': 'Talk to a creative strategist',
   'ai-video': 'Talk to a creative strategist',
   'video-editing': 'Talk to a creative strategist',
-  'landing-pages': 'Start a project',
 };
 
 export const SERVICES: Service[] = [
@@ -58,7 +52,7 @@ export const SERVICES: Service[] = [
       'Measurement that separates platform-reported results from observed business results',
     ],
     disciplineIds: ['meta-ads-specialist'],
-    connectsTo: ['studio', 'engineering'],
+    connectsTo: ['studio'],
     faqs: [],
     seo: {
       title: 'Meta Ads Management | Trenvo Media',
@@ -81,7 +75,7 @@ export const SERVICES: Service[] = [
       'Attribution reconciled against a source of truth outside the ad platform',
     ],
     disciplineIds: ['google-ads-specialist'],
-    connectsTo: ['studio', 'engineering'],
+    connectsTo: ['studio'],
     faqs: [],
     seo: {
       title: 'Google Ads Management | Trenvo Media',
@@ -108,7 +102,7 @@ export const SERVICES: Service[] = [
       'The brief is the deliverable — the edit executes it, the media buys against it',
     ],
     disciplineIds: ['performance-creative-strategist'],
-    connectsTo: ['media', 'engineering'],
+    connectsTo: ['media'],
     faqs: [],
     seo: {
       title: 'Performance Creative Strategy | Trenvo Media',
@@ -130,7 +124,7 @@ export const SERVICES: Service[] = [
       'Winning AI concepts can be re-produced with live-action when the spend justifies it',
     ],
     disciplineIds: ['ai-video-producer'],
-    connectsTo: ['media', 'engineering'],
+    connectsTo: ['media'],
     faqs: [],
     seo: {
       title: 'AI Video Production for Ads | Trenvo Media',
@@ -152,34 +146,12 @@ export const SERVICES: Service[] = [
       'Every asset named to a convention that lets the media specialist read performance by creative attribute',
     ],
     disciplineIds: ['video-editor', 'motion-designer'],
-    connectsTo: ['media', 'engineering'],
+    connectsTo: ['media'],
     faqs: [],
     seo: {
       title: 'Performance Video Editing | Trenvo Media',
       description:
         'Hook-first, modular editing built to produce the next twenty variants, so your account never runs on fatigued creative.',
-    },
-  },
-  {
-    slug: 'landing-pages',
-    name: 'Landing Pages',
-    outcome: 'Message match is an engineering requirement, not a design opinion.',
-    situation:
-      'A landing page attached to a campaign is not a brochure page. It has one promise to keep — the one the ad made — and a handful of seconds to keep it. That makes message match, speed and instrumentation build requirements rather than review comments.',
-    mechanisms: [
-      'Built as components, so a variant is a configuration rather than a rebuild',
-      'Speed targets set before design, not measured after launch',
-      'Message match to the specific ad, enforced as a build rule',
-      'Tests designed with the media specialist who will read the result',
-      'Conversion events implemented by the same engineer who built the page',
-    ],
-    disciplineIds: ['ui-ux-designer', 'frontend-engineer', 'conversion-specialist'],
-    connectsTo: ['media', 'studio'],
-    faqs: [],
-    seo: {
-      title: 'Landing Pages for Paid Campaigns | Trenvo Media',
-      description:
-        'Message match as an engineering requirement. Component-built pages where a variant is a configuration, not a rebuild.',
     },
   },
 ];
@@ -191,14 +163,14 @@ export function getService(slug: string): Service | undefined {
 /* -- /services overview — master.md §14, §9.5, §11.2 ----------------------- */
 
 export const SERVICES_OVERVIEW = {
-  headline: 'Three practices. One loop.',
-  lead: 'Media, Studio and Engineering are not three departments you brief separately. They are one system with a named specialist on each part.',
+  headline: 'Two practices. One loop.',
+  lead: 'Media and Studio are not two departments you brief separately. They are one system with a named specialist on each part.',
   /** §14 — "Why we do not sell these separately" (the unbundling argument). */
   unbundling: {
     heading: 'Why we do not sell these separately',
     body: [
-      'Most brands buy media from one company, creative from another, and the page from a third. When performance drops, the media buyer says the creative is fatigued, the creative supplier says the targeting is wrong, and nobody has looked at the landing page in four months.',
-      'All three are usually correct. That is the problem, and it is not solved by managing three vendors more carefully. It is solved by removing the seam.',
+      'Most brands buy media from one company and creative from another. When performance drops, the media buyer says the creative is fatigued and the creative supplier says the targeting is wrong.',
+      'Both are usually correct. That is the problem, and it is not solved by managing two vendors more carefully. It is solved by removing the seam between them.',
     ],
   },
   /** §14 — "what we do not offer". §11.1: no SEO anywhere, and say so. */

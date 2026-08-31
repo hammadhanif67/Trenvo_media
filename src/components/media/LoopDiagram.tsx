@@ -8,7 +8,9 @@ import { HERO_LOOP_MOTION } from '../../data/home';
 
    "The Loop" is the named method (§6.3) and the central visual device
    (wireframe.md Part 4 item 3). §13 §1: "three labelled nodes (Media / Studio /
-   Engineering) with a continuous path between them. Black background, white
+   ⚠ TWO nodes, not §13 §1's three: the Engineering practice is removed
+   (implementation.md §5.22). The path and the method are unchanged.
+   Black background, white
    type, single blue path."
 
    §29.2: "The Loop diagram has TWO COMPOSITIONS, not one scaled composition:
@@ -30,10 +32,10 @@ export interface LoopDiagramProps {
   className?: string;
 }
 
-const NODES = ['Media', 'Studio', 'Engineering'] as const;
+const NODES = ['Media', 'Studio'] as const;
 
 const TEXT_ALTERNATIVE =
-  'The Loop: Media, Studio and Engineering are three practices joined by a single continuous path, run as one system rather than three separate vendors.';
+  'The Loop: Media and Studio are two practices joined by a single continuous path, run as one system rather than as separate vendors.';
 
 export function LoopDiagram({ mode = 'static', className }: LoopDiagramProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -73,14 +75,22 @@ export function LoopDiagram({ mode = 'static', className }: LoopDiagramProps) {
           opacity="0"
         />
 
+        {/*
+          Two nodes sit at OPPOSITE ends of the path — Media at the top-left
+          corner, Studio at the bottom-right. The old positions were derived
+          from a three-node formula (x = 120 + i * 200), which with two nodes
+          left them both in the left half and the right end of the loop empty.
+        */}
         {NODES.map((node, i) => {
-          const x = 120 + i * 200;
+          const first = i === 0;
+          const x = first ? 120 : 520;
+          const y = first ? 80 : 200;
           return (
             <g key={node}>
-              <circle cx={x} cy={i === 1 ? 200 : 80} r="6" fill="var(--blue-500)" />
+              <circle cx={x} cy={y} r="6" fill="var(--blue-500)" />
               <text
                 x={x}
-                y={i === 1 ? 232 : 60}
+                y={first ? 60 : 232}
                 textAnchor="middle"
                 fill="var(--paper)"
                 className="font-mono"
@@ -139,16 +149,18 @@ export function LoopDiagram({ mode = 'static', className }: LoopDiagramProps) {
           opacity="0"
         />
 
+        {/* Same reasoning as the horizontal composition: opposite ends. */}
         {NODES.map((node, i) => {
-          const y = 60 + i * 150;
-          const x = i === 1 ? 200 : 80;
+          const first = i === 0;
+          const x = first ? 80 : 200;
+          const y = first ? 60 : 360;
           return (
             <g key={node}>
               <circle cx={x} cy={y} r="6" fill="var(--blue-500)" />
               <text
-                x={i === 1 ? x - 16 : x + 16}
+                x={first ? x + 16 : x - 16}
                 y={y + 5}
-                textAnchor={i === 1 ? 'end' : 'start'}
+                textAnchor={first ? 'start' : 'end'}
                 fill="var(--paper)"
                 className="font-mono"
                 fontSize="13"

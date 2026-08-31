@@ -10,7 +10,7 @@ import type { Teardown } from '../types/content';
 
    This array is EMPTY because no teardown has been written yet. Teardowns are a
    Phase 5 deliverable (§33), and each one analyses a real, publicly visible ad
-   or landing page. Inventing one would fabricate the single asset the entire
+   or ad creative. Inventing one would fabricate the single asset the entire
    proof strategy rests on.
 
    Until it is populated, homepage §08 unmounts rather than rendering a

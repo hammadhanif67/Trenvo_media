@@ -19,7 +19,7 @@ export const PROCESS_HERO = {
 /** §6.3 — the four stages, in operational detail. */
 export const LOOP_OPERATIONAL = {
   heading: 'The Loop',
-  lead: 'Four stages, run continuously rather than sequentially. A loop cannot be split across three vendors — that is the whole argument.',
+  lead: 'Four stages, run continuously rather than sequentially. A loop cannot be split across two vendors — that is the whole argument.',
 };
 
 /** §13 §6 and wireframe.md §06 — the week-one sequence. */

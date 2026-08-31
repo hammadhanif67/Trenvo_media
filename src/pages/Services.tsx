@@ -12,7 +12,7 @@ import { breadcrumbSchema } from '../lib/schema';
 /**
  * /services — master.md §14, the practice overview.
  *
- * §14's order: Hero ("Three practices. One loop.") -> the loop diagram, full
+ * §14's order: Hero ("Two practices. One loop.") -> the loop diagram, full
  * width -> three practice blocks, each expanding to its services -> "Why we do
  * not sell these separately" (the unbundling argument) -> what we do not offer
  * -> specialists strip -> CTA.
@@ -49,7 +49,7 @@ export function Services() {
       <Section tone="paper" aria-labelledby="practices-heading">
         <Container>
           <Heading level={2} size="h2" id="practices-heading">
-            Three practices
+            Two practices
           </Heading>
 
           <div className="mt-16">

@@ -56,7 +56,7 @@ export function Teardowns() {
             We publish our thinking. Read it before you hire us.
           </Heading>
           <p className="mt-6 max-w-[52ch] text-lead text-onpunct-2 [line-height:var(--lh-body)]">
-            A teardown is a specialist reading a real, publicly visible ad or landing page
+            A teardown is a specialist reading a real, publicly visible ad or ad creative
             and showing the reasoning they would apply to it.
           </p>
         </Container>
@@ -167,7 +167,7 @@ export function Teardowns() {
           funnel. Real and deliverable today. */}
       <CtaSection
         tone="ink"
-        headline="Get a teardown of your ads and landing page."
+        headline="Get a teardown of your ads and creative."
         body="Send the ad account or a link to the creative, and the page the traffic lands on. You will get a specialist's read of what we would change and how we would measure it."
         primaryLabel="Get a teardown"
       />

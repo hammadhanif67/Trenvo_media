@@ -30,21 +30,21 @@ const SITE = 'Trenvo Media';
 export const ROUTE_SEO: Record<string, RouteSeo> = {
   /* -- Documented in §21.2, verbatim ------------------------------------- */
   '/': {
-    title: 'Trenvo Media — Performance Media, Creative & Engineering',
+    title: 'Trenvo Media — Performance Media & Creative Production',
     description:
       'We run the whole loop: the ads, the creative, and the pages they land on — with a named specialist on each discipline.',
-    ogTitle: 'Your ads, your creative, and your landing page are one system.',
+    ogTitle: 'AI video ads, creative and paid media, run as one system.',
   },
   '/services': {
-    title: `Services — Media, Studio & Engineering | ${SITE}`,
+    title: `Services — Media & Studio | ${SITE}`,
     description:
-      'Three practices, one loop. Paid media, performance creative production, and conversion-focused engineering under one team.',
-    ogTitle: 'Three practices. One loop.',
+      'Two practices, one loop. Paid media and performance creative production under one team, with a named specialist on each.',
+    ogTitle: 'Two practices. One loop.',
   },
   '/specialists': {
     title: `Our Specialist Model | ${SITE}`,
     description:
-      'Nine disciplines, published boundaries, and a named specialist on every part of your account.',
+      'Six disciplines, published boundaries, and a named specialist on every part of your account.',
     ogTitle: 'Specialists on your account. Not a generalist with a dashboard.',
   },
   '/process': {
@@ -54,9 +54,9 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
     ogTitle: 'Week one is a diagnosis, not a discovery call.',
   },
   '/teardowns': {
-    title: `Ad & Landing Page Teardowns | ${SITE}`,
+    title: `Ad & Creative Teardowns | ${SITE}`,
     description:
-      'We publish our thinking. Specialist analyses of real ads and real landing pages — read them before you hire us.',
+      'We publish our thinking. Specialist analyses of real ads and real ad creative — read them before you hire us.',
     ogTitle: 'We publish our thinking. Read it before you hire us.',
   },
 
@@ -71,14 +71,14 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   '/about': {
     title: `About — Why Trenvo Exists | ${SITE}`,
     description:
-      'Three vendors, one funnel, nobody owning the number. We removed the seam by running the whole loop ourselves.',
+      'Two vendors, one funnel, nobody owning the number. We removed the seam by running the whole loop ourselves.',
     ogTitle: 'We exist because the seam costs more than the work.',
     directional: true,
   },
   '/contact': {
     title: `Contact | ${SITE}`,
     description:
-      'Two ways in: start a project, or get a specialist read of your ads and landing page before anything is asked of you.',
+      'Two ways in: start a project, or get a specialist read of your ads and creative before anything is asked of you.',
     ogTitle: 'Tell us what you are building.',
     directional: true,
   },
@@ -114,7 +114,7 @@ for (const service of SERVICES) {
  */
 const NOT_FOUND_SEO: RouteSeo = {
   title: `Page not found | ${SITE}`,
-  description: 'That page does not exist. Everything we do sits inside three practices.',
+  description: 'That page does not exist. Everything we do sits inside two practices.',
   ogTitle: 'That page does not exist.',
   directional: true,
 };

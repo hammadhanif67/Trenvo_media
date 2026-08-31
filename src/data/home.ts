@@ -49,28 +49,23 @@ export const HERO = {
    * Kept as an array because the H1 renders one line per entry; this headline
    * is a single sentence, so it is a single entry.
    */
-  headline: ['AI Video Ads, Creative & Landing Pages, One Conversion System'],
+  headline: ['AI Video Ads, Creative & Paid Media, One Conversion System'],
   subheadline:
-    'Trenvo Media runs all three — media, creative production, and the pages the traffic lands on — with a named specialist on each.',
-  /**
-   * §13 §1: "three plain statements, not logos". §7.3 confirms every one is
-   * honest at launch. No number, no logo, no client (wireframe.md §01).
-   */
-  trustRow: ['Nine disciplines', 'Named specialists', 'One accountable loop'],
+    'Trenvo Media runs both — the paid media and the creative that runs in it — with a named specialist on each.',
 };
 
 /* -- 02 THE PROBLEM — wireframe.md §02, master.md §13 §2 ------------------- */
 
 export const PROBLEM = {
   eyebrow: 'The problem',
-  headline: 'Three vendors. One funnel. Nobody owns the number.',
+  headline: 'Two vendors. One funnel. Nobody owns the number.',
   /** §13 §2: "each written as a quotation the visitor has heard before". */
   voices: [
     { source: 'The media buyer says', quote: 'The creative is fatigued.' },
     { source: 'The creative team says', quote: 'The targeting is wrong.' },
     { source: 'The developer says', quote: 'Nobody told us the page was for ads.' },
   ],
-  closing: 'All three are correct. That is the problem.',
+  closing: 'Both are correct. That is the problem.',
 };
 
 /* -- 03 THE LOOP — wireframe.md §03, master.md §6.3, §13 §3 ---------------- */
@@ -94,22 +89,19 @@ export const LOOP = {
       index: '01',
       name: 'Read',
       definition:
-        'Instrument and diagnose. Account structure, creative performance by hook and hold, destination behaviour, measurement integrity.',
-      disciplines: ['Meta Ads', 'Google Ads', 'Conversion Specialist'],
+        'Instrument and diagnose. Account structure, creative performance by hook and hold, measurement integrity.',
+      disciplines: ['Meta Ads', 'Google Ads'],
     },
     {
       id: 'make',
       index: '02',
       name: 'Make',
-      definition:
-        'Produce the specific creative and the specific page the diagnosis calls for.',
+      definition: 'Produce the specific creative the diagnosis calls for.',
       disciplines: [
         'Creative Strategist',
         'AI Video Producer',
         'Editor',
         'Motion Designer',
-        'UI/UX Designer',
-        'Frontend Engineer',
       ],
     },
     {
@@ -125,12 +117,12 @@ export const LOOP = {
       name: 'Learn',
       definition:
         'Attribute results to decisions. Retire what failed. Brief the next cycle.',
-      disciplines: ['Conversion Specialist', 'Creative Strategist'],
+      disciplines: ['Creative Strategist', 'Meta Ads'],
     },
   ] satisfies LoopStage[],
 };
 
-/* -- 04 THE THREE PRACTICES — wireframe.md §04, master.md §6.2, §9.5 ------- */
+/* -- 04 THE PRACTICES — wireframe.md §04, master.md §6.2, §9.5 ------------ */
 
 export interface PracticeCardContent {
   id: PracticeId;
@@ -151,7 +143,7 @@ export interface PracticeCardContent {
 
 export const PRACTICES = {
   eyebrow: 'What we do',
-  headline: 'Media. Studio. Engineering.',
+  headline: 'Media. Studio.',
   cards: [
     {
       id: 'media',
@@ -167,20 +159,14 @@ export const PRACTICES = {
       question: 'Is there anything worth showing when it gets there?',
       capabilities: [
         'Performance Creative',
-        'AI Video',
+        'AI Video Generation',
+        'AI UGC Ads',
         'Video Editing',
+        'Short-Form Video Ads',
         'Motion Design',
       ],
       mechanism: 'Variants differ by hypothesis, not by filter.',
       cta: { label: 'Explore Studio', href: '/services/performance-creative' },
-    },
-    {
-      id: 'engineering',
-      name: 'Engineering',
-      question: 'Does anything happen after the click?',
-      capabilities: ['Landing Pages', 'Message Match', 'Conversion Events'],
-      mechanism: 'Message match is a build rule, not a review comment.',
-      cta: { label: 'Explore Engineering', href: '/services/landing-pages' },
     },
   ] satisfies PracticeCardContent[],
 };
@@ -190,7 +176,7 @@ export const PRACTICES = {
 export const SPECIALISTS_SECTION = {
   eyebrow: 'The difference',
   headline:
-    'Nine disciplines. You will know the name of every person who touches your account.',
+    'Six disciplines. You will know the name of every person who touches your account.',
   hint: 'Select a discipline to see what it owns — and what it does not.',
   cta: { label: 'How we assign specialists', href: '/specialists' },
 };
@@ -281,18 +267,6 @@ export const MEASUREMENT = {
       howWeUseIt: 'The target. Reconciled against a source outside the platform.',
     },
     {
-      metric: 'LP conversion',
-      ownedBy: 'engineering',
-      ownedByLabel: 'Engineering',
-      howWeUseIt: 'The half of the ad that happens after the click.',
-    },
-    {
-      metric: 'LCP / INP',
-      ownedBy: 'engineering',
-      ownedByLabel: 'Engineering',
-      howWeUseIt: 'Speed is a conversion variable, not an engineering vanity.',
-    },
-    {
       metric: 'Contribution margin',
       ownedBy: 'media',
       ownedByLabel: 'Media',
@@ -328,7 +302,7 @@ export const FIT = {
   positive: [
     'You are already spending on paid acquisition and it has plateaued',
     'Creative volume is your bottleneck',
-    'Your landing page is a theme template nobody has touched',
+    'Your creative is recycled from a brand deck nobody tested',
     'One person can make the decision',
     'You want to know who is doing the work, by name',
   ],

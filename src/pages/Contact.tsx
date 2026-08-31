@@ -128,7 +128,7 @@ export function Contact() {
                 Get a teardown
               </h3>
               <p className="mt-4 text-body text-secondary [line-height:var(--lh-body)]">
-                A specialist read of your creative and your landing page. Include:
+                A specialist read of your ads and your creative. Include:
               </p>
               <ul className="mt-6 flex-1 space-y-3">
                 {TEARDOWN_FIELDS.map((f) => (

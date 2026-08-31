@@ -81,7 +81,7 @@ export function HeroHome() {
               >
                 {/* wireframe.md §01 — full label on >=768px. */}
                 <span className="hidden md:inline">
-                  Get a teardown of your ads and landing page
+                  Get a teardown of your ads and creative
                 </span>
                 <span className="md:hidden">{SECONDARY_CTA.label}</span>
               </Button>

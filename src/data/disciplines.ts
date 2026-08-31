@@ -1,7 +1,12 @@
 import type { Discipline } from '../types/content';
 
 /* ---------------------------------------------------------------------------
-   THE NINE DISCIPLINES — master.md §10.3, transcribed verbatim.
+   THE SIX DISCIPLINES — master.md §10.3.
+
+   ⚠ §10.3 lists NINE. The three Engineering roles — UI/UX Designer, Frontend
+   Engineer and Conversion Specialist — are removed with the Engineering
+   practice itself (implementation.md §5.22). The six that remain are
+   transcribed verbatim.
 
    §10.3: "The 'does not own' column is the entire argument. Any generalist
    agency can list the left column. Only a specialist operation can publish the
@@ -9,7 +14,8 @@ import type { Discipline } from '../types/content';
    exist. It converts an unprovable claim into a checkable one."
 
    Practice assignment follows wireframe.md §05's lattice, which is the approved
-   IA authority (implementation.md §1.3): Media 2 / Studio 4 / Engineering 3.
+   IA authority (implementation.md §1.3) was Media 2 / Studio 4 / Engineering 3.
+   With Engineering removed the lattice is Media 2 / Studio 4.
 
    No person is named here and none may be invented (§10.2). Real specialists
    arrive in data/specialists.ts when they exist (§10.5).
@@ -88,37 +94,6 @@ export const DISCIPLINES: Discipline[] = [
       'Brand-consistent motion systems',
     ],
     doesNotOwn: ['Media decisions'],
-  },
-  {
-    id: 'ui-ux-designer',
-    title: 'UI/UX Designer',
-    practice: 'engineering',
-    owns: ['Page structure', 'Hierarchy', 'Message match', 'Conversion flow design'],
-    doesNotOwn: ['Media decisions', 'Engineering implementation'],
-  },
-  {
-    id: 'frontend-engineer',
-    title: 'Frontend Engineer',
-    practice: 'engineering',
-    owns: [
-      'Implementation',
-      'Performance budgets',
-      'Accessibility',
-      'Analytics and event instrumentation',
-    ],
-    doesNotOwn: ['Creative strategy', 'Media decisions'],
-  },
-  {
-    id: 'conversion-specialist',
-    title: 'Conversion Specialist',
-    practice: 'engineering',
-    owns: [
-      'Test design',
-      'Statistical discipline',
-      'Post-click diagnosis',
-      'Measurement reconciliation',
-    ],
-    doesNotOwn: ['Executing builds', 'Buying media'],
   },
 ];
 

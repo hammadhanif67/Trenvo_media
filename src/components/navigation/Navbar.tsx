@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { LazyMotion, domAnimation } from 'framer-motion';
 import { Menu } from 'lucide-react';
@@ -28,6 +28,29 @@ import { PRIMARY_CTA, PRIMARY_NAV } from '../../data/navigation';
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  /*
+    Publishes the header's real height as --header-h so the Services drawer can
+    start exactly beneath it. Measured rather than hard-coded: the header grows
+    when the browser's font size is larger, and a guessed value would leave a
+    gap or overlap at those sizes. ResizeObserver keeps it correct across
+    breakpoints and zoom without a resize listener.
+  */
+  const headerRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const publish = () =>
+      document.documentElement.style.setProperty(
+        '--header-h',
+        `${el.getBoundingClientRect().height}px`,
+      );
+    publish();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   /*
    * No scroll state and no route check any more. The header used to paint ink
    * while the homepage sat unscrolled, per §15.1's "transparent over the black
@@ -50,6 +73,7 @@ export function Navbar() {
     <LazyMotion features={domAnimation} strict>
       <SurfaceContext.Provider value={headerSurface}>
         <header
+          ref={headerRef}
           className={cn(
             'sticky top-0 z-50 w-full',
             // positioning context for the mega-menu panel

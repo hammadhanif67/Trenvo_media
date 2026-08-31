@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { m } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import { Icon } from '../ui';
-import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { LOOP_LINK, MEGA_MENU_CTA, PRACTICE_NAV } from '../../data/navigation';
 
 /* ---------------------------------------------------------------------------
@@ -31,7 +29,6 @@ import { LOOP_LINK, MEGA_MENU_CTA, PRACTICE_NAV } from '../../data/navigation';
 --------------------------------------------------------------------------- */
 
 const INTENT_DELAY_MS = 150; // §15.1, §27.2 #5
-const OPEN_DURATION_S = 0.18; // §27.2 #5 — 180ms
 
 export interface MegaMenuProps {
   /** Header is overlaying a dark hero, so links must render light. §15.1 */
@@ -45,7 +42,6 @@ export function MegaMenu({ onDark }: MegaMenuProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const intentTimer = useRef<number | undefined>(undefined);
-  const reducedMotion = useReducedMotion();
 
   const clearIntent = () => {
     if (intentTimer.current !== undefined) {
@@ -106,21 +102,43 @@ export function MegaMenu({ onDark }: MegaMenuProps) {
   }, [open, closeAndRestore]);
 
   /** §15.1 — arrow keys move within the menu. */
-  const links = () =>
-    Array.from(panelRef.current?.querySelectorAll<HTMLAnchorElement>('a[href]') ?? []);
+  const links = useCallback(
+    () =>
+      Array.from(panelRef.current?.querySelectorAll<HTMLAnchorElement>('a[href]') ?? []),
+    [],
+  );
 
-  const onPanelKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
-    const items = links();
-    if (items.length === 0) return;
-    event.preventDefault();
-    const index = items.indexOf(document.activeElement as HTMLAnchorElement);
-    const next =
-      event.key === 'ArrowDown'
-        ? items[(index + 1 + items.length) % items.length]
-        : items[(index - 1 + items.length) % items.length];
-    next?.focus();
-  };
+  /*
+    §15.1 — "arrow keys move within the menu".
+
+    Bound to the panel node in an effect rather than passed as an onKeyDown
+    prop. As a prop on the panel element it is a keyboard listener on a
+    non-interactive container, which is exactly what
+    jsx-a11y/no-noninteractive-element-interactions exists to catch. The
+    behaviour is identical either way — this is roving focus for a disclosure
+    widget, not an interactive element — so binding it directly is the honest
+    fix rather than suppressing the rule.
+  */
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!open || !panel) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      const items = links();
+      if (items.length === 0) return;
+      event.preventDefault();
+      const index = items.indexOf(document.activeElement as HTMLAnchorElement);
+      const next =
+        event.key === 'ArrowDown'
+          ? items[(index + 1 + items.length) % items.length]
+          : items[(index - 1 + items.length) % items.length];
+      next?.focus();
+    };
+
+    panel.addEventListener('keydown', onKeyDown);
+    return () => panel.removeEventListener('keydown', onKeyDown);
+  }, [open, links]);
 
   /**
    * §15.1 — ArrowDown from the trigger opens the menu and moves into it.
@@ -136,8 +154,8 @@ export function MegaMenu({ onDark }: MegaMenuProps) {
     if (!open || !focusFirstOnOpen.current) return;
     focusFirstOnOpen.current = false;
     links()[0]?.focus();
-    // links() reads panelRef, which is stable; open is the real trigger.
-  }, [open]);
+    // `links` is memoised with an empty dep list, so listing it here is free.
+  }, [open, links]);
 
   const onTriggerKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'ArrowDown') {
@@ -190,7 +208,7 @@ export function MegaMenu({ onDark }: MegaMenuProps) {
         instant it closes.
 
         An AnimatePresence exit left the node connected at height:0 / opacity:0
-        with visibility:visible — which keeps its nine links in the tab order.
+        with visibility:visible — which keeps its links in the tab order.
         A keyboard user would tab into invisible navigation, breaking §30.2. The
         exit was also undocumented: §27.2 #5 specifies the OPEN transition
         ("180ms height + fade, 150ms intent delay") and nothing else, and §27.3
@@ -198,15 +216,29 @@ export function MegaMenu({ onDark }: MegaMenuProps) {
         correct fix and the more faithful one. Recorded in implementation.md §5.3.
       */}
       {open && (
-        <m.div
+        <nav
           id={panelId}
           ref={panelRef}
-          onKeyDown={onPanelKeyDown}
-          // §27.2 #5 — 180ms height + fade. §27.4 — disabled under reduced motion.
-          initial={reducedMotion ? false : { opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          transition={{ duration: reducedMotion ? 0 : OPEN_DURATION_S, ease: 'easeOut' }}
-          className="absolute inset-x-0 top-full z-50 overflow-hidden"
+          aria-label="Services"
+          /*
+            ⚠ SLIDES IN FROM THE RIGHT, on request. §27.2 #5 specifies "180ms
+            height + fade" for this menu; the 180ms and the fade are kept, and
+            the height grow is replaced by a horizontal slide. Recorded in
+            implementation.md §5.22.
+
+            A CSS keyframe rather than Framer's initial/animate: Framer parks
+            the node at `initial` and needs a frame to leave it, and measured in
+            a throttled tab the drawer sat fully off-screen at a right edge of
+            1664px in a 1280px viewport. A keyframe applies `from` only while
+            running, so if it never runs the panel is simply already in place.
+            See the .drawer-in block in globals.css.
+
+            `fixed`, not `absolute`: anchored to the viewport's right edge and
+            running from under the header to the bottom of the screen, so the
+            header's own box cannot clip it. --header-h is published by Navbar
+            from a real measurement.
+          */
+          className="drawer-in fixed right-0 top-[var(--header-h,4.5rem)] z-50 flex h-[calc(100dvh-var(--header-h,4.5rem))] w-full max-w-sm flex-col overflow-y-auto border-l border-hairline bg-base"
         >
           {/*
               Anchored to the header, not the trigger. Centring a 928px panel
@@ -216,13 +248,13 @@ export function MegaMenu({ onDark }: MegaMenuProps) {
 
               §22.2 principle 4 — structure is visible: hairlines, not shadows.
             */}
-          <div className="mx-auto mt-3 w-full [max-width:var(--container-default)] [padding-inline:var(--gutter)]">
-            <div className="border border-hairline bg-base">
-              <div className="grid grid-cols-3">
+          <div className="flex min-h-full w-full flex-col">
+            <div className="flex-1">
+              <div className="flex flex-col">
                 {PRACTICE_NAV.map((practice, i) => (
                   <div
                     key={practice.id}
-                    className={cn('p-6', i > 0 && 'border-l border-hairline')}
+                    className={cn('p-6', i > 0 && 'border-t border-hairline')}
                   >
                     <p className="font-mono text-label uppercase [letter-spacing:var(--tracking-label)] text-secondary">
                       {practice.name}
@@ -245,7 +277,7 @@ export function MegaMenu({ onDark }: MegaMenuProps) {
               </div>
 
               {/* §11.2 — "the highest-value pixel in the navigation". */}
-              <div className="flex flex-wrap items-center justify-between gap-4 border-t border-hairline p-6">
+              <div className="flex flex-col items-start gap-4 border-t border-hairline p-6">
                 <Link
                   to={LOOP_LINK.href}
                   onClick={() => setOpen(false)}
@@ -255,7 +287,7 @@ export function MegaMenu({ onDark }: MegaMenuProps) {
                     The Loop
                   </span>
                   <span className="text-secondary">
-                    — how the three practices work as one system
+                    — how the two practices work as one system
                   </span>
                   <Icon icon={ArrowRight} />
                 </Link>
@@ -270,7 +302,7 @@ export function MegaMenu({ onDark }: MegaMenuProps) {
               </div>
             </div>
           </div>
-        </m.div>
+        </nav>
       )}
     </div>
   );

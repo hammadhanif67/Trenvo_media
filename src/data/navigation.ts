@@ -37,10 +37,9 @@ export interface PracticeNav {
  * practice-card bullets are not all links. A menu entry without a route would
  * be a dead link.
  *
- * §9.3's /services/web-development is gone: Trenvo sells digital marketing and
- * does not offer web development (implementation.md §5.21). Engineering now
- * carries Landing Pages alone — the page a campaign points at, which is a
- * conversion asset rather than a development service.
+ * The whole Engineering practice is gone — web development (§5.21) and landing
+ * pages (§5.22). Trenvo sells digital marketing: Media buys the attention,
+ * Studio makes what runs in it. Two practices, and the menu shows two.
  */
 export const PRACTICE_NAV: PracticeNav[] = [
   {
@@ -60,14 +59,6 @@ export const PRACTICE_NAV: PracticeNav[] = [
       { label: 'Performance Creative', href: '/services/performance-creative' },
       { label: 'AI Video Production', href: '/services/ai-video' },
       { label: 'Video Editing', href: '/services/video-editing' },
-    ],
-  },
-  {
-    id: 'engineering',
-    name: 'Engineering',
-    question: 'Does anything happen after the click?',
-    services: [
-      { label: 'Landing Pages', href: '/services/landing-pages' },
     ],
   },
 ];
@@ -100,11 +91,11 @@ export const SECONDARY_CTA: NavLink = { label: 'Get a teardown', href: '/contact
  * in the navigation" because it makes the structural argument in one line.
  *
  * Neither document states its destination. It points at /services, whose H1 is
- * "Three practices. One loop." (§14) — the page that answers exactly what the
+ * "Two practices. One loop." (§14) — the page that answers exactly what the
  * row promises. Smallest reversible choice; recorded in implementation.md §5.3.
  */
 export const LOOP_LINK: NavLink = {
-  label: 'The Loop — how the three practices work as one system',
+  label: 'The Loop — how the two practices work as one system',
   href: '/services',
 };
 

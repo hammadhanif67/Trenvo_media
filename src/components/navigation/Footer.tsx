@@ -115,7 +115,7 @@ export function Footer() {
             {/* The footer is always ink, so the reversed lockup is always right. */}
             <Logo variant="lockup" height={40} reversed />
             <p className="mt-6 text-h4 text-onpunct [text-wrap:balance]">
-              Media, creative and engineering run as one accountable loop —
+              Paid media and creative production run as one accountable loop —
               with a named specialist on every part of your account.
             </p>
           </div>

@@ -16,7 +16,7 @@ import { breadcrumbSchema } from '../lib/schema';
  * entire site to get wrong, because the honest version and the dishonest
  * version look identical from a distance."
  *
- * §14's order: Hero -> why the industry claim is empty -> the nine disciplines
+ * §14's order: Hero -> why the industry claim is empty -> the six disciplines
  * with scope and boundary -> the assignment model -> the hiring standard ->
  * (when real) named specialists -> teardowns authored by discipline -> CTA.
  *
@@ -49,7 +49,7 @@ export function Specialists() {
             Specialists on your account. Not a generalist with a dashboard.
           </Heading>
           <p className="mt-6 max-w-[52ch] text-lead text-onpunct-2 [line-height:var(--lh-body)]">
-            Nine disciplines, each with a stated boundary. You will know the name of every
+            Six disciplines, each with a stated boundary. You will know the name of every
             person who touches your account.
           </p>
         </Container>
@@ -82,7 +82,7 @@ export function Specialists() {
       <Section tone="surface" aria-labelledby="disciplines-heading">
         <Container>
           <Heading level={2} size="h2" id="disciplines-heading">
-            Nine disciplines
+            Six disciplines
           </Heading>
           <p className="mt-6 max-w-[62ch] text-body text-secondary [line-height:var(--lh-body)]">
             Select a discipline to see what it owns and what it does not.

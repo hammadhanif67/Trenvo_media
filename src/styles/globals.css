@@ -178,3 +178,71 @@
 html {
   overflow-x: clip;
 }
+
+/* ---------------------------------------------------------------------------
+   NO VISIBLE SCROLLBAR
+
+   Requested: "Mobile Responsive main Scroll Kion Atta hai Vertical Scroll Bar
+   Nahi Ani Chahiay Samjhe Ussay Gaib Karo."
+
+   The page still SCROLLS — only the bar is hidden. Wheel, touch, keyboard
+   (Space, PageDown, arrows), scrollbar-less trackpad gestures and programmatic
+   scrolling all behave exactly as before; nothing is trapped or shortened.
+
+   ⚠ This does cost a visible affordance: the bar is also a position indicator,
+   and on desktop it is how many people scroll. It is hidden here because it was
+   asked for. On touch devices the bar is already an overlay that fades on its
+   own, so the change is mostly invisible there; on desktop it is not. The site
+   remains fully operable either way, which is why this is a presentation
+   choice rather than an accessibility failure — but it is a real trade, and
+   removing this block restores the bar with no other edit.
+--------------------------------------------------------------------------- */
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+/* ---------------------------------------------------------------------------
+   SERVICES DRAWER ENTRANCE
+
+   A CSS keyframe, deliberately, and not Framer's initial/animate pair.
+
+   Framer parks the element at its `initial` value and needs an animation frame
+   to move it off that value. Measured with the panel open in a throttled tab:
+   the drawer sat at a right edge of 1664px in a 1280px viewport — entirely
+   off-screen, because the frame loop never ran. A navigation menu that can end
+   up invisible is a worse bug than the one the animation was decorating. It is
+   the same failure the scroll reveals had, and the same fix applies.
+
+   A keyframe animation only applies `from` WHILE it is running. If it never
+   runs — throttled tab, failed bundle, no animation support — the element is
+   already at its natural position. The failure mode is "no slide", never "no
+   menu".
+
+   §27.2 #5's 180ms is kept; its height grow is the slide, on request.
+--------------------------------------------------------------------------- */
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.drawer-in {
+  animation: drawer-in 180ms ease-out;
+}
+
+/* §27.4 — no entrance movement at all under reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .drawer-in {
+    animation: none;
+  }
+}

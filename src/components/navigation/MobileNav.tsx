@@ -130,7 +130,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           {practice === null ? (
             <nav aria-label="Primary">
               <ul>
-                {/* Level one: the three practices (§15.1). */}
+                {/* Level one: the practices (§15.1). */}
                 {PRACTICE_NAV.map((p) => (
                   <li key={p.id}>
                     <button

@@ -27,7 +27,6 @@ import type { Discipline, PracticeId, Specialist } from '../../types/content';
 const PRACTICE_ORDER: { id: PracticeId; label: string }[] = [
   { id: 'media', label: 'Media' },
   { id: 'studio', label: 'Studio' },
-  { id: 'engineering', label: 'Engineering' },
 ];
 
 export interface DisciplineLatticeProps {

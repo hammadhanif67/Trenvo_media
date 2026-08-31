@@ -43,8 +43,8 @@ export function About() {
             We exist because the seam costs more than the work.
           </Heading>
           <p className="mt-6 max-w-[52ch] text-lead text-onpunct-2 [line-height:var(--lh-body)]">
-            Most brands buy media from one company, creative from another, and the page
-            from a third. Trenvo runs all three.
+            Most brands buy media from one company and creative from another. Trenvo
+            runs both.
           </p>
         </Container>
       </Section>
@@ -57,10 +57,9 @@ export function About() {
           </Heading>
           <div className="mt-8 max-w-[62ch] space-y-6">
             <p className="text-body text-primary [line-height:var(--lh-body)]">
-              When paid performance drops, the media buyer says the creative is fatigued,
-              the creative supplier says the targeting is wrong, and nobody has opened the
-              landing page in four months. All three are usually right, which is exactly
-              why nothing gets fixed.
+              When paid performance drops, the media buyer says the creative is fatigued
+              and the creative supplier says the targeting is wrong. Both are usually
+              right, which is exactly why nothing gets fixed.
             </p>
             <p className="text-body text-primary [line-height:var(--lh-body)]">
               The industry has words for this. &ldquo;Creative fatigue&rdquo; and

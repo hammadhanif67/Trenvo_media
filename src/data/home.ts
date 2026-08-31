@@ -351,6 +351,53 @@ export const TEARDOWNS_SECTION = {
 
 /* -- 09 WORK — wireframe.md §09 ------------------------------------------- */
 
+/**
+ * The six case-study categories, supplied by the owner.
+ *
+ * ⚠ THREE OF THESE HAVE NO SERVICE PAGE: YouTube Ads, Analytics & Tracking and
+ * Conversion Optimization are not in `data/services.ts`, and Conversion
+ * Optimization was removed along with the Engineering practice (§5.22). They
+ * are presented here as the CATEGORIES work would be published under, which is
+ * what this section is — not as routed services, because routing them would
+ * imply pages that do not exist. If they are services now, they belong in
+ * services.ts and in the menu too.
+ *
+ * No numbers, no clients, no results: `WORK` is still empty, and the section
+ * says so in plain words rather than carrying a figure nobody can check.
+ */
+export const WORK_CATEGORIES = [
+  {
+    id: 'meta-ads',
+    title: 'Meta Ads',
+    body: 'Facebook and Instagram advertising campaigns designed around measurable growth.',
+  },
+  {
+    id: 'google-ads',
+    title: 'Google Ads',
+    body: 'Search and performance campaigns built around clear acquisition goals.',
+  },
+  {
+    id: 'youtube-ads',
+    title: 'YouTube Ads',
+    body: 'Video advertising built to reach relevant audiences and support measurable growth.',
+  },
+  {
+    id: 'creative',
+    title: 'Creative Production',
+    body: 'Performance-focused creative concepts, production and iteration.',
+  },
+  {
+    id: 'analytics',
+    title: 'Analytics & Tracking',
+    body: 'Accurate measurement, attribution and reporting, so performance can be understood.',
+  },
+  {
+    id: 'conversion',
+    title: 'Conversion Optimization',
+    body: 'Improving landing pages, funnels and user journeys to increase conversions.',
+  },
+];
+
 export const WORK_SECTION = {
   eyebrow: 'Work',
   headline: 'Selected work.',

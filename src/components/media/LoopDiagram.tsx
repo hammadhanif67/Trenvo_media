@@ -33,8 +33,6 @@ const TEXT_ALTERNATIVE =
   'The Loop: Media and Studio are two practices joined by a single continuous path, run as one system rather than as separate vendors.';
 
 export function LoopDiagram({ className }: LoopDiagramProps) {
-
-
   return (
     <div className={cn('w-full', className)}>
       {/* Horizontal composition — >=1024px (§29.2). */}

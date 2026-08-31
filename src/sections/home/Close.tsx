@@ -21,6 +21,7 @@ export function Close() {
           <Heading
             level={2}
             size="h1"
+            align="center"
             id="close-heading"
             className="text-onpunct [text-wrap:balance]"
           >

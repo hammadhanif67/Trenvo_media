@@ -59,6 +59,7 @@ export function Problem() {
             <Heading
               level={2}
               size="h2"
+              align="center"
               id="problem-heading"
               className="mt-6 text-primary [text-wrap:balance]"
             >
@@ -89,7 +90,9 @@ export function Problem() {
                     </span>
 
                     <div>
-                      <p className="font-mono text-h4 leading-none text-accent">{number}</p>
+                      <p className="font-mono text-h4 leading-none text-accent">
+                        {number}
+                      </p>
                       <span
                         aria-hidden="true"
                         className="disc-card__rule mt-2 block h-px w-6 bg-accent"
@@ -147,7 +150,9 @@ export function Problem() {
                       <span className="inline-flex size-12 items-center justify-center rounded-full border border-accent/30 bg-base text-accent">
                         <ChainIcon className="size-5" />
                       </span>
-                      <span className="text-center text-label text-secondary">{step}</span>
+                      <span className="text-center text-label text-secondary">
+                        {step}
+                      </span>
                     </div>
 
                     {i < PROBLEM.closing.chain.length - 1 && (

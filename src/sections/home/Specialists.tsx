@@ -63,6 +63,7 @@ export function Specialists() {
             <Heading
               level={2}
               size="h2"
+              align="center"
               id="specialists-heading"
               className="mt-6 text-primary [text-wrap:balance]"
             >

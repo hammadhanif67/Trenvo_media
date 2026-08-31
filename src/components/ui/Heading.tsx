@@ -27,6 +27,12 @@ export interface HeadingProps {
   size?: HeadingSize;
   id?: string;
   className?: string;
+  /**
+   * §24.3 — "Alignment: Left, always." Centred headings are permitted only in
+   * the close section, so this is an explicit, greppable opt-in rather than
+   * something a caller can do by accident.
+   */
+  align?: 'left' | 'center';
   children: ReactNode;
 }
 
@@ -54,16 +60,37 @@ const DEFAULT_SIZE: Record<HeadingLevel, HeadingSize> = {
   4: 'h4',
 };
 
-export function Heading({ level, size, id, className, children }: HeadingProps) {
+export function Heading({
+  level,
+  size,
+  id,
+  align = 'left',
+  className,
+  children,
+}: HeadingProps) {
   const Tag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4';
   const visual = size ?? DEFAULT_SIZE[level];
 
   return (
     <Tag
       id={id}
-      // §24.3 "Alignment: Left, always." Centred headlines are permitted only
-      // in the close section, which opts in via className.
-      className={cn('font-sans text-left text-balance', SIZE[visual], className)}
+      /*
+        ALIGNMENT IS A PROP, NOT A CLASS OVERRIDE.
+        `text-left` used to be hard-coded here, on the assumption recorded in
+        lib/cn.ts that "a caller's override already wins by source order". That
+        assumption does not hold for two utilities setting the SAME property:
+        `cn` is a plain join, so `text-left` and `text-center` both landed on the
+        element and Tailwind's emission order decided the winner — which was
+        `text-left`. Four centred sections were silently left-aligned.
+
+        Choosing one class here means the conflict cannot exist.
+      */
+      className={cn(
+        'font-sans text-balance',
+        align === 'center' ? 'text-center' : 'text-left',
+        SIZE[visual],
+        className,
+      )}
     >
       {children}
     </Tag>

@@ -32,6 +32,7 @@ export function Testimonials() {
             <Heading
               level={2}
               size="h2"
+              align="center"
               id="testimonials-heading"
               className="mt-4 text-primary [text-wrap:balance]"
             >

@@ -30,7 +30,7 @@ function HealthifyMark() {
       viewBox="0 0 24 24"
       aria-hidden="true"
       focusable="false"
-      className="size-4 shrink-0"
+      className="size-3 shrink-0 sm:size-4"
       fill="#f0353b"
     >
       <circle cx="7" cy="7" r="4.4" />
@@ -56,11 +56,14 @@ export function HeroTrustBrands({
       <p className="text-small text-primary">{label}</p>
 
       {/*
-        Sized to fit all five on ONE line inside the left column, as in the
-        reference. At 1.45rem with a 2.5rem gap the row needed more than the
-        ~606px available and NutriPure wrapped to a second line.
+        STRICTLY ONE LINE. `flex-wrap` let the row break whenever the copy
+        column was narrower than the five marks needed — which is why NutriPure
+        kept dropping underneath. `flex-nowrap` removes that escape hatch, and
+        the type and gaps scale down with the viewport so the row fits instead
+        of wrapping. `min-w-0` on each item lets flexbox shrink them rather than
+        forcing an overflow.
       */}
-      <ul className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-5 sm:gap-x-8">
+      <ul className="mt-5 flex flex-nowrap items-center gap-x-3 sm:gap-x-5 lg:gap-x-6">
         {brands.map((brand) => {
           const colour = brand.light;
           const head =
@@ -68,14 +71,14 @@ export function HeroTrustBrands({
           const tail = brand.splitAt != null ? brand.name.slice(brand.splitAt) : '';
 
           return (
-            <li key={brand.name} className="flex items-center gap-2">
+            <li key={brand.name} className="flex min-w-0 items-center gap-2">
               {brand.mark === 'healthify' && <HealthifyMark />}
 
               <span className="flex flex-col leading-none">
                 <span
                   className={[
                     FACE[brand.face],
-                    'text-[1.15rem] font-semibold leading-none tracking-tight',
+                    'text-[0.8rem] font-semibold leading-none tracking-tight whitespace-nowrap sm:text-[0.95rem] lg:text-[1.1rem]',
                   ].join(' ')}
                   style={{ color: colour }}
                 >
@@ -92,7 +95,7 @@ export function HeroTrustBrands({
 
                 {brand.category && (
                   <span
-                    className="mt-1 font-sans text-[0.55rem] font-medium uppercase leading-none [letter-spacing:0.14em]"
+                    className="mt-1 hidden font-sans text-[0.5rem] font-medium whitespace-nowrap uppercase leading-none [letter-spacing:0.12em] sm:block sm:text-[0.55rem]"
                     style={{ color: colour }}
                   >
                     {brand.category}

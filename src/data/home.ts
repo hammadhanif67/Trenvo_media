@@ -72,8 +72,16 @@ export const PROBLEM = {
     },
   ],
   closing: {
-    title: 'Both are correct. That is the problem.',
+    title: 'Both are correct.',
+    titleAccent: 'That is the problem.',
     body: 'We run paid media and creative as one system, with one owner and one number to answer for.',
+    /*
+      The chain in the reference was labelled with services Trenvo does not
+      sell — Analytics and CRO both went with the Engineering practice. These
+      are the four loop stages instead: documented in §6.3, already the subject
+      of section 03, and true.
+    */
+    chain: ['Read', 'Make', 'Run', 'Learn'],
   },
 };
 
@@ -183,39 +191,48 @@ export const PRACTICES = {
 /* -- 05 SPECIALISTS — wireframe.md §05, master.md §13 §5 ------------------- */
 
 /**
- * The principles grid. Every one is grounded in something the site already
- * documents or commits to elsewhere — there is no badge, award, partnership or
+ * The principles grid. `href` points at the page that actually explains the
+ * claim, so the card's arrow is a real destination rather than an ornament.
+ *
+ * Every one is grounded in something the site already documents or commits to
+ * elsewhere — there is no badge, award, partnership or
  * certification here, because Trenvo holds none and inventing one is the single
  * thing this project must never do.
  */
 export const PRINCIPLES = [
   {
     id: 'revenue',
+    href: '/process',
     title: 'Revenue focused',
     body: 'The target is contribution margin, reconciled against a source outside the ad platform — not the number the platform reports to itself.',
   },
   {
     id: 'data',
+    href: '/process',
     title: 'Data driven',
     body: 'Decisions come from account structure, creative performance by hook and hold, and measurement integrity. Not from opinion.',
   },
   {
     id: 'creative',
+    href: '/services/performance-creative',
     title: 'Creative that converts',
     body: 'Variants differ by hypothesis, not by filter. Every cut exists to answer a question the last round raised.',
   },
   {
     id: 'testing',
+    href: '/process',
     title: 'Continuous testing',
     body: 'The loop runs continuously rather than in campaign bursts, so what failed is retired and what worked briefs the next cycle.',
   },
   {
     id: 'reporting',
+    href: '/process',
     title: 'Transparent reporting',
     body: 'You see the same numbers we do, with the boundary of each discipline published so you know who owns what.',
   },
   {
     id: 'specialists',
+    href: '/specialists',
     title: 'Named specialists',
     body: 'Six disciplines, and you will know the name of every person who touches your account. No anonymous pool, no silent handovers.',
   },

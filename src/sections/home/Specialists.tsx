@@ -109,16 +109,20 @@ export function Specialists() {
                     </div>
 
                     {/*
-                      Decorative. The card is not a link — the section's one
-                      destination is the CTA beneath the grid — so this must not
-                      be announced as one.
+                      A real destination now: the page that actually explains
+                      this principle. The `after` pseudo-element stretches the
+                      link across the whole card, so the entire card is the hit
+                      target while the accessible name stays specific — a
+                      screen reader hears "Revenue focused — how we work", not
+                      six identical "link, arrow".
                     */}
-                    <span
-                      aria-hidden="true"
-                      className="disc-card__arrowbox inline-flex size-8 shrink-0 items-center justify-center bg-accent/10 text-accent"
+                    <Link
+                      to={principle.href}
+                      className="disc-card__arrowbox inline-flex size-8 shrink-0 items-center justify-center bg-accent/10 text-accent after:absolute after:inset-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                     >
-                      <ArrowRight className="size-4" />
-                    </span>
+                      <ArrowRight aria-hidden="true" className="size-4" />
+                      <span className="sr-only">{principle.title}</span>
+                    </Link>
                   </div>
 
                   <p className="mt-5 text-small text-secondary [line-height:var(--lh-body)]">

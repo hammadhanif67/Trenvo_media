@@ -60,6 +60,29 @@ Runs against the built HTML and fails the build on any violation:
 
 The last two fail today on purpose. They are launch gates, not bugs.
 
+## Deployment
+
+The build emits **directory-style** output — `about/index.html`,
+`services/meta-ads/index.html` — rather than `about.html`. `index.html` is the
+one filename every static host resolves without configuration, so the site
+deploys correctly on Vercel, Netlify, S3, GitHub Pages or a bare nginx with no
+host-specific rewrite rules.
+
+`vercel.json` pins the build command, output directory and caching, so nothing
+depends on framework auto-detection.
+
+**Set these environment variables on the host before deploying:**
+
+| Variable | Why |
+|---|---|
+| `VITE_SITE_ORIGIN` | canonical URLs and absolute `og:image` in the client build |
+| `SITE_ORIGIN` | the same origin for the sitemap and robots scripts |
+
+Both must be the full origin with no trailing slash, e.g.
+`https://trenvomedia.com`. Without them the build still succeeds, but every
+page ships `https://DOMAIN-NOT-SET.invalid` as its canonical — which is what
+`npm run audit` is failing on until you set them.
+
 ## Layout
 
 ```

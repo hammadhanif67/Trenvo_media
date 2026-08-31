@@ -39,13 +39,6 @@ export const HERO_VIDEO_ENABLED = true;
  */
 export const HERO_LOOP_MOTION = true;
 
-/**
- * ⚠ Hero capability rows — skills and tools, counter-travelling, where
- * wireframe.md §13 §1's trust row used to sit. §27.3 does not ship "marquees at
- * launch"; recorded in implementation.md §5.18. Off switch.
- */
-export const HERO_CAPABILITY_ROWS = true;
-
 export const HERO = {
   /**
    * ⚠ REPLACES master.md §7.2 Option A, the approved headline

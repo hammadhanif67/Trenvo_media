@@ -1,17 +1,15 @@
 import { Button, Container, Section } from '../../components/ui';
 import { LoopDiagram } from '../../components/media/LoopDiagram';
-import { HERO, HERO_CAPABILITY_ROWS, HERO_VIDEO_ENABLED } from '../../data/home';
-import { CapabilityMarquee } from '../../components/media/CapabilityMarquee';
-import { SKILLS, TOOLS } from '../../data/capabilities';
+import { HERO, HERO_VIDEO_ENABLED } from '../../data/home';
 import { HeroBackgroundVideo } from '../../components/media/HeroBackgroundVideo';
 import { PRIMARY_CTA, SECONDARY_CTA } from '../../data/navigation';
 
 /**
  * 01 HERO — wireframe.md §01, master.md §13 §1. Dark (--ink).
  *
- * ⚠ The H1 no longer carries §7.2 Option A, and §13 §1's trust row has been
- * replaced by the capability band. Both were requested; see implementation.md
- * §5.18 and §5.19.
+ * ⚠ The H1 no longer carries §7.2 Option A (implementation.md §5.19), and §13
+ * §1's trust row is not rendered: the capability band that replaced it was
+ * removed on request (§5.20). Nothing stands in its place.
  *
  * wireframe.md §01 mobile: "diagram becomes vertical and sits below the CTAs;
  * H1 drops to clamp floor; CTAs full-width stacked."
@@ -101,33 +99,6 @@ export function HeroHome() {
           </div>
         </div>
 
-        {/*
-          ⚠ REPLACES wireframe.md §13 §1's trust row ("Nine disciplines · Named
-          specialists · One accountable loop"), on request. Those three
-          statements still carry /specialists, which is the page that has to
-          earn them. Recorded in implementation.md §5.18.
-
-          ONE BAND, not a row of boxes. The band is the only surface: --bg-base
-          makes it white in the light theme and follows the theme in dark, and
-          each entry inside it is plain icon + label with no border of its own.
-
-          Two rows travelling in OPPOSITE directions: what we do, and what we do
-          it with. One accessible list serves both, since the visual tracks are
-          duplicated for the wrap and therefore aria-hidden.
-        */}
-        {HERO_CAPABILITY_ROWS && (
-          <div className="mt-20 bg-base py-5">
-            <h2 className="sr-only">Capabilities and production stack</h2>
-            <ul className="sr-only">
-              {[...SKILLS, ...TOOLS].map((item) => (
-                <li key={item.label}>{item.label}</li>
-              ))}
-            </ul>
-
-            <CapabilityMarquee items={SKILLS} direction="left" />
-            <CapabilityMarquee items={TOOLS} direction="right" className="mt-4" />
-          </div>
-        )}
       </Container>
     </Section>
   );

@@ -40,8 +40,23 @@ import type { CubeHandle } from '../components/motion/CubeScene';
    movement. The section renders as an ordinary block and the cube sits still.
 --------------------------------------------------------------------------- */
 
-/** How much scroll the pin consumes. Long enough to feel deliberate, not a trek. */
-const PIN_LENGTH = '+=1600';
+/**
+ * How much scroll the pin consumes — and it is the whole cost of this effect.
+ *
+ * A pin does not move the page. Every pixel here is scrolling the reader does
+ * while the document stays where it is, so the number has to be paid for by
+ * what happens during it.
+ *
+ * At 1600 it was not. The section is 900px tall and its pin-spacer measured
+ * 2500px, so 1600px — roughly 1.8 screens at 900px, and 16% of a 10,018px page
+ * — went on holding the reader still. Scrolling past it felt like the page had
+ * stopped, or like the same content was being scrolled through twice.
+ *
+ * 700 keeps the beat legible — the cube still crosses and grows over ~490px,
+ * and the content rises over the last ~210px — while cutting the standstill to
+ * well under a screen.
+ */
+const PIN_LENGTH = '+=700';
 
 /**
  * How far the content rises in the last phase. Small on purpose: the section is

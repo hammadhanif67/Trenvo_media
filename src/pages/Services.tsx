@@ -40,7 +40,7 @@ export function Services() {
             {SERVICES_OVERVIEW.lead}
           </p>
           <div className="mt-16">
-            <LoopDiagram mode="static" />
+            <LoopDiagram />
           </div>
         </Container>
       </Section>

@@ -1,7 +1,4 @@
-import { useRef } from 'react';
 import { cn } from '../../lib/cn';
-import { useLoopMotion } from '../../hooks/useLoopMotion';
-import { HERO_LOOP_MOTION } from '../../data/home';
 
 /* ---------------------------------------------------------------------------
    LOOP DIAGRAM — master.md §26.2, §6.3, §13 §1
@@ -20,15 +17,13 @@ import { HERO_LOOP_MOTION } from '../../data/home';
    §30.6: "The Loop diagram carries a text alternative describing the model in
    words." That is the <title>/<desc> pair plus role="img".
 
-   §27.2 #1 gives the draw animation to the hero: 900ms, once, GSAP. `mode`
-   selects it — 'static' renders the final state and runs no JavaScript at all,
-   which is also what every reduced-motion visitor gets (§27.4).
+   STATIC ONLY. §27.2 #1's draw animation belonged to the hero, and the hero no
+   longer carries this diagram (implementation.md §5.24). The only remaining use
+   is /services, which renders the final state, so the GSAP draw, the travelling
+   marker and useLoopMotion were all removed rather than left unreachable.
 --------------------------------------------------------------------------- */
 
-export type LoopDiagramMode = 'static' | 'draw' | 'scroll';
-
 export interface LoopDiagramProps {
-  mode?: LoopDiagramMode;
   className?: string;
 }
 
@@ -37,16 +32,11 @@ const NODES = ['Media', 'Studio'] as const;
 const TEXT_ALTERNATIVE =
   'The Loop: Media and Studio are two practices joined by a single continuous path, run as one system rather than as separate vendors.';
 
-export function LoopDiagram({ mode = 'static', className }: LoopDiagramProps) {
-  const ref = useRef<HTMLDivElement>(null);
+export function LoopDiagram({ className }: LoopDiagramProps) {
 
-  // §27.2 #1's draw, plus the requested travel and scroll-scrub. Static mode
-  // runs nothing, and reduced motion runs nothing whatever the mode
-  // (§27.4) — the diagram simply renders in its final state.
-  useLoopMotion(ref, mode !== 'static' && HERO_LOOP_MOTION);
 
   return (
-    <div ref={ref} className={cn('w-full', className)}>
+    <div className={cn('w-full', className)}>
       {/* Horizontal composition — >=1024px (§29.2). */}
       <svg
         role="img"
@@ -64,15 +54,6 @@ export function LoopDiagram({ mode = 'static', className }: LoopDiagramProps) {
           fill="none"
           stroke="var(--blue-500)"
           strokeWidth="1.5"
-        />
-        {/* Rides the path once motion is on; invisible until then. */}
-        <circle
-          data-loop-traveller
-          r="5"
-          cx="120"
-          cy="80"
-          fill="var(--blue-500)"
-          opacity="0"
         />
 
         {/*
@@ -139,14 +120,6 @@ export function LoopDiagram({ mode = 'static', className }: LoopDiagramProps) {
           fill="none"
           stroke="var(--blue-500)"
           strokeWidth="1.5"
-        />
-        <circle
-          data-loop-traveller
-          r="5"
-          cx="80"
-          cy="60"
-          fill="var(--blue-500)"
-          opacity="0"
         />
 
         {/* Same reasoning as the horizontal composition: opposite ends. */}

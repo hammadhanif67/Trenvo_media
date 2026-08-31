@@ -26,6 +26,21 @@ export interface HeroImage {
 
 export const HERO_IMAGE_WIDTHS = [640, 1024, 1600] as const;
 
+/**
+ * One accessible name for the whole cycling frame.
+ *
+ * §15 of the brief asks for descriptive alt rather than "hero-image". The five
+ * photographs are variations on one subject — the work itself — and the frame
+ * swaps between them every few seconds. Announcing a new alt on every swap
+ * would make a screen reader chatter at a decorative panel, so the frame keeps
+ * one honest description and the animated duplicates beneath are aria-hidden.
+ *
+ * It describes what is actually in the pictures. It claims no client, no
+ * result and no number, because none of those are in them.
+ */
+export const HERO_IMAGE_ALT =
+  'Trenvo Media at work — paid media campaign screens, ad creative and video editing timelines';
+
 export const HERO_IMAGES: HeroImage[] = [
   { id: 'ads', width: 1600, height: 900 },
   { id: 'video-editing', width: 1600, height: 900 },

@@ -26,19 +26,6 @@ import type { PracticeId } from '../types/content';
  */
 export const HERO_BACKGROUND = true;
 
-/**
- * ⚠ Hero loop motion beyond §27.2 #1's documented draw: a continuous travel
- * around the path, and a scroll-linked grow-and-fade as the hero leaves.
- *
- * §27.2 #1 says the draw "plays once ... never loops"; §27.3 does not ship
- * "looping ambient animation" or "parallax backgrounds"; §27.2 #2 gives the
- * scroll-scrub to section 03, not the hero. Requested explicitly and built.
- *
- * OFF SWITCH. false leaves §27.2 #1's draw-once behaviour and nothing more.
- * Reduced motion disables all of it regardless (§27.4).
- */
-export const HERO_LOOP_MOTION = true;
-
 export const HERO = {
   /**
    * ⚠ REPLACES master.md §7.2 Option A, the approved headline

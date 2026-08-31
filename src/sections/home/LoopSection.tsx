@@ -3,6 +3,7 @@ import { ArrowRight, Search, Hammer, TrendingUp, FileBarChart } from 'lucide-rea
 import { Container, Eyebrow, Heading, Icon, Section } from '../../components/ui';
 import { LOOP } from '../../data/home';
 import { useLoopStageScrub } from '../../hooks/useLoopStageScrub';
+import { WebGLField } from '../../components/motion/WebGLField';
 
 /**
  * 03 THE PROCESS — wireframe.md §03, master.md §6.3, §13 §3. Dark (--ink).
@@ -26,8 +27,21 @@ export function LoopSection() {
   useLoopStageScrub(ref);
 
   return (
-    <Section ref={ref} tone="ink" aria-labelledby="loop-heading">
-      <Container>
+    <Section
+      ref={ref}
+      tone="ink"
+      aria-labelledby="loop-heading"
+      className="relative overflow-hidden"
+    >
+      {/*
+        The one 3D moment on the site (§31.7). It sits BEHIND the cards rather
+        than inside them: a browser allows roughly sixteen WebGL contexts, so a
+        canvas per card would exhaust them and put moving pixels directly under
+        body copy. See WebGLField for the five §31.7 conditions it satisfies.
+      */}
+      <WebGLField className="absolute inset-0 opacity-70" />
+
+      <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-[22rem_1fr] lg:gap-16">
           {/* -------- LEFT: the claim -------- */}
           <div>

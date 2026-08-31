@@ -44,7 +44,7 @@ export function Testimonials() {
               {TESTIMONIALS.map((t) => (
                 <li
                   key={t.id}
-                  className="card-surface flex h-full flex-col border border-hairline bg-base [padding:var(--card-pad)]"
+                  className="card-surface flex h-full flex-col border border-hairline bg-base p-6"
                 >
                   <span className="icon-tile">
                     <Quote aria-hidden="true" className="size-5" />
@@ -60,7 +60,7 @@ export function Testimonials() {
               ))}
             </ul>
           ) : (
-            <div className="card-surface mx-auto mt-12 max-w-[54ch] border border-hairline bg-base [padding:var(--card-pad)] text-center">
+            <div className="card-surface mx-auto mt-12 max-w-[54ch] border border-hairline bg-base p-6 text-center">
               <Quote aria-hidden="true" className="mx-auto size-6 text-accent" />
               <p className="mt-5 text-body text-primary [line-height:var(--lh-body)]">
                 We have not published a client quote yet.

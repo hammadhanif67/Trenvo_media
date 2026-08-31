@@ -1,6 +1,7 @@
 import { ArrowRight, Megaphone, Clapperboard } from 'lucide-react';
 import { Link } from 'react-router';
 import { Button, Container, Eyebrow, Heading, Icon, Section } from '../../components/ui';
+import { HoverCard } from '../../components/ui/HoverCard';
 import { Reveal } from '../../components/motion/Reveal';
 import { PRACTICE_NAV } from '../../data/navigation';
 import { PRACTICES } from '../../data/home';
@@ -56,60 +57,56 @@ export function Practices() {
                 const nav = PRACTICE_NAV.find((p) => p.id === card.id);
                 const PracticeIcon = i === 0 ? Megaphone : Clapperboard;
                 return (
-                  <li
-                    key={card.id}
-                    className="card-surface flex h-full flex-col border border-hairline bg-base [padding:var(--card-pad)]"
-                  >
-                    <span className="icon-tile">
-                      <PracticeIcon aria-hidden="true" className="size-5" />
-                    </span>
-
-                    <h3 className="mt-5 text-h4 text-primary [line-height:var(--lh-heading)]">
-                      {card.name}
-                    </h3>
-
-                    <p className="mt-2 text-small text-secondary [line-height:var(--lh-body)]">
-                      {card.question}
-                    </p>
-
-                    {/* Routed services are links; capabilities without a page are text. */}
-                    <ul className="mt-6 flex-1 space-y-2">
-                      {card.capabilities.map((capability) => {
-                        const service = nav?.services.find((s) => s.label === capability);
-                        return (
-                          <li key={capability} className="flex items-start gap-2">
-                            <span
-                              aria-hidden="true"
-                              className="mt-2 size-1 shrink-0 rounded bg-accent"
-                            />
-                            {service ? (
-                              <Link
-                                to={service.href}
-                                className="text-small text-primary underline-offset-4 hover:text-accent-strong hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                              >
-                                {capability}
-                              </Link>
-                            ) : (
-                              <span className="text-small text-secondary">
-                                {capability}
-                              </span>
-                            )}
-                          </li>
-                        );
-                      })}
-                    </ul>
-
-                    <p className="mt-6 border-t border-hairline pt-4 text-small text-secondary [line-height:var(--lh-body)]">
-                      {card.mechanism}
-                    </p>
-
-                    <Link
-                      to={card.cta.href}
-                      className="mt-5 inline-flex items-center gap-2 text-small font-medium text-accent-strong [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  <li key={card.id}>
+                    <HoverCard
+                      as="div"
+                      className="card-surface flex h-full flex-col border border-hairline bg-base p-6"
                     >
-                      {card.cta.label}
-                      <Icon icon={ArrowRight} />
-                    </Link>
+                      <span className="icon-tile transition-colors group-hover:bg-paper/15 group-hover:text-paper">
+                        <PracticeIcon aria-hidden="true" className="size-5" />
+                      </span>
+
+                      <h3 className="mt-5 text-h4 text-primary transition-colors [line-height:var(--lh-heading)] group-hover:text-paper">
+                        {card.name}
+                      </h3>
+
+                      {/* Routed services are links; capabilities without a page are text. */}
+                      <ul className="mt-5 flex-1 space-y-2">
+                        {card.capabilities.map((capability) => {
+                          const service = nav?.services.find(
+                            (s) => s.label === capability,
+                          );
+                          return (
+                            <li key={capability} className="flex items-start gap-2">
+                              <span
+                                aria-hidden="true"
+                                className="mt-2 size-1 shrink-0 rounded bg-accent transition-colors group-hover:bg-paper"
+                              />
+                              {service ? (
+                                <Link
+                                  to={service.href}
+                                  className="text-small text-secondary underline-offset-4 transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent group-hover:text-paper"
+                                >
+                                  {capability}
+                                </Link>
+                              ) : (
+                                <span className="text-small text-secondary transition-colors group-hover:text-paper">
+                                  {capability}
+                                </span>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+
+                      <Link
+                        to={card.cta.href}
+                        className="mt-6 inline-flex items-center gap-2 text-small font-medium text-accent-strong transition-colors [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent group-hover:text-paper"
+                      >
+                        {card.cta.label}
+                        <Icon icon={ArrowRight} />
+                      </Link>
+                    </HoverCard>
                   </li>
                 );
               })}

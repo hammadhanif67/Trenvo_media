@@ -104,7 +104,18 @@ function Social({ label, href }: { label: string; href: string }) {
 
 export function Footer() {
   return (
-    <Section as="footer" tone="ink">
+    <Section
+      as="footer"
+      tone="ink"
+      padding="none"
+      /*
+        The footer sets its OWN rhythm. §25.2's --section-pad-ink is 160px at
+        this width, which on a footer reads as a large empty band under the
+        copyright line rather than as breathing room. The reference footer is
+        compact; this is 80px in and 40px out.
+      */
+      className="[padding-block:var(--s-20)_var(--s-10)]"
+    >
       <Container>
         <div className="grid gap-12 lg:grid-cols-[20rem_1fr] lg:gap-16">
           {/* -------- BRAND -------- */}
@@ -157,10 +168,10 @@ export function Footer() {
           </div>
         </div>
 
-        <Rule tone="dark" className="mt-16" />
+        <Rule tone="dark" className="mt-12" />
 
         {/* -------- CONTACT -------- */}
-        <div className="mt-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
@@ -178,9 +189,9 @@ export function Footer() {
           </p>
         </div>
 
-        <Rule tone="dark" className="mt-12" />
+        <Rule tone="dark" className="mt-10" />
 
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
           <p className="text-small text-onpunct-2">
             © {new Date().getFullYear()} Trenvo Media. All rights reserved.
           </p>

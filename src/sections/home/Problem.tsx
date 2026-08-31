@@ -67,7 +67,7 @@ export function Problem() {
           </ul>
 
           {/* The resolution. Tinted, so it reads as the answer to the three above. */}
-          <div className="card-surface mx-auto mt-16 flex max-w-[62rem] items-start gap-4 border border-accent/20 bg-accent/6 [padding:var(--card-pad)]">
+          <div className="card-surface mx-auto mt-16 flex max-w-[62rem] items-start gap-4 border border-accent/20 bg-accent/6 p-6">
             <CheckCircle2
               aria-hidden="true"
               className="mt-1 size-5 shrink-0 text-accent"

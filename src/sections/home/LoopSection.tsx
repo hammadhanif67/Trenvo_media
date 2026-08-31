@@ -4,6 +4,7 @@ import { Container, Eyebrow, Heading, Icon, Section } from '../../components/ui'
 import { LOOP } from '../../data/home';
 import { useLoopStageScrub } from '../../hooks/useLoopStageScrub';
 import { WebGLField } from '../../components/motion/WebGLField';
+import { HoverCard } from '../../components/ui/HoverCard';
 
 /**
  * 03 THE PROCESS — wireframe.md §03, master.md §6.3, §13 §3. Dark (--ink).
@@ -81,32 +82,38 @@ export function LoopSection() {
                 const StageIcon = ICONS[i] ?? Search;
                 return (
                   <li key={stage.id} data-loop-stage className="relative">
-                    <div className="card-surface flex h-full flex-col border border-line-dark [padding:var(--card-pad)]">
-                      <span className="icon-tile icon-tile--dark">
+                    <HoverCard
+                      as="div"
+                      className="card-surface flex h-full flex-col border border-line-dark bg-punct p-6"
+                    >
+                      <span className="icon-tile icon-tile--dark transition-colors group-hover:bg-paper/15 group-hover:text-paper">
                         <StageIcon aria-hidden="true" className="size-5" />
                       </span>
 
-                      <h3 className="mt-5 text-h4 text-onpunct [line-height:var(--lh-heading)]">
-                        <span className="text-blue-500">{stage.index}.</span> {stage.name}
+                      <h3 className="mt-5 text-h4 text-onpunct transition-colors [line-height:var(--lh-heading)] group-hover:text-paper">
+                        <span className="text-blue-500 transition-colors group-hover:text-paper">
+                          {stage.index}.
+                        </span>{' '}
+                        {stage.name}
                       </h3>
 
-                      <p className="mt-3 flex-1 text-small text-onpunct-2 [line-height:var(--lh-body)]">
+                      <p className="mt-3 flex-1 text-small text-onpunct-2 transition-colors [line-height:var(--lh-body)] group-hover:text-paper">
                         {stage.definition}
                       </p>
 
                       {stage.disciplines.length > 0 && (
-                        <ul className="mt-5 flex flex-wrap gap-x-3 gap-y-2 border-t border-line-dark pt-4">
+                        <ul className="mt-5 flex flex-wrap gap-x-3 gap-y-2 border-t border-line-dark pt-4 transition-colors group-hover:border-paper/25">
                           {stage.disciplines.map((d) => (
                             <li
                               key={d}
-                              className="font-mono text-label uppercase tracking-[var(--tracking-label)] text-onpunct-2"
+                              className="font-mono text-label uppercase tracking-[var(--tracking-label)] text-onpunct-2 transition-colors group-hover:text-paper"
                             >
                               {d}
                             </li>
                           ))}
                         </ul>
                       )}
-                    </div>
+                    </HoverCard>
 
                     {/* Decorative connector; the <ol> already carries the order. */}
                     {i < LOOP.stages.length - 1 && (

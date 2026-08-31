@@ -27,6 +27,11 @@
 export interface Testimonial {
   id: string;
   quote: string;
+  /**
+   * The trust brand this quote belongs to, matching `name` in
+   * heroContent.ts. Set it and the quote replaces that card's pending note.
+   */
+  brand?: string;
   /** Real name. Not an initial, not a role used as a name. */
   name: string;
   /** Role and company, as the person would write it themselves. */

@@ -138,7 +138,7 @@ export function Work() {
                 <li key={item.id} className="flex">
                   <Link
                     to="/work"
-                    className="work-row group relative flex w-full items-center gap-4 border border-line-dark p-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                    className="work-row group relative flex w-full items-start gap-4 lg:items-center border border-line-dark p-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                   >
                     <span className="work-row__icon inline-flex size-12 shrink-0 items-center justify-center border border-line-dark text-blue-500">
                       {icon?.kind === 'brand' ? (

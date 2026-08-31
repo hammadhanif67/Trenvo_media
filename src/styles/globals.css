@@ -709,15 +709,22 @@ html::-webkit-scrollbar {
   so the cards' bottoms already agreed — but a note that wrapped to two lines
   made its footer 24px taller and pulled that card's rule 24px above the other
   five. Reserving two line boxes on every note keeps the whole row level however
-  the copy falls, at any width.
-*/
-.client-card__note {
-  min-height: 3rem; /* two 24px line boxes */
-}
+  the copy falls.
 
-@supports (min-height: 2lh) {
+  ONLY WHERE THERE IS A ROW TO ALIGN WITH. Below 40rem the grid is a single
+  column, so there is no neighbour to line up against and the reserve buys
+  nothing — it just adds 24px of blank to every card and makes six already
+  sparse cards taller to scroll past on a phone.
+*/
+@media (min-width: 40rem) {
   .client-card__note {
-    min-height: 2lh;
+    min-height: 3rem; /* two 24px line boxes */
+  }
+
+  @supports (min-height: 2lh) {
+    .client-card__note {
+      min-height: 2lh;
+    }
   }
 }
 

@@ -235,6 +235,17 @@ export function CubeScene({ ref, className }: CubeSceneProps) {
     if (typeof IntersectionObserver === 'undefined') return;
     if (isLowPower()) return;
 
+    /*
+      NO CUBE BELOW 1024 — the same breakpoint that turns off the pin.
+
+      Without the pin nothing drives `setProgress`, so the cube sits frozen at
+      t = 0, which parks it half off the right edge: on a phone it read as a
+      stray blue rectangle overlapping the rows rather than as a backdrop. A
+      scene that cannot animate is not a backdrop, it is debris — and skipping
+      it also spares phones a WebGL context they were gaining nothing from.
+    */
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) return;
+
     let cleanup = () => {};
     let cancelled = false;
     let started = false;

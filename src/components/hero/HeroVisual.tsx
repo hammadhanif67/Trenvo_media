@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
-import { useTheme } from '../../hooks/useTheme';
 import { useHeroSlideshow } from './useHeroSlideshow';
 import { HERO_IMAGE_ALT } from '../../data/heroImages';
 
@@ -11,12 +10,11 @@ import { HERO_IMAGE_ALT } from '../../data/heroImages';
    the right column, with a soft accent field behind it for depth. The five
    project images cycle through the twenty treatments in heroAnimations.ts.
 
-   THEME-AWARE, WITHOUT DUPLICATE ASSETS. The same five files serve both themes
-   (§12 of the brief); only the frame, the ring, the shadow and a single tint
-   layer change. In light the frame is a white card with a soft shadow and the
-   picture stays bright; in dark the frame is ink with a hairline ring and a
-   restrained tint so the picture does not glare. Nothing is baked into the
-   image files.
+   ALWAYS THE LIGHT TREATMENT. The hero is an isolated light surface in both
+   themes (implementation.md §5.27), so a dark variant here would put a dark
+   frame on a white card. Reading the theme at all would also re-render this
+   component on every toggle, which is the one thing that could interrupt the
+   slideshow. So it does not read the theme, and the toggle cannot reach it.
 
    ACCESSIBILITY. The frame carries one honest alt describing what the imagery
    shows. The animated pieces beneath are duplicates of that same picture, so
@@ -34,8 +32,6 @@ function bg(id: string, width: number): CSSProperties {
 
 export function HeroVisual() {
   const reducedMotion = useReducedMotion();
-  const theme = useTheme();
-  const dark = theme === 'dark';
   const { baseImage, incoming, running, width } = useHeroSlideshow(true);
 
   const pieces = incoming
@@ -52,10 +48,7 @@ export function HeroVisual() {
       */}
       <div
         aria-hidden="true"
-        className={[
-          'pointer-events-none absolute -inset-6 -z-10 blur-2xl',
-          dark ? 'opacity-25' : 'opacity-40',
-        ].join(' ')}
+        className="pointer-events-none absolute -inset-6 -z-10 opacity-40 blur-2xl"
         style={{
           background:
             'radial-gradient(60% 60% at 70% 30%, var(--blue-600), transparent 70%)',
@@ -64,14 +57,9 @@ export function HeroVisual() {
 
       <figure className="relative m-0">
         <div
-          className={[
-            // Taller than 16/10, matching the reference where the visual is
-            // the heaviest object on the page rather than a letterboxed strip.
-            'relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/11]',
-            dark
-              ? 'ring-1 ring-[var(--line-dark)]'
-              : 'shadow-[0_24px_70px_-30px_rgba(10,10,11,0.45)] ring-1 ring-[var(--line)]',
-          ].join(' ')}
+          // Taller than 16/10, matching the reference where the visual is the
+          // heaviest object on the page rather than a letterboxed strip.
+          className="relative aspect-[4/3] w-full overflow-hidden shadow-[0_24px_70px_-30px_rgba(10,10,11,0.45)] ring-1 ring-[var(--line)] sm:aspect-[16/11]"
         >
           {/* BASE — always painted, never animated. */}
           <div
@@ -134,18 +122,15 @@ export function HeroVisual() {
           )}
 
           {/*
-            THEME TINT — the only per-theme treatment of the picture itself, and
-            the reason one set of files serves both themes. Light keeps the
-            photograph bright; dark takes the glare off without dulling it into
-            grey.
+            A whisper of tint, to seat the photograph on the card rather than
+            leave it floating. It never darkens the picture into grey.
           */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0"
             style={{
-              background: dark
-                ? 'linear-gradient(180deg, rgba(10,10,11,0.28), rgba(10,10,11,0.52))'
-                : 'linear-gradient(180deg, rgba(255,255,255,0.04), rgba(10,10,11,0.10))',
+              background:
+                'linear-gradient(180deg, rgba(255,255,255,0.04), rgba(10,10,11,0.10))',
             }}
           />
         </div>

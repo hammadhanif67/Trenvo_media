@@ -1,4 +1,4 @@
-import { PRIMARY_CTA, SECONDARY_CTA } from '../../data/navigation';
+import { PRIMARY_CTA } from '../../data/navigation';
 
 /* ---------------------------------------------------------------------------
    HERO CONTENT — single source for every string in the hero.
@@ -30,9 +30,16 @@ import { PRIMARY_CTA, SECONDARY_CTA } from '../../data/navigation';
 
 export interface HeroContent {
   eyebrow: string;
-  /** Rendered as separate lines; `accent` is the line painted in the brand blue. */
-  titleLines: string[];
-  titleAccentLine: string;
+  /** The fixed half of the H1; the animated keyword follows it. */
+  titleLead: string;
+  /** Typed in and out, in order, forever. */
+  keywords: string[];
+  /**
+   * The heading's accessible name. A heading whose text mutates is hostile to a
+   * screen reader, so the animated span is aria-hidden and this stable phrase
+   * is what actually gets announced.
+   */
+  titleSpoken: string;
   description: string;
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
@@ -59,19 +66,23 @@ export interface TrustBrand {
 }
 
 export const HERO_CONTENT: HeroContent = {
-  eyebrow: 'All-in-one growth system',
+  eyebrow: 'AI-Powered Growth',
 
-  titleLines: ['AI Video Ads, Creative', '& Paid Media,'],
-  titleAccentLine: 'One Conversion System',
+  titleLead: 'Turn Attention Into Growth With',
+  keywords: ['AI Video Ads', 'Creative', 'Paid Media'],
+  titleSpoken: 'Turn attention into growth with AI Video Ads, Creative and Paid Media.',
 
   description:
-    'Trenvo Media runs both — the paid media and the creative that runs in it — with a named specialist on each.',
+    'We combine AI-powered video advertising, creative strategy, and paid media to help ambitious brands capture attention, convert demand, and scale with confidence.',
 
-  primaryCta: { label: PRIMARY_CTA.label, href: PRIMARY_CTA.href },
-  secondaryCta: {
-    label: 'Get a teardown of your ads and creative',
-    href: SECONDARY_CTA.href,
-  },
+  primaryCta: { label: 'Start a Project', href: PRIMARY_CTA.href },
+  /*
+    ⚠ /work currently ships an HONEST EMPTY STATE — `WORK` in data/work.ts is an
+    empty array, so the page says plainly what will appear there rather than
+    showing case studies. "Explore Our Work" therefore leads somewhere real but
+    currently empty. Recorded in implementation.md §5.27.
+  */
+  secondaryCta: { label: 'Explore Our Work', href: '/work' },
 
   /*
     ⚠ CLIENT NAMES, SUPPLIED BY THE OWNER.

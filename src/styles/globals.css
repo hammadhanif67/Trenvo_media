@@ -322,3 +322,43 @@ html::-webkit-scrollbar {
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   HERO SURFACE — always light, in both themes
+
+   Requested: the hero must not inherit the global dark theme. Light theme and
+   dark theme both show a light hero.
+
+   Done by REDEFINING the semantic tokens on the hero element itself. The dark
+   theme sets them on `:root[data-theme='dark']`; a descendant that redefines
+   them wins for its own subtree, because custom properties resolve from the
+   nearest ancestor that declares them. So every component inside the hero —
+   Button, Rule, anything reading --fg-primary or --accent — resolves to light
+   values without knowing anything about the hero.
+
+   That is the whole mechanism: no component needed a new prop, no colour is
+   hard-coded, and nothing outside the hero is affected. Deleting this block
+   returns the hero to following the theme.
+
+   §23.2's contrast rule still holds inside: --accent is pinned to --blue-600,
+   which is the blue that is legal on a light surface. HeroHome also pins the
+   React SurfaceContext to 'light' so Button picks the same one.
+--------------------------------------------------------------------------- */
+.hero-surface {
+  --bg-base: var(--paper);
+  --bg-alt: var(--surface);
+  --bg-punct: var(--ink);
+
+  --fg-primary: var(--ink);
+  --fg-secondary: var(--muted);
+  --fg-onpunct: var(--paper);
+  --fg-onpunct-2: var(--muted-dark);
+
+  --accent: var(--blue-600);
+  --accent-strong: var(--blue-700);
+  --hairline: var(--line);
+
+  /* The theme toggle must not repaint the hero, so state it outright. */
+  background-color: var(--paper);
+  color: var(--ink);
+}

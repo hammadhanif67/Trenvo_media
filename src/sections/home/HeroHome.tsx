@@ -4,6 +4,8 @@ import { Button, Container, Icon, Section } from '../../components/ui';
 import { HeroVisual } from '../../components/hero/HeroVisual';
 import { HERO_CONTENT } from '../../components/hero/heroContent';
 import { HeroTrustBrands } from '../../components/hero/HeroTrustBrands';
+import { HeroKeyword } from '../../components/hero/HeroKeyword';
+import { SurfaceContext } from '../../components/ui/surface';
 import { HERO_BACKGROUND } from '../../data/home';
 
 /**
@@ -65,22 +67,37 @@ export function HeroHome() {
       tone="paper"
       as="section"
       aria-labelledby="hero-heading"
-      className="relative overflow-x-clip"
+      /*
+        `hero-surface` pins the semantic colour tokens to their LIGHT values on
+        this element, so the global dark theme cannot reach inside. See the
+        block of the same name in globals.css.
+      */
+      className="hero-surface relative overflow-x-clip"
     >
-      <Container className="relative">
-        {/*
+      {/*
+        Section publishes its surface from the THEME, so in dark mode it would
+        tell Button it is sitting on a dark surface and Button would pick
+        --blue-500. This hero is light in both themes, so the surface is pinned
+        to match — §23.2's rule then resolves to --blue-600, the blue that is
+        legal on light, exactly as it does in the light theme.
+      */}
+      <SurfaceContext.Provider value="light">
+        <Container className="relative">
+          {/*
           Two columns from lg up, matching the reference's balance: the copy
           takes slightly more than half so the headline can break where it is
           written to break, and the visual still reads as the larger object.
         */}
-        <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-          {/* -------- LEFT: content -------- */}
-          <div className={`[container-type:inline-size] ${curtain ? 'hero-curtain' : ''}`}>
-            <p className="font-mono text-label uppercase tracking-[var(--tracking-label)] text-accent">
-              {c.eyebrow}
-            </p>
+          <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+            {/* -------- LEFT: content -------- */}
+            <div
+              className={`[container-type:inline-size] ${curtain ? 'hero-curtain' : ''}`}
+            >
+              <p className="font-mono text-label uppercase tracking-[var(--tracking-label)] text-accent">
+                {c.eyebrow}
+              </p>
 
-            {/*
+              {/*
               The clamp measures against the COLUMN (cqi), not the viewport:
               against the viewport a 96px display size rendered ~12 characters
               per line in a half-width column (implementation.md §5.19).
@@ -88,55 +105,62 @@ export function HeroHome() {
               TWO clamps, because the column changes meaning at lg. Below lg the
               layout is one column, so the container is the FULL width and a
               single cqi scale made 768px render 55px — larger than the 40px at
-              1024px, where the column is half the grid. The lower ceiling below
-              lg keeps tablet and small-laptop type consistent. Measured after:
-              40px at 768, 1024, 430, 390 and 375.
+              1024px, where the column is half the grid.
             */}
-            <h1
-              id="hero-heading"
-              className="mt-5 font-sans font-bold text-primary [font-size:clamp(2.5rem,1rem+3.6cqi,3.25rem)] lg:[font-size:clamp(2.5rem,1rem+5.5cqi,5rem)] [letter-spacing:var(--tracking-display)] [line-height:var(--lh-display)]"
-            >
-              {c.titleLines.map((line) => (
-                <span key={line} className="block">
-                  {line}
+              <h1
+                id="hero-heading"
+                className="mt-5 font-sans font-bold text-primary [font-size:clamp(2.5rem,1rem+3.6cqi,3.25rem)] lg:[font-size:clamp(2.5rem,1rem+5.5cqi,4.25rem)] [letter-spacing:var(--tracking-display)] [line-height:var(--lh-display)]"
+              >
+                {/*
+                The heading's accessible name: stable, complete, and naming all
+                three keywords. Everything visible below it is aria-hidden, so a
+                screen reader hears this once instead of hearing the animation
+                spell itself out.
+              */}
+                <span className="sr-only">{c.titleSpoken}</span>
+
+                <span aria-hidden="true">
+                  <span className="block">{c.titleLead}</span>
+                  <HeroKeyword words={c.keywords} className="block text-accent" />
                 </span>
-              ))}
-              <span className="block text-accent">{c.titleAccentLine}</span>
-            </h1>
+              </h1>
 
-            <p className="mt-7 max-w-[46ch] text-lead text-secondary [line-height:var(--lh-body)]">
-              {c.description}
-            </p>
+              <p className="mt-7 max-w-[46ch] text-lead text-secondary [line-height:var(--lh-body)]">
+                {c.description}
+              </p>
 
-            {/* §17.3 — the one place two conversion CTAs share a viewport. */}
-            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-              <Button href={c.primaryCta.href}>
-                <span className="inline-flex items-center gap-2">
-                  {c.primaryCta.label}
-                  <Icon icon={ArrowRight} />
-                </span>
-              </Button>
-              <Button href={c.secondaryCta.href} variant="secondary">
-                {c.secondaryCta.label}
-              </Button>
-            </div>
+              {/* §17.3 — the one place two conversion CTAs share a viewport. */}
+              <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+                <Button href={c.primaryCta.href}>
+                  <span className="inline-flex items-center gap-2">
+                    {c.primaryCta.label}
+                    <Icon icon={ArrowRight} />
+                  </span>
+                </Button>
+                <Button href={c.secondaryCta.href} variant="secondary">
+                  {c.secondaryCta.label}
+                </Button>
+              </div>
 
-            {/*
+              {/*
               The client row from the reference. Names supplied by the owner —
               see the note in heroContent.ts. Emptying `trustBrands` removes the
               whole block, heading included.
             */}
-            <HeroTrustBrands label={c.trustLabel} brands={c.trustBrands} />
-          </div>
-
-          {/* -------- RIGHT: the visual -------- */}
-          {HERO_BACKGROUND && (
-            <div className={`order-last w-full ${curtain ? 'hero-curtain-visual' : ''}`}>
-              <HeroVisual />
+              <HeroTrustBrands label={c.trustLabel} brands={c.trustBrands} />
             </div>
-          )}
-        </div>
-      </Container>
+
+            {/* -------- RIGHT: the visual -------- */}
+            {HERO_BACKGROUND && (
+              <div
+                className={`order-last w-full ${curtain ? 'hero-curtain-visual' : ''}`}
+              >
+                <HeroVisual />
+              </div>
+            )}
+          </div>
+        </Container>
+      </SurfaceContext.Provider>
     </Section>
   );
 }

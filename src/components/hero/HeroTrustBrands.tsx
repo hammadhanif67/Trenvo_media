@@ -1,4 +1,3 @@
-import { useTheme } from '../../hooks/useTheme';
 import type { TrustBrand } from './heroContent';
 
 /* ---------------------------------------------------------------------------
@@ -12,11 +11,10 @@ import type { TrustBrand } from './heroContent';
    Each mark keeps its own face and colour so the row reads as five brands
    rather than five list items in Trenvo's typeface.
 
-   THEME. The reference sets these on white. Several of the brand colours —
-   the greens especially — fall through the floor on a dark surface, so each
-   carries a lighter variant used only in the dark theme. The hue is preserved;
-   only the lightness moves, which is the smallest change that keeps them
-   readable without repainting anyone's brand.
+   ALWAYS THE LIGHT COLOURS. The hero is an isolated light surface in both
+   themes (implementation.md §5.27), so the brands sit on white either way and
+   the light values are always the correct ones. `dark` is kept on the data for
+   the day this row appears on a dark surface elsewhere.
 --------------------------------------------------------------------------- */
 
 const FACE: Record<TrustBrand['face'], string> = {
@@ -50,8 +48,6 @@ export function HeroTrustBrands({
   label: string;
   brands: TrustBrand[];
 }) {
-  const dark = useTheme() === 'dark';
-
   // No clients, no block — removing the data removes the row entirely.
   if (brands.length === 0) return null;
 
@@ -66,7 +62,7 @@ export function HeroTrustBrands({
       */}
       <ul className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-5 sm:gap-x-7">
         {brands.map((brand) => {
-          const colour = dark ? brand.dark : brand.light;
+          const colour = brand.light;
           const head =
             brand.splitAt != null ? brand.name.slice(0, brand.splitAt) : brand.name;
           const tail = brand.splitAt != null ? brand.name.slice(brand.splitAt) : '';

@@ -33,10 +33,14 @@ export interface PracticeNav {
  * practices, holding exactly the seven routed service pages of §9.4.
  *
  * Capabilities that are NOT routed pages — measurement & attribution, motion
- * design, frontend engineering — are absent by design. §9.3 merged frontend
- * engineering into /services/web-development, and implementation.md §1.4 (D6)
- * records that practice-card bullets are not all links. A menu entry without a
- * route would be a dead link.
+ * design — are absent by design, and implementation.md §1.4 (D6) records that
+ * practice-card bullets are not all links. A menu entry without a route would
+ * be a dead link.
+ *
+ * §9.3's /services/web-development is gone: Trenvo sells digital marketing and
+ * does not offer web development (implementation.md §5.21). Engineering now
+ * carries Landing Pages alone — the page a campaign points at, which is a
+ * conversion asset rather than a development service.
  */
 export const PRACTICE_NAV: PracticeNav[] = [
   {
@@ -63,7 +67,6 @@ export const PRACTICE_NAV: PracticeNav[] = [
     name: 'Engineering',
     question: 'Does anything happen after the click?',
     services: [
-      { label: 'Web Development', href: '/services/web-development' },
       { label: 'Landing Pages', href: '/services/landing-pages' },
     ],
   },

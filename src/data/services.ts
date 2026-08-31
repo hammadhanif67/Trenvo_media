@@ -1,12 +1,16 @@
 import type { PracticeId, Service } from '../types/content';
 
 /* ---------------------------------------------------------------------------
-   THE SEVEN SERVICES — master.md §9.4, §9.3, §18.2, §21.2.
+   THE SERVICES — master.md §9.4, §9.3, §18.2, §21.2.
 
-   §9.4 fixes the count at seven, not eight: frontend engineering is merged into
-   web development (§9.3), and landing pages stays separate because it is "a
-   distinct commercial offer ... the most common entry point for a first
-   project."
+   ⚠ SIX, not §9.4's seven. Trenvo sells digital marketing and does not offer
+   web development, so §9.3's `web-development` service is removed on request
+   (implementation.md §5.21). Its two disciplines were already carried by
+   `landing-pages`, so nothing is orphaned, and Engineering keeps that service:
+   the page a campaign points at is a conversion asset, not a build contract.
+
+   Landing pages stays separate because §9.4 calls it "a distinct commercial
+   offer ... the most common entry point for a first project."
 
    Each entry carries what §9.2 requires: "name by capability, describe by
    outcome, prove by mechanism." The mechanism lines are transcribed from §9.3
@@ -26,7 +30,6 @@ export const SERVICE_PRACTICE: Record<string, PracticeId> = {
   'performance-creative': 'studio',
   'ai-video': 'studio',
   'video-editing': 'studio',
-  'web-development': 'engineering',
   'landing-pages': 'engineering',
 };
 
@@ -37,7 +40,6 @@ export const SERVICE_CTA: Record<string, string> = {
   'performance-creative': 'Talk to a creative strategist',
   'ai-video': 'Talk to a creative strategist',
   'video-editing': 'Talk to a creative strategist',
-  'web-development': 'Talk to an engineer',
   'landing-pages': 'Start a project',
 };
 
@@ -156,30 +158,6 @@ export const SERVICES: Service[] = [
       title: 'Performance Video Editing | Trenvo Media',
       description:
         'Hook-first, modular editing built to produce the next twenty variants, so your account never runs on fatigued creative.',
-    },
-  },
-  {
-    slug: 'web-development',
-    name: 'Web Development',
-    outcome: 'The page is the second half of the ad.',
-    situation:
-      "An ad's job ends at the click. Everything after that is engineering: how fast the page paints, whether the promise in the creative survives the scroll, how many fields the form asks for, whether the event actually fires. We build the destination because the people running the media should not have to file a ticket to fix their own funnel.",
-    mechanisms: [
-      'Landing pages built as components so a variant is a configuration, not a rebuild',
-      'Performance budgets treated as conversion requirements, with Core Web Vitals targets set before design',
-      'Message match between creative and destination enforced as a build rule, not a review comment',
-      'Analytics and conversion events implemented by the same engineer who built the page',
-      'Marketing sites built to be edited by the client without breaking the system',
-    ],
-    // §9.3 merges frontend engineering into this page, so it carries both
-    // engineering disciplines plus the designer who owns page structure.
-    disciplineIds: ['frontend-engineer', 'ui-ux-designer'],
-    connectsTo: ['media', 'studio'],
-    faqs: [],
-    seo: {
-      title: 'Conversion Web Development | Trenvo Media',
-      description:
-        'The page is the second half of the ad. Engineered destinations with performance budgets and instrumented events.',
     },
   },
   {

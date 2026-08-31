@@ -140,7 +140,8 @@ export interface PracticeCardContent {
   /**
    * wireframe.md §04's bullet list. NOT all of these are routed pages —
    * implementation.md §1.4 (D6): measurement & attribution, motion design and
-   * frontend engineering have no service page, so they render as text.
+   * message match and conversion events have no service page, so they render
+   * as text.
    */
   capabilities: string[];
   /** §9.2 — the mechanism line, "where a real practitioner is distinguishable". */
@@ -177,9 +178,9 @@ export const PRACTICES = {
       id: 'engineering',
       name: 'Engineering',
       question: 'Does anything happen after the click?',
-      capabilities: ['Web Development', 'Landing Pages', 'Frontend Engineering'],
+      capabilities: ['Landing Pages', 'Message Match', 'Conversion Events'],
       mechanism: 'Message match is a build rule, not a review comment.',
-      cta: { label: 'Explore Engineering', href: '/services/web-development' },
+      cta: { label: 'Explore Engineering', href: '/services/landing-pages' },
     },
   ] satisfies PracticeCardContent[],
 };

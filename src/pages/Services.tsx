@@ -71,17 +71,39 @@ export function Services() {
                         <li key={link.href}>
                           <Link
                             to={link.href}
-                            className="group flex h-full flex-col border border-hairline [padding:var(--card-pad)] hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                            /*
+                              ⚠ §27.2 #4 specifies card hover as "Blue rule
+                              extends 180ms, 1px border shift". Requested
+                              instead: the whole card fills blue. The 180ms and
+                              the "no lift, no shadow" half of #4 are kept.
+                              Recorded in implementation.md §5.21.
+
+                              --blue-600 LITERAL, not var(--accent). The accent
+                              token resolves to --blue-500 in the dark theme,
+                              and white on --blue-500 measures 3.2:1, which
+                              fails AA. --blue-600 gives white 5.13:1 in BOTH
+                              themes, so the fill is fixed rather than themed.
+
+                              The transition names background-color and
+                              border-color explicitly. `transition-colors` would
+                              sweep outline-color in with them and animate the
+                              focus ring, which §27.2 #10 forbids ("Instant —
+                              never animated").
+
+                              focus-visible mirrors hover so the affordance
+                              exists for the keyboard, not just the mouse.
+                            */
+                            className="group flex h-full flex-col border border-hairline [padding:var(--card-pad)] [transition:background-color_180ms,border-color_180ms] hover:border-blue-600 hover:bg-blue-600 focus-visible:border-blue-600 focus-visible:bg-blue-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                           >
-                            <span className="text-h4 text-primary [line-height:var(--lh-heading)]">
+                            <span className="text-h4 text-primary [line-height:var(--lh-heading)] group-hover:text-paper group-focus-visible:text-paper">
                               {link.label}
                             </span>
                             {service && (
-                              <span className="mt-3 flex-1 text-body text-secondary [line-height:var(--lh-body)]">
+                              <span className="mt-3 flex-1 text-body text-secondary [line-height:var(--lh-body)] group-hover:text-paper group-focus-visible:text-paper">
                                 {service.outcome}
                               </span>
                             )}
-                            <span className="mt-6 inline-flex items-center gap-2 text-small text-accent-strong">
+                            <span className="mt-6 inline-flex items-center gap-2 text-small text-accent-strong group-hover:text-paper group-focus-visible:text-paper">
                               Explore <Icon icon={ArrowRight} />
                             </span>
                           </Link>

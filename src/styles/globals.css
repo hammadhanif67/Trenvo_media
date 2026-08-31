@@ -151,3 +151,30 @@
   /* Phase 4 establishes the final radius and shadow design tokens. Until     */
   /* then the card-hover rule above is a review constraint, not a build one.  */
 }
+
+/* ---------------------------------------------------------------------------
+   NO HORIZONTAL SCROLLBAR, EVER
+
+   Requested: "Overflow jis Tarha B Ho Raha hai Wo Khatam karo X-Axis Overflow
+   Or Mobile Responsive main Scroll Bar Horizontal na Dekhai Day."
+
+   Every route measures 0 horizontal overflow at rest, but the page also has
+   TRANSFORMS that widen elements after layout — the hero Loop scales to 1.6 on
+   scroll, and the capability tracks translate — and a transform cannot be
+   caught by a layout-time fix. This is the structural guarantee.
+
+   `clip`, NOT `hidden`. `overflow-x: hidden` turns the root into a scroll
+   container, which breaks `position: sticky` on the header — a fix that would
+   cost more than the bug. `clip` suppresses the scrollport without creating
+   one, so the sticky header keeps working.
+
+   Scoped to the X axis only: vertical scrolling is untouched. Elements that
+   scroll horizontally ON PURPOSE (the work scroller's `overflow-x: auto`)
+   carry their own scrollport and are unaffected.
+
+   Browsers without `overflow-x: clip` (Safari < 16) simply ignore this and
+   behave as they do today — no worse, never broken.
+--------------------------------------------------------------------------- */
+html {
+  overflow-x: clip;
+}

@@ -1,13 +1,6 @@
 import { Button, Container, Section } from '../../components/ui';
 import { LoopDiagram } from '../../components/media/LoopDiagram';
-import {
-  HERO,
-  HERO_CAPABILITY_ROWS,
-  HERO_PRACTICE_WORDS,
-  HERO_TYPEWRITER,
-  HERO_VIDEO_ENABLED,
-} from '../../data/home';
-import { PracticeTypewriter } from '../../components/media/PracticeTypewriter';
+import { HERO, HERO_CAPABILITY_ROWS, HERO_VIDEO_ENABLED } from '../../data/home';
 import { CapabilityMarquee } from '../../components/media/CapabilityMarquee';
 import { SKILLS, TOOLS } from '../../data/capabilities';
 import { HeroBackgroundVideo } from '../../components/media/HeroBackgroundVideo';
@@ -16,8 +9,9 @@ import { PRIMARY_CTA, SECONDARY_CTA } from '../../data/navigation';
 /**
  * 01 HERO — wireframe.md §01, master.md §13 §1. Dark (--ink).
  *
- * §7.2 Option A is the approved headline. §13 §1: the trust row is "three plain
- * statements, not logos — statements, not statistics. No logos, no numbers."
+ * ⚠ The H1 no longer carries §7.2 Option A, and §13 §1's trust row has been
+ * replaced by the capability band. Both were requested; see implementation.md
+ * §5.18 and §5.19.
  *
  * wireframe.md §01 mobile: "diagram becomes vertical and sits below the CTAs;
  * H1 drops to clamp floor; CTAs full-width stacked."
@@ -35,8 +29,8 @@ export function HeroHome() {
       {/* Above the video layer. The documented hero content is unchanged. */}
       <Container className="relative">
         {/*
-          The H1 column is given more room than the diagram. A 19-word,
-          two-sentence headline needs width; the diagram reads fine smaller.
+          The H1 column is given more room than the diagram: the headline needs
+          width, and the diagram reads fine smaller.
         */}
         <div className="grid items-center gap-16 lg:grid-cols-[1.35fr_1fr] lg:gap-12">
           {/*
@@ -44,10 +38,6 @@ export function HeroHome() {
             to the window — see the comment on the heading.
           */}
           <div className="[container-type:inline-size]">
-            {HERO_TYPEWRITER && (
-              <PracticeTypewriter items={HERO_PRACTICE_WORDS} className="mb-6" />
-            )}
-
             <h1
               id="hero-heading"
               /*
@@ -114,15 +104,19 @@ export function HeroHome() {
         {/*
           ⚠ REPLACES wireframe.md §13 §1's trust row ("Nine disciplines · Named
           specialists · One accountable loop"), on request. Those three
-          statements are not lost — they still carry /specialists, which is the
-          page that has to earn them. Recorded in implementation.md §5.18.
+          statements still carry /specialists, which is the page that has to
+          earn them. Recorded in implementation.md §5.18.
+
+          ONE BAND, not a row of boxes. The band is the only surface: --bg-base
+          makes it white in the light theme and follows the theme in dark, and
+          each entry inside it is plain icon + label with no border of its own.
 
           Two rows travelling in OPPOSITE directions: what we do, and what we do
           it with. One accessible list serves both, since the visual tracks are
           duplicated for the wrap and therefore aria-hidden.
         */}
         {HERO_CAPABILITY_ROWS && (
-          <div className="mt-20 border-t border-hairline pt-10">
+          <div className="mt-20 bg-base py-5">
             <h2 className="sr-only">Capabilities and production stack</h2>
             <ul className="sr-only">
               {[...SKILLS, ...TOOLS].map((item) => (
@@ -131,7 +125,7 @@ export function HeroHome() {
             </ul>
 
             <CapabilityMarquee items={SKILLS} direction="left" />
-            <CapabilityMarquee items={TOOLS} direction="right" className="mt-3" />
+            <CapabilityMarquee items={TOOLS} direction="right" className="mt-4" />
           </div>
         )}
       </Container>

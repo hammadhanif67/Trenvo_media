@@ -40,46 +40,23 @@ export const HERO_VIDEO_ENABLED = true;
 export const HERO_LOOP_MOTION = true;
 
 /**
- * ⚠ Hero typewriter. §27.3 does not ship "text scramble effects" or "anything
- * that moves while the user is reading". Requested; off switch below.
- */
-export const HERO_TYPEWRITER = true;
-
-/**
  * ⚠ Hero capability rows — skills and tools, counter-travelling, where
  * wireframe.md §13 §1's trust row used to sit. §27.3 does not ship "marquees at
  * launch"; recorded in implementation.md §5.18. Off switch.
  */
 export const HERO_CAPABILITY_ROWS = true;
 
-/**
- * What the hero types. The owner asked for the ads platforms and the video
- * types by name, so the line now runs the SERVICE LIST rather than the three
- * practice names — each still tagged with its §6.2 practice, so the line keeps
- * teaching the structure instead of becoming a flat list of words.
- *
- * Everything here is a capability the business claims for itself. No client,
- * result or number is asserted, so §2.8 is not engaged.
- */
-export const HERO_PRACTICE_WORDS = [
-  { word: 'Meta Ads', practice: 'Media' },
-  { word: 'Google Ads', practice: 'Media' },
-  { word: 'Social Media Ads', practice: 'Media' },
-  { word: 'AI Video Generation', practice: 'Studio' },
-  { word: 'AI UGC Ads', practice: 'Studio' },
-  { word: 'Cinematic Brand Ads', practice: 'Studio' },
-  { word: 'Short-Form Video Ads', practice: 'Studio' },
-  { word: 'Video Editing', practice: 'Studio' },
-  { word: 'Web Development', practice: 'Engineering' },
-  { word: 'Landing Pages', practice: 'Engineering' },
-];
-
 export const HERO = {
-  /** master.md §7.2 Option A, the approved headline. Two sentences. */
-  headline: [
-    'Your ads, your creative, and your landing page are one system.',
-    'Most brands buy them from three companies.',
-  ],
+  /**
+   * ⚠ REPLACES master.md §7.2 Option A, the approved headline
+   * ("Your ads, your creative, and your landing page are one system. / Most
+   * brands buy them from three companies."). Supplied verbatim by the owner and
+   * recorded in implementation.md §5.19.
+   *
+   * Kept as an array because the H1 renders one line per entry; this headline
+   * is a single sentence, so it is a single entry.
+   */
+  headline: ['AI Video Ads, Creative & Landing Pages, One Conversion System'],
   subheadline:
     'Trenvo Media runs all three — media, creative production, and the pages the traffic lands on — with a named specialist on each.',
   /**

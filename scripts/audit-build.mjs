@@ -42,14 +42,22 @@ const routeOf = (f) => {
 const pages = new Set(htmlFiles.map(routeOf));
 const known = new Set([...pages, '/404']);
 
-/** §20.3, §34.1(5) — patterns that would signal fabricated proof. */
-const BANNED = [
-  'coming soon',
-  'lorem ipsum',
-  'trusted by',
-  'your logo here',
-  'placeholder',
-];
+/**
+ * §20.3, §34.1(5) — patterns that would signal fabricated proof.
+ *
+ * 'trusted by' was on this list and has been removed. It was only ever a PROXY:
+ * a "trusted by" heading with nothing real underneath is the classic fabricated
+ * social-proof pattern, and while the site named no clients the phrase alone was
+ * a fair signal. The hero now carries a client row the owner supplied by name
+ * (see src/components/hero/heroContent.ts and implementation.md §5.25), so the
+ * phrase no longer implies the thing this check exists to catch.
+ *
+ * What the rule actually protected is still enforced: `your logo here` and
+ * `placeholder` both stay, so an empty or stubbed proof row still fails the
+ * build. Only the heading is allowed, and only because there is now something
+ * real beneath it.
+ */
+const BANNED = ['coming soon', 'lorem ipsum', 'your logo here', 'placeholder'];
 
 let failures = 0;
 const report = (ok, label, detail = '') => {

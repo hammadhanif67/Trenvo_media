@@ -37,7 +37,25 @@ export interface HeroContent {
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
   trustLabel: string;
-  trustItems: string[];
+  trustBrands: TrustBrand[];
+}
+
+/**
+ * A client wordmark. `name` and `category` are set exactly as the brand sets
+ * them; `face` picks the lettering style so each reads as its own mark rather
+ * than as a list in the site's own typeface.
+ */
+export interface TrustBrand {
+  name: string;
+  category: string;
+  face: 'script' | 'serif' | 'sans';
+  /** Brand colour on a light surface, and the lighter one dark mode needs. */
+  light: string;
+  dark: string;
+  /** Only Healthify carries a glyph beside the word. */
+  mark?: 'healthify';
+  /** NutriPure sets the first half lighter than the second. */
+  splitAt?: number;
 }
 
 export const HERO_CONTENT: HeroContent = {
@@ -56,10 +74,27 @@ export const HERO_CONTENT: HeroContent = {
   },
 
   /*
-    Not "Trusted by…". Trenvo has no published client list, and inventing one is
-    the single thing this project must never do. These three are structural
-    facts about the team — true on day one, and verifiable on /specialists.
+    ⚠ CLIENT NAMES, SUPPLIED BY THE OWNER.
+
+    I flagged this row as fabricated proof when it first appeared in the
+    reference mockups, because nothing in the source documents names a single
+    client and §2.8 forbids inventing one. The owner then asked for it again,
+    explicitly and by name. Whether Trenvo has these five clients and may
+    display them is a fact only the owner holds.
+
+    So it is built on that assertion, and this comment is the record of it.
+    Whether the relationships exist, and whether permission was given, is not
+    something this codebase can verify.
+
+    TO REMOVE: empty this array. The heading and the whole block disappear with
+    it — HeroHome renders nothing when there are no brands.
   */
-  trustLabel: 'How the work is staffed',
-  trustItems: ['Six named disciplines', 'A specialist per account', 'Published boundaries'],
+  trustLabel: 'Trusted by growth-focused brands',
+  trustBrands: [
+    { name: 'Soralune', category: 'Hair Oil', face: 'script', light: '#1a7f3c', dark: '#4ade80' },
+    { name: 'HOLY', category: 'Mouthwash', face: 'serif', light: '#1a4fd6', dark: '#7aa2ff' },
+    { name: 'Healthify', category: '', face: 'sans', light: '#0a0a0b', dark: '#ffffff', mark: 'healthify' },
+    { name: 'Glowri', category: 'Skincare', face: 'serif', light: '#1a7f3c', dark: '#4ade80' },
+    { name: 'NutriPure', category: 'Wellness', face: 'sans', light: '#1e5fd0', dark: '#7aa2ff', splitAt: 5 },
+  ],
 };

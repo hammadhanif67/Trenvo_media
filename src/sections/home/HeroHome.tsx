@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react';
 import { Button, Container, Icon, Section } from '../../components/ui';
 import { HeroVisual } from '../../components/hero/HeroVisual';
 import { HERO_CONTENT } from '../../components/hero/heroContent';
+import { HeroTrustBrands } from '../../components/hero/HeroTrustBrands';
 import { HERO_BACKGROUND } from '../../data/home';
 
 /**
@@ -22,11 +23,12 @@ import { HERO_BACKGROUND } from '../../data/home';
  *     reference mockups show and what the owner asked for when the black
  *     navbar in light theme was reported.
  *
- *  3. THE TRUST ROW IS NOT THE REFERENCE'S. Both mockups end with "Trusted by
- *     growth-focused brands" over five named client logos. Those clients do not
- *     exist. §2.8 forbids fabricated proof, `npm run audit` fails the build on
- *     it, and it is the one standing rule on this project. The block is built
- *     in the same position with claims that are true — see heroContent.ts.
+ *  3. THE CLIENT ROW NAMES FIVE BRANDS. I flagged it as fabricated proof when
+ *     it first appeared in the reference; the owner then asked for it again by
+ *     name, so it is built on that assertion. §2.8 and the audit's `trusted by`
+ *     rule were both written to stop INVENTED proof, not to stop a real client
+ *     list — the audit rule is narrowed accordingly, not deleted. The full
+ *     record is in heroContent.ts and implementation.md §5.25.
  *
  * Copy lives in heroContent.ts; nothing here is hard-coded.
  */
@@ -95,22 +97,11 @@ export function HeroHome() {
             </div>
 
             {/*
-              The reference's trust block, with honest content. Statements about
-              how the team is structured — verifiable on /specialists — rather
-              than client names Trenvo does not have.
+              The client row from the reference. Names supplied by the owner —
+              see the note in heroContent.ts. Emptying `trustBrands` removes the
+              whole block, heading included.
             */}
-            <div className="mt-12 border-t border-hairline pt-7">
-              <p className="font-mono text-label uppercase tracking-[var(--tracking-label)] text-secondary">
-                {c.trustLabel}
-              </p>
-              <ul className="mt-4 flex flex-wrap items-center gap-x-8 gap-y-3">
-                {c.trustItems.map((item) => (
-                  <li key={item} className="text-small text-primary">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <HeroTrustBrands label={c.trustLabel} brands={c.trustBrands} />
           </div>
 
           {/* -------- RIGHT: the visual -------- */}

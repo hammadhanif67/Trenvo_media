@@ -25,6 +25,12 @@ import { PRINCIPLES, SPECIALISTS_SECTION } from '../../data/home';
  * Six items because there are six disciplines. The count is arithmetic, not a
  * grid that happened to need filling.
  *
+ * THE HOVER ALTERNATES BY POSITION: cards 1, 3 and 5 take a blue border and
+ * nothing else; cards 2, 4 and 6 fill blue. Nothing scales and nothing lifts.
+ * The rule lives in `.disc-card` in globals.css, keyed on `nth-child` rather
+ * than on a prop, because the pattern belongs to the position in the grid and
+ * not to any principle's meaning.
+ *
  * ⚠ Partner badges are still not built. Trenvo holds no partnership or
  * certification, and §2.8 forbids inventing one.
  */
@@ -94,7 +100,7 @@ export function Specialists() {
                         </p>
                         <span
                           aria-hidden="true"
-                          className="mt-2 block h-px w-6 bg-accent"
+                          className="disc-card__rule mt-2 block h-px w-6 bg-accent"
                         />
                         <h3 className="mt-3 text-h4 text-primary [line-height:var(--lh-heading)]">
                           {principle.title}
@@ -109,9 +115,9 @@ export function Specialists() {
                     */}
                     <span
                       aria-hidden="true"
-                      className="inline-flex size-8 shrink-0 items-center justify-center bg-accent/10 text-accent"
+                      className="disc-card__arrowbox inline-flex size-8 shrink-0 items-center justify-center bg-accent/10 text-accent"
                     >
-                      <ArrowRight className="disc-card__arrow size-4" />
+                      <ArrowRight className="size-4" />
                     </span>
                   </div>
 

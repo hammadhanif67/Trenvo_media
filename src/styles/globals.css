@@ -459,87 +459,96 @@ html::-webkit-scrollbar {
 }
 
 /* ---------------------------------------------------------------------------
-   DISCIPLINE CARD — the joined grid, and its hover
+   DISCIPLINE CARD — the joined grid, and its alternating hover
 
    The reference draws these six as one bordered grid with the cells sharing
-   their edges, not as six separate cards floating in gaps. Each cell carries a
-   full border and is pulled a pixel left and up, so adjacent borders collapse
-   into a single hairline. On hover the cell is raised in the stacking order so
-   its blue border draws OVER its neighbours rather than under them.
+   their edges. Each cell carries a full border and is pulled a pixel left and
+   up, so adjacent borders collapse into a single hairline. On hover the cell is
+   raised in the stacking order so its border draws OVER its neighbours rather
+   than under them.
 
-   The hover is exactly what was specified and nothing more: border to blue, a
-   restrained blue glow, and a 3px lift. No background change, no inversion, no
-   scale, no radius.
+   THE HOVER ALTERNATES, by card number:
 
-   The transition names three properties explicitly. `transition: all` would
-   sweep outline-color in with them and animate the focus ring, which §27.2 #10
-   forbids ("Instant — never animated").
+     1, 3, 5  →  a blue border, and nothing else
+     2, 4, 6  →  the card fills blue
+
+   NO TRANSFORM ANYWHERE. No scale, no lift. Only colour moves, which is why
+   the transition names colours and nothing else.
+
+   `nth-child`, not a prop, because the pattern belongs to the POSITION in the
+   grid rather than to any principle's meaning — a seventh card would slot into
+   the rhythm without anyone editing data.
+
+   THE FILL IS --blue-600 LITERALLY, not var(--accent). The accent token
+   resolves to --blue-500 in the dark theme, and white on --blue-500 measures
+   3.2:1, which fails AA. --blue-600 holds white at 5.13:1 in both themes.
 --------------------------------------------------------------------------- */
 .disc-card {
   position: relative;
   margin-left: -1px;
   margin-top: -1px;
   transition:
-    transform 250ms ease,
     border-color 250ms ease,
-    box-shadow 250ms ease;
+    background-color 250ms ease,
+    color 250ms ease;
 }
 
-@media (hover: hover) {
-  .disc-card:hover {
-    z-index: 1;
-    transform: translateY(-3px);
-    border-color: var(--accent);
-    box-shadow: 0 10px 30px -18px color-mix(in oklab, var(--accent) 65%, transparent);
-  }
-}
-
-/* Keyboard parity — the same treatment, without needing a pointer. */
+.disc-card:hover,
 .disc-card:focus-within {
   z-index: 1;
-  transform: translateY(-3px);
+}
+
+/* -- 1, 3, 5 — border only ------------------------------------------------ */
+.disc-card:nth-child(odd):hover,
+.disc-card:nth-child(odd):focus-within {
   border-color: var(--accent);
-  box-shadow: 0 10px 30px -18px color-mix(in oklab, var(--accent) 65%, transparent);
 }
 
-/* The arrow steps to the right; the icon gains a little weight. */
-.disc-card__arrow {
-  transition: transform 250ms ease;
-}
-@media (hover: hover) {
-  .disc-card:hover .disc-card__arrow {
-    transform: translateX(4px);
-  }
-}
-.disc-card:focus-within .disc-card__arrow {
-  transform: translateX(4px);
+/* -- 2, 4, 6 — the card fills ---------------------------------------------- */
+.disc-card:nth-child(even):hover,
+.disc-card:nth-child(even):focus-within {
+  background-color: var(--blue-600);
+  border-color: var(--blue-600);
 }
 
-.disc-card__icon {
+/* Everything inside a filled card has to come with it, or it is blue on blue. */
+.disc-card:nth-child(even):hover :where(h3, p, span),
+.disc-card:nth-child(even):focus-within :where(h3, p, span) {
+  color: var(--paper);
+}
+
+/* The icon square inverts: white block, blue glyph. */
+.disc-card:nth-child(even):hover .disc-card__icon,
+.disc-card:nth-child(even):focus-within .disc-card__icon {
+  background-color: var(--paper);
+  color: var(--blue-600);
+}
+
+/* The short rule under the number is a background, not a colour. */
+.disc-card:nth-child(even):hover .disc-card__rule,
+.disc-card:nth-child(even):focus-within .disc-card__rule {
+  background-color: var(--paper);
+}
+
+.disc-card:nth-child(even):hover .disc-card__arrowbox,
+.disc-card:nth-child(even):focus-within .disc-card__arrowbox {
+  background-color: color-mix(in oklab, var(--paper) 22%, transparent);
+}
+
+.disc-card__icon,
+.disc-card__arrowbox,
+.disc-card__rule {
   transition:
-    box-shadow 250ms ease,
-    transform 250ms ease;
-}
-@media (hover: hover) {
-  .disc-card:hover .disc-card__icon {
-    box-shadow: 0 6px 18px -8px color-mix(in oklab, var(--accent) 80%, transparent);
-  }
+    background-color 250ms ease,
+    color 250ms ease;
 }
 
-/* §27.4 — the movement goes; the colour change stays, because it is the
-   affordance rather than the decoration. */
+/* §27.4 — nothing here moves, so reduced motion only shortens the fade. */
 @media (prefers-reduced-motion: reduce) {
   .disc-card,
-  .disc-card__arrow,
-  .disc-card__icon {
-    transition: border-color 250ms ease;
-  }
-  .disc-card:hover,
-  .disc-card:focus-within {
-    transform: none;
-  }
-  .disc-card:hover .disc-card__arrow,
-  .disc-card:focus-within .disc-card__arrow {
-    transform: none;
+  .disc-card__icon,
+  .disc-card__arrowbox,
+  .disc-card__rule {
+    transition: none;
   }
 }

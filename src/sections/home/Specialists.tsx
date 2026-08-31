@@ -43,8 +43,7 @@ export function Specialists() {
               id="specialists-heading"
               className="mt-4 text-primary [text-wrap:balance]"
             >
-              Six disciplines. One outcome:{' '}
-              <span className="text-accent">growth.</span>
+              Six disciplines. One outcome: <span className="text-accent">growth.</span>
             </Heading>
 
             <p className="mx-auto mt-5 max-w-[54ch] text-body text-secondary [line-height:var(--lh-body)]">
@@ -52,16 +51,20 @@ export function Specialists() {
             </p>
           </div>
 
-          <ul className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          {/*
+            Six across on a wide screen, exactly as the reference lays them out.
+            Six is not a design choice here — there are six disciplines, so the
+            row is full by arithmetic rather than by padding it out.
+          */}
+          <ul className="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {PRINCIPLES.map((principle, i) => {
               const PrincipleIcon = ICONS[i] ?? Target;
               return (
                 <li key={principle.id}>
-                  <PrincipleIcon
-                    aria-hidden="true"
-                    className="size-6 shrink-0 text-accent"
-                  />
-                  <h3 className="mt-4 text-h4 text-primary [line-height:var(--lh-heading)]">
+                  <span className="icon-tile">
+                    <PrincipleIcon aria-hidden="true" className="size-5" />
+                  </span>
+                  <h3 className="mt-5 text-h4 text-primary [line-height:var(--lh-heading)]">
                     {principle.title}
                   </h3>
                   <p className="mt-2 text-small text-secondary [line-height:var(--lh-body)]">

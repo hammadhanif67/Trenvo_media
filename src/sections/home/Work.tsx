@@ -72,7 +72,7 @@ export function Work() {
               <li key={item.slug}>
                 <Link
                   to={`/work/${item.slug}`}
-                  className="group flex h-full flex-col border border-line-dark [padding:var(--card-pad)] [transition:background-color_180ms,border-color_180ms] hover:border-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                  className="card-surface group flex h-full flex-col border border-line-dark [padding:var(--card-pad)] [transition:background-color_180ms,border-color_180ms] hover:border-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                 >
                   {/*
                     §19.3 — the card reads PROJECT unless the study carries
@@ -101,7 +101,7 @@ export function Work() {
               {AWAITING.map((slot) => (
                 <li
                   key={slot.id}
-                  className="flex h-full flex-col border border-dashed border-line-dark [padding:var(--card-pad)]"
+                  className="card-surface flex h-full flex-col border border-dashed border-line-dark [padding:var(--card-pad)]"
                 >
                   <p className="font-mono text-label uppercase tracking-[var(--tracking-label)] text-onpunct-2">
                     {slot.sector}
@@ -123,10 +123,9 @@ export function Work() {
             </ul>
 
             <p className="mt-8 max-w-[62ch] text-small text-onpunct-2 [line-height:var(--lh-body)]">
-              We publish a project once the client has approved it and the
-              numbers can be traced to a source outside the ad platform. Until
-              then these stay empty rather than carrying a figure nobody can
-              check.
+              We publish a project once the client has approved it and the numbers can be
+              traced to a source outside the ad platform. Until then these stay empty
+              rather than carrying a figure nobody can check.
             </p>
           </>
         )}

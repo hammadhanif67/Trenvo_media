@@ -39,14 +39,16 @@ export function LoopSection() {
               id="loop-heading"
               className="mt-4 text-onpunct [text-wrap:balance]"
             >
-              One loop. Four stages.{' '}
+              One loop.
+              <br />
+              Four stages.
+              <br />
               <span className="text-blue-500">Run continuously.</span>
             </Heading>
 
             <p className="mt-5 max-w-[38ch] text-body text-onpunct-2 [line-height:var(--lh-body)]">
-              Each stage hands the next one something specific. The last stage
-              briefs the first, which is what makes it a loop rather than a
-              checklist.
+              Each stage hands the next one something specific. The last stage briefs the
+              first, which is what makes it a loop rather than a checklist.
             </p>
 
             <a
@@ -65,15 +67,13 @@ export function LoopSection() {
                 const StageIcon = ICONS[i] ?? Search;
                 return (
                   <li key={stage.id} data-loop-stage className="relative">
-                    <div className="flex h-full flex-col border border-line-dark [padding:var(--card-pad)]">
-                      <StageIcon aria-hidden="true" className="size-5 shrink-0 text-blue-500" />
+                    <div className="card-surface flex h-full flex-col border border-line-dark [padding:var(--card-pad)]">
+                      <span className="icon-tile icon-tile--dark">
+                        <StageIcon aria-hidden="true" className="size-5" />
+                      </span>
 
-                      <p className="mt-5 font-mono text-label uppercase tracking-[var(--tracking-label)] text-blue-500">
-                        {stage.index}
-                      </p>
-
-                      <h3 className="mt-2 text-h4 text-onpunct [line-height:var(--lh-heading)]">
-                        {stage.name}
+                      <h3 className="mt-5 text-h4 text-onpunct [line-height:var(--lh-heading)]">
+                        <span className="text-blue-500">{stage.index}.</span> {stage.name}
                       </h3>
 
                       <p className="mt-3 flex-1 text-small text-onpunct-2 [line-height:var(--lh-body)]">

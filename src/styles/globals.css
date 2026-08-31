@@ -362,3 +362,42 @@ html::-webkit-scrollbar {
   background-color: var(--paper);
   color: var(--ink);
 }
+
+/* ---------------------------------------------------------------------------
+   CARD SHAPE — the reference's visual language
+
+   ⚠ §22.2 principle 5 says "Nothing rounds much. Radii stay small." The design
+   reference is unambiguously soft-cornered, and it was supplied as the design
+   direction, so the radius here is larger than that line intends. Recorded in
+   implementation.md §5.31; deleting these two tokens returns every card to a
+   square corner without touching a component.
+
+   One value for cards, one for the small tinted tiles the icons sit in. Having
+   exactly two stops is what keeps it looking designed rather than arbitrary.
+--------------------------------------------------------------------------- */
+:root {
+  --radius-card: 14px;
+  --radius-tile: 10px;
+}
+
+.card-surface {
+  border-radius: var(--radius-card);
+}
+
+/* The tinted square an icon sits in — the reference's most repeated motif. */
+.icon-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-tile);
+  background-color: color-mix(in oklab, var(--accent) 10%, transparent);
+  color: var(--accent);
+}
+
+/* On an ink section the same tile needs the lighter blue to stay visible. */
+.icon-tile--dark {
+  background-color: color-mix(in oklab, var(--blue-500) 14%, transparent);
+  color: var(--blue-500);
+}

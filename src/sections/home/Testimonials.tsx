@@ -44,9 +44,11 @@ export function Testimonials() {
               {TESTIMONIALS.map((t) => (
                 <li
                   key={t.id}
-                  className="flex h-full flex-col border border-hairline bg-base [padding:var(--card-pad)]"
+                  className="card-surface flex h-full flex-col border border-hairline bg-base [padding:var(--card-pad)]"
                 >
-                  <Quote aria-hidden="true" className="size-6 shrink-0 text-accent" />
+                  <span className="icon-tile">
+                    <Quote aria-hidden="true" className="size-5" />
+                  </span>
                   <blockquote className="mt-5 flex-1 text-body text-primary [line-height:var(--lh-body)]">
                     {t.quote}
                   </blockquote>
@@ -58,15 +60,15 @@ export function Testimonials() {
               ))}
             </ul>
           ) : (
-            <div className="mx-auto mt-12 max-w-[54ch] border border-hairline bg-base [padding:var(--card-pad)] text-center">
+            <div className="card-surface mx-auto mt-12 max-w-[54ch] border border-hairline bg-base [padding:var(--card-pad)] text-center">
               <Quote aria-hidden="true" className="mx-auto size-6 text-accent" />
               <p className="mt-5 text-body text-primary [line-height:var(--lh-body)]">
                 We have not published a client quote yet.
               </p>
               <p className="mt-3 text-small text-secondary [line-height:var(--lh-body)]">
                 When we do, it will carry a real name, a real company and that
-                client&rsquo;s permission. Anything else is just copy we wrote
-                about ourselves.
+                client&rsquo;s permission. Anything else is just copy we wrote about
+                ourselves.
               </p>
             </div>
           )}

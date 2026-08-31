@@ -38,8 +38,8 @@ export function Faq() {
               </Heading>
 
               <p className="mt-5 max-w-[36ch] text-body text-secondary [line-height:var(--lh-body)]">
-                If something you need to know is not here, ask it on the call —
-                we answer it the same way.
+                If something you need to know is not here, ask it on the call — we answer
+                it the same way.
               </p>
             </div>
 

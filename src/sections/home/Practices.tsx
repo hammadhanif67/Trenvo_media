@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Megaphone, Clapperboard } from 'lucide-react';
 import { Link } from 'react-router';
 import { Button, Container, Eyebrow, Heading, Icon, Section } from '../../components/ui';
 import { Reveal } from '../../components/motion/Reveal';
@@ -39,8 +39,8 @@ export function Practices() {
               </Heading>
 
               <p className="mt-5 max-w-[34ch] text-body text-secondary [line-height:var(--lh-body)]">
-                Strategy meets execution. Media that performs, creative that
-                converts, and one team accountable for both.
+                Strategy meets execution. Media that performs, creative that converts, and
+                one team accountable for both.
               </p>
 
               <div className="mt-8">
@@ -52,14 +52,19 @@ export function Practices() {
 
             {/* -------- RIGHT: one card per practice -------- */}
             <ul className="grid gap-6 sm:grid-cols-2">
-              {PRACTICES.cards.map((card) => {
+              {PRACTICES.cards.map((card, i) => {
                 const nav = PRACTICE_NAV.find((p) => p.id === card.id);
+                const PracticeIcon = i === 0 ? Megaphone : Clapperboard;
                 return (
                   <li
                     key={card.id}
-                    className="flex h-full flex-col border border-hairline bg-base [padding:var(--card-pad)]"
+                    className="card-surface flex h-full flex-col border border-hairline bg-base [padding:var(--card-pad)]"
                   >
-                    <h3 className="text-h4 text-primary [line-height:var(--lh-heading)]">
+                    <span className="icon-tile">
+                      <PracticeIcon aria-hidden="true" className="size-5" />
+                    </span>
+
+                    <h3 className="mt-5 text-h4 text-primary [line-height:var(--lh-heading)]">
                       {card.name}
                     </h3>
 
@@ -70,9 +75,7 @@ export function Practices() {
                     {/* Routed services are links; capabilities without a page are text. */}
                     <ul className="mt-6 flex-1 space-y-2">
                       {card.capabilities.map((capability) => {
-                        const service = nav?.services.find(
-                          (s) => s.label === capability,
-                        );
+                        const service = nav?.services.find((s) => s.label === capability);
                         return (
                           <li key={capability} className="flex items-start gap-2">
                             <span

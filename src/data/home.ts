@@ -45,42 +45,35 @@ export const HERO = {
 
 export const PROBLEM = {
   eyebrow: 'The problem',
-  /** `accent` is the word painted blue in the headline. */
   headline: 'Two vendors. One funnel.',
   headlineAccent: 'Nobody',
   headlineRest: 'owns the number.',
-  lead: 'Paid media and creative production usually sit with different suppliers. That is where performance stalls and budget quietly leaks.',
+  lead: 'Paid media and creative usually sit with different suppliers. That is why performance stalls and budgets get wasted.',
   /**
-   * §13 §2 asked for these as quotations the visitor has already heard. They
-   * are now named problems with the quotation kept underneath, which reads as
-   * diagnosis rather than as three disconnected complaints.
+   * Short by design — the reference sets these as two clipped lines each, and
+   * the compression is what makes them land. Each names a real consequence of
+   * split ownership; none claims a client, a number or a result.
    */
   cards: [
     {
       id: 'cost',
-      title: 'Duplicated cost',
-      body: 'Two suppliers research the same audience, build the same assets twice, and bill for both.',
-      quote: 'The creative is fatigued.',
-      source: 'The media buyer says',
+      title: 'Higher cost',
+      body: 'Duplicate work. Wasted spend. The same audience researched and billed twice.',
     },
     {
       id: 'visibility',
-      title: 'No shared view',
-      body: 'Each side reports on its own numbers. Nobody is looking at the one number that decides whether the spend worked.',
-      quote: 'The targeting is wrong.',
-      source: 'The creative team says',
+      title: 'Low visibility',
+      body: 'No unified view. Each side reports its own numbers, and nobody reads the one that matters.',
     },
     {
-      id: 'ownership',
-      title: 'Nobody owns it',
-      body: 'When results drop, each supplier can point at the other and both can be right. The account stalls while the argument runs.',
-      quote: 'That is not our half of the funnel.',
-      source: 'And so it goes',
+      id: 'blame',
+      title: 'Blame game',
+      body: 'The media buyer says the creative is fatigued. The creative team says the targeting is wrong.',
     },
   ],
   closing: {
     title: 'Both are correct. That is the problem.',
-    body: 'Trenvo runs the media and the creative as one system, with one owner and one number to answer for.',
+    body: 'We run paid media and creative as one system, with one owner and one number to answer for.',
   },
 };
 

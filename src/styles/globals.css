@@ -403,69 +403,55 @@ html::-webkit-scrollbar {
 }
 
 /* ---------------------------------------------------------------------------
-   HOVER CARD — the fill starts where the cursor entered
+   HOVER CARD — a subtle highlight from where the pointer entered
 
-   Requested: hovering a card should flood it with blue starting from the exact
-   point the pointer crossed the edge, from any direction.
+   Earlier this filled the whole card with a flat colour on hover. That was
+   rejected: flipping one card to white while its neighbours stayed dark broke
+   the grid's read and fought the active theme.
 
-   `clip-path: circle()` is what makes that literal. The fill layer is always
-   painted; the clip is a zero-radius circle centred on the entry point, and
-   hover grows it past the far corner. Entering from the left grows it
-   rightward, from the bottom-right grows it up and left — the geometry does the
-   work, so no direction is special-cased.
+   The mechanism survives, the intensity does not. `clip-path: circle()` still
+   grows from the exact point the pointer crossed the edge — entering from the
+   left grows rightward, from the bottom-right grows up and left, with no
+   direction special-cased — but what grows is now a FAINT accent wash, not an
+   opaque surface. The card keeps its own background, its own text colour and
+   its own theme; the highlight sits on top at low alpha.
 
-   --hx / --hy are written once on pointerenter, from the pointer's position
-   relative to the card. Nothing is written on pointermove: the effect is about
-   where you came IN, not where you are now, and a per-move write would be a
-   layout read on every frame for no visual gain.
+   --hx / --hy are written once on pointer enter, never on move: the effect is
+   about where you came in, and a per-move handler would force a layout read
+   every frame for nothing.
 
-   THE FILL IS THE OPPOSITE OF THE CARD'S OWN SURFACE. White was requested for
-   the cards on the ink sections; a white fill on a card that is ALREADY white
-   would be invisible, so the light-surface cards invert the other way and fill
-   with ink. Either way the card flips, which is the point.
-
-   Contrast holds in both directions: --ink on --paper is 19.79:1, and --paper
-   on --ink is the same pair reversed. Both are far past AA, which is why the
-   text can simply swap rather than needing a mid-tone.
-
-   150% radius, because a circle must reach the far CORNER, not the far edge —
-   at 100% a card's corners would stay unfilled.
+   The card's own hover styles carry the rest — border to accent, a soft blue
+   glow, a 2px lift. Those live on the card, not here, because only the card
+   knows which surface it is sitting on.
 --------------------------------------------------------------------------- */
 .hover-card {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
 }
 
 .hover-card__fill {
   position: absolute;
   inset: 0;
   z-index: -1;
-  /* Default: white, for the cards sitting on an ink section. */
-  background-color: var(--paper);
-  clip-path: circle(0% at var(--hx, 50%) var(--hy, 50%));
-  transition: clip-path 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: radial-gradient(
+    circle at var(--hx, 50%) var(--hy, 50%),
+    color-mix(in oklab, var(--accent) 22%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 320ms ease-out;
 }
 
 @media (hover: hover) {
   .hover-card:hover .hover-card__fill {
-    clip-path: circle(150% at var(--hx, 50%) var(--hy, 50%));
+    opacity: 1;
   }
 }
 
-/* A card on a light surface flips the other way, or it would fill white on
-   white and show nothing. */
-.hover-card--ink .hover-card__fill {
-  background-color: var(--ink);
-}
-
-/* Keyboard users get the same affordance; from the centre, since there is no
-   pointer to have entered from. */
 .hover-card:focus-within .hover-card__fill {
-  clip-path: circle(150% at 50% 50%);
+  opacity: 1;
 }
 
-/* §27.4 — no travelling edge under reduced motion; it simply switches. */
 @media (prefers-reduced-motion: reduce) {
   .hover-card__fill {
     transition: none;

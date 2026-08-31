@@ -52,7 +52,7 @@ export function Practices() {
             </div>
 
             {/* -------- RIGHT: one card per practice -------- */}
-            <ul className="grid gap-6 sm:grid-cols-2">
+            <ul className="grid auto-rows-fr gap-6 sm:grid-cols-2">
               {PRACTICES.cards.map((card, i) => {
                 const nav = PRACTICE_NAV.find((p) => p.id === card.id);
                 const PracticeIcon = i === 0 ? Megaphone : Clapperboard;
@@ -60,13 +60,13 @@ export function Practices() {
                   <li key={card.id}>
                     <HoverCard
                       as="div"
-                      className="hover-card--ink card-surface flex h-full flex-col border border-hairline bg-base p-6"
+                      className="flex h-full flex-col border border-hairline bg-base p-6 [transition:border-color_220ms,box-shadow_220ms,transform_220ms] hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_14px_40px_-26px_rgba(11,95,255,0.5)]"
                     >
-                      <span className="icon-tile transition-colors group-hover:bg-paper/15 group-hover:text-paper">
+                      <span className="icon-tile transition-colors">
                         <PracticeIcon aria-hidden="true" className="size-5" />
                       </span>
 
-                      <h3 className="mt-5 text-h4 text-primary transition-colors [line-height:var(--lh-heading)] group-hover:text-paper">
+                      <h3 className="mt-5 text-h4 text-primary transition-colors [line-height:var(--lh-heading)]">
                         {card.name}
                       </h3>
 
@@ -80,17 +80,17 @@ export function Practices() {
                             <li key={capability} className="flex items-start gap-2">
                               <span
                                 aria-hidden="true"
-                                className="mt-2 size-1 shrink-0 rounded bg-accent transition-colors group-hover:bg-paper"
+                                className="mt-2 size-1 shrink-0 rounded bg-accent transition-colors"
                               />
                               {service ? (
                                 <Link
                                   to={service.href}
-                                  className="text-small text-secondary underline-offset-4 transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent group-hover:text-paper"
+                                  className="text-small text-secondary underline-offset-4 transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                                 >
                                   {capability}
                                 </Link>
                               ) : (
-                                <span className="text-small text-secondary transition-colors group-hover:text-paper">
+                                <span className="text-small text-secondary transition-colors">
                                   {capability}
                                 </span>
                               )}
@@ -101,7 +101,7 @@ export function Practices() {
 
                       <Link
                         to={card.cta.href}
-                        className="mt-6 inline-flex items-center gap-2 text-small font-medium text-accent-strong transition-colors [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent group-hover:text-paper"
+                        className="mt-6 inline-flex items-center gap-2 text-small font-medium text-accent-strong transition-colors [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                       >
                         {card.cta.label}
                         <Icon icon={ArrowRight} />

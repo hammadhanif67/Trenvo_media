@@ -7,24 +7,32 @@ import { WebGLField } from '../../components/motion/WebGLField';
 import { HoverCard } from '../../components/ui/HoverCard';
 
 /**
- * 03 THE PROCESS — wireframe.md §03, master.md §6.3, §13 §3. Dark (--ink).
+ * 03 HOW WE WORK — wireframe.md §03, master.md §6.3, §13 §3. Dark (--ink).
  *
- * Built to the supplied reference: a 2x2 grid of large cards, each with a solid
- * blue icon tile, its number in an outlined circle, and its disciplines as
- * bordered chips. An arrow sits between the columns, and a dashed path returns
- * from the last card round to the first, labelled where it crosses the bottom.
+ * Rebuilt after the previous version was reported broken. What was wrong, and
+ * what replaced it:
  *
- * THE RETURN PATH IS THE POINT. Four cards in a row read as a checklist; the
- * path is what makes the section legible as a loop, which is its whole claim.
- * It is drawn with dashed borders on a positioned box rather than as an SVG, so
- * it reflows with the grid instead of needing coordinates that would go stale.
+ *  · CARDS WERE UNEQUAL. Their heights came from their content, so Make and
+ *    Learn — which carry four discipline chips — grew taller than Read and Run.
+ *    `auto-rows-fr` plus `h-full` makes every row an equal track, so all four
+ *    cards are the same width AND the same height by construction rather than
+ *    by luck.
  *
- * Everything decorative — the arrows, the path, the label — is aria-hidden. The
- * <ol> carries the sequence for assistive technology, and the section reads
- * correctly with no CSS at all.
+ *  · THE DASHED RETURN PATH IS GONE. It was absolutely positioned across the
+ *    grid, which is what pushed Run and Learn under the section edge and made
+ *    the layout read as clipped. The loop is stated by the copy and the arrows
+ *    now, not drawn over the content.
  *
- * §27.2 #2's scroll-scrub still drives the stages; see useLoopStageScrub for
- * why it is scrubbed but not pinned.
+ *  · NO RADIUS. Cards and their icon tiles are square.
+ *
+ *  · HOVER NO LONGER FLIPS THE SURFACE. Turning one card white while its
+ *    neighbours stayed dark broke the grid's read and fought the theme. Hover is
+ *    a border, a soft glow and a 2px lift; the card keeps its surface, its text
+ *    colour and the active theme.
+ *
+ * LAYOUT IS GRID, DECORATION IS ABSOLUTE. Both the two-column split and the 2x2
+ * card grid are CSS Grid. The only absolutely positioned things left are the
+ * arrows and the background wash.
  */
 
 const ICONS = [Search, Hammer, TrendingUp, FileBarChart] as const;
@@ -40,16 +48,12 @@ export function LoopSection() {
       aria-labelledby="loop-heading"
       className="relative overflow-hidden"
     >
-      {/*
-        The one 3D moment on the site (§31.7). Behind the cards, never inside
-        them — see WebGLField for the five conditions it satisfies.
-      */}
-      <WebGLField className="absolute inset-0 opacity-70" />
+      {/* The one 3D moment on the site (§31.7) — behind the grid, never in it. */}
+      <WebGLField className="absolute inset-0 opacity-60" />
 
-      {/* The soft blue bloom the reference carries in the lower left. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-32 -left-32 size-[36rem] opacity-40 blur-[100px]"
+        className="pointer-events-none absolute -bottom-40 -left-40 size-[34rem] opacity-35 blur-[110px]"
         style={{
           background:
             'radial-gradient(circle at center, var(--blue-600), transparent 70%)',
@@ -57,8 +61,9 @@ export function LoopSection() {
       />
 
       <Container className="relative">
-        <div className="grid gap-14 lg:grid-cols-[20rem_1fr] lg:gap-20">
-          {/* -------- LEFT: the claim -------- */}
+        {/* 31% / 69%, as specified. */}
+        <div className="grid gap-14 lg:grid-cols-[31fr_69fr] lg:items-start lg:gap-16">
+          {/* -------- LEFT -------- */}
           <div>
             <Eyebrow className="text-blue-500">{LOOP.eyebrow}</Eyebrow>
 
@@ -84,109 +89,64 @@ export function LoopSection() {
             </a>
           </div>
 
-          {/* -------- RIGHT: the four stages, and the loop back -------- */}
-          <div className="relative pb-20">
-            <ol className="relative grid gap-6 sm:grid-cols-2">
-              {LOOP.stages.map((stage, i) => {
-                const StageIcon = ICONS[i] ?? Search;
-                return (
-                  <li key={stage.id} data-loop-stage className="relative">
-                    <HoverCard
-                      as="div"
-                      className="card-surface flex h-full flex-col border border-line-dark bg-punct p-7"
-                    >
-                      {/* Solid blue tile, as the reference sets it. */}
-                      <span className="inline-flex size-12 items-center justify-center rounded-[var(--radius-tile)] bg-blue-600 text-paper">
-                        <StageIcon aria-hidden="true" className="size-6" />
-                      </span>
+          {/*
+            2 x 2 from sm up, one column on mobile. `auto-rows-fr` is what
+            guarantees equal heights: each row becomes a track of the same size,
+            so a card carrying four chips cannot outgrow one carrying two.
+          */}
+          <ol className="grid auto-rows-fr grid-cols-1 gap-5 sm:grid-cols-2 lg:gap-6">
+            {LOOP.stages.map((stage, i) => {
+              const StageIcon = ICONS[i] ?? Search;
+              return (
+                <li key={stage.id} data-loop-stage className="relative">
+                  <HoverCard
+                    as="div"
+                    className="flex h-full flex-col border border-line-dark bg-punct p-6 [transition:border-color_220ms,box-shadow_220ms,transform_220ms] hover:-translate-y-0.5 hover:border-blue-500/70 hover:shadow-[0_0_0_1px_rgba(77,141,255,0.18),0_14px_40px_-24px_rgba(77,141,255,0.55)]"
+                  >
+                    {/* Square tile, matching the square card. */}
+                    <span className="inline-flex size-11 shrink-0 items-center justify-center bg-blue-600 text-paper">
+                      <StageIcon aria-hidden="true" className="size-5" />
+                    </span>
 
-                      <h3 className="mt-6 flex items-center gap-3 text-h3 text-onpunct transition-colors [line-height:var(--lh-heading)] group-hover:text-ink">
-                        <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-blue-500/60 font-mono text-label text-blue-500 transition-colors group-hover:border-ink/30 group-hover:text-ink">
-                          {stage.index}
-                        </span>
-                        {stage.name}
-                      </h3>
+                    <h3 className="mt-5 text-h4 text-onpunct [line-height:var(--lh-heading)]">
+                      <span className="font-mono text-blue-500">{stage.index}.</span>{' '}
+                      {stage.name}
+                    </h3>
 
-                      <p className="mt-4 flex-1 text-body text-onpunct-2 transition-colors [line-height:var(--lh-body)] group-hover:text-ink">
-                        {stage.definition}
-                      </p>
+                    <p className="mt-3 flex-1 text-small text-onpunct-2 [line-height:var(--lh-body)]">
+                      {stage.definition}
+                    </p>
 
-                      {stage.disciplines.length > 0 && (
-                        <ul className="mt-6 flex flex-wrap gap-2 border-t border-line-dark pt-5 transition-colors group-hover:border-ink/15">
-                          {stage.disciplines.map((d) => (
-                            <li
-                              key={d}
-                              className="rounded-[8px] border border-line-dark px-3 py-2 font-mono text-label uppercase leading-none tracking-[var(--tracking-label)] text-onpunct-2 transition-colors group-hover:border-ink/25 group-hover:text-ink"
-                            >
-                              {d}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </HoverCard>
-
-                    {/* Arrow between the two columns. Decorative. */}
-                    {i % 2 === 0 && (
-                      <span
-                        aria-hidden="true"
-                        className="pointer-events-none absolute top-1/2 -right-3 z-10 hidden size-9 -translate-y-1/2 items-center justify-center rounded-full border border-blue-500/50 bg-punct text-blue-500 sm:flex"
-                      >
-                        <ArrowRight className="size-4" />
-                      </span>
+                    {stage.disciplines.length > 0 && (
+                      <ul className="mt-5 flex flex-wrap gap-2 border-t border-line-dark pt-4">
+                        {stage.disciplines.map((d) => (
+                          <li
+                            key={d}
+                            className="border border-line-dark px-2 py-2 font-mono text-label uppercase leading-none tracking-[var(--tracking-label)] text-onpunct-2"
+                          >
+                            {d}
+                          </li>
+                        ))}
+                      </ul>
                     )}
-                  </li>
-                );
-              })}
-            </ol>
+                  </HoverCard>
 
-            {/*
-              THE RETURN PATH, and why it is built this way.
-
-              The first attempt positioned the path with one set of insets and
-              the label with another, so the two could never agree — the label
-              was centred on the container while the path was inset 12% from it.
-              They are now the same element: the path is a box, and the label,
-              the entry dot and the return arrow are its CHILDREN, positioned
-              against its own edges. Alignment is therefore structural rather
-              than a pair of numbers that have to be kept in sync.
-
-              The box carries three dashed borders — right, bottom, left — so it
-              reads as a line leaving the last card, running under the grid and
-              coming back up beneath the first column.
-            */}
-            <div
-              aria-hidden="true"
-              /*
-                Hidden below sm. There the cards stack into one column, so there
-                is no two-by-two geometry for a return path to describe — it
-                would just be a dashed rectangle around a list.
-              */
-              className="pointer-events-none absolute inset-x-0 top-[calc(50%+1.5rem)] bottom-4 hidden sm:block"
-            >
-              <div /*
-                  -1.5rem on the right so the vertical leg runs OUTSIDE the
-                  cards, in the container gutter, rather than sitting exactly on
-                  their border — measured at 1312px for both, which read as the
-                  line touching the card edge. The section's gutter is 48px
-                  here, so 24px out still clears the overflow boundary.
-                */
-                className="absolute inset-y-0 left-[24%] -right-4 lg:-right-6 rounded-b-[20px] border-r border-b border-l border-dashed border-blue-500/40"
-              >
-                {/* Where the path leaves the last card. */}
-                <span className="absolute -top-1 right-0 size-2 -translate-y-1/2 translate-x-1/2 rounded-full bg-blue-500" />
-
-                {/* Where it returns, pointing back up into the first column. */}
-                <span className="absolute -top-2 left-0 flex -translate-x-1/2 -translate-y-1/2 text-blue-500">
-                  <ArrowRight className="size-4 -rotate-90" />
-                </span>
-
-                {/* Centred on the path's own bottom edge, not the container's. */}
-                <span className="card-surface absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 border border-blue-500/40 bg-punct px-5 py-2 font-mono text-label whitespace-nowrap uppercase tracking-[var(--tracking-label)] text-blue-500">
-                  Data fuels the next loop
-                </span>
-              </div>
-            </div>
-          </div>
+                  {/*
+                    Read -> Make and Run -> Learn. Decorative, so absolute is
+                    right here; it sits in the grid gap and never over content.
+                  */}
+                  {i % 2 === 0 && (
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute top-1/2 -right-3 z-10 hidden size-6 -translate-y-1/2 items-center justify-center bg-punct text-blue-500/70 sm:flex lg:-right-4"
+                    >
+                      <ArrowRight className="size-4" />
+                    </span>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </Container>
     </Section>

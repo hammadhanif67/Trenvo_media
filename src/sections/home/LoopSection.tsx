@@ -85,7 +85,7 @@ export function LoopSection() {
           </div>
 
           {/* -------- RIGHT: the four stages, and the loop back -------- */}
-          <div className="relative pb-16">
+          <div className="relative pb-20">
             <ol className="relative grid gap-6 sm:grid-cols-2">
               {LOOP.stages.map((stage, i) => {
                 const StageIcon = ICONS[i] ?? Search;
@@ -140,23 +140,51 @@ export function LoopSection() {
             </ol>
 
             {/*
-              The return path: down the right, along the bottom and back up the
-              left. Dashed borders on a positioned box, so it reflows with the
-              grid rather than needing coordinates that would go stale.
+              THE RETURN PATH, and why it is built this way.
+
+              The first attempt positioned the path with one set of insets and
+              the label with another, so the two could never agree — the label
+              was centred on the container while the path was inset 12% from it.
+              They are now the same element: the path is a box, and the label,
+              the entry dot and the return arrow are its CHILDREN, positioned
+              against its own edges. Alignment is therefore structural rather
+              than a pair of numbers that have to be kept in sync.
+
+              The box carries three dashed borders — right, bottom, left — so it
+              reads as a line leaving the last card, running under the grid and
+              coming back up beneath the first column.
             */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-[12%] top-[46%] bottom-0 rounded-b-[20px] border-r border-b border-l border-dashed border-blue-500/40"
-            />
-
-            {/* The label, sitting on the bottom of that path. */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-0 bottom-0 flex translate-y-1/2 justify-center"
+              /*
+                Hidden below sm. There the cards stack into one column, so there
+                is no two-by-two geometry for a return path to describe — it
+                would just be a dashed rectangle around a list.
+              */
+              className="pointer-events-none absolute inset-x-0 top-[calc(50%+1.5rem)] bottom-4 hidden sm:block"
             >
-              <span className="card-surface border border-blue-500/40 bg-punct px-5 py-2 font-mono text-label uppercase tracking-[var(--tracking-label)] text-blue-500">
-                Data fuels the next loop
-              </span>
+              <div /*
+                  -1.5rem on the right so the vertical leg runs OUTSIDE the
+                  cards, in the container gutter, rather than sitting exactly on
+                  their border — measured at 1312px for both, which read as the
+                  line touching the card edge. The section's gutter is 48px
+                  here, so 24px out still clears the overflow boundary.
+                */
+                className="absolute inset-y-0 left-[24%] -right-4 lg:-right-6 rounded-b-[20px] border-r border-b border-l border-dashed border-blue-500/40"
+              >
+                {/* Where the path leaves the last card. */}
+                <span className="absolute -top-1 right-0 size-2 -translate-y-1/2 translate-x-1/2 rounded-full bg-blue-500" />
+
+                {/* Where it returns, pointing back up into the first column. */}
+                <span className="absolute -top-2 left-0 flex -translate-x-1/2 -translate-y-1/2 text-blue-500">
+                  <ArrowRight className="size-4 -rotate-90" />
+                </span>
+
+                {/* Centred on the path's own bottom edge, not the container's. */}
+                <span className="card-surface absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 border border-blue-500/40 bg-punct px-5 py-2 font-mono text-label whitespace-nowrap uppercase tracking-[var(--tracking-label)] text-blue-500">
+                  Data fuels the next loop
+                </span>
+              </div>
             </div>
           </div>
         </div>

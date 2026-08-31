@@ -60,7 +60,7 @@ export function Practices() {
                   <li key={card.id}>
                     <HoverCard
                       as="div"
-                      className="card-surface flex h-full flex-col border border-hairline bg-base p-6"
+                      className="hover-card--ink card-surface flex h-full flex-col border border-hairline bg-base p-6"
                     >
                       <span className="icon-tile transition-colors group-hover:bg-paper/15 group-hover:text-paper">
                         <PracticeIcon aria-hidden="true" className="size-5" />

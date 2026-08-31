@@ -419,10 +419,14 @@ html::-webkit-scrollbar {
    where you came IN, not where you are now, and a per-move write would be a
    layout read on every frame for no visual gain.
 
-   THE FILL IS --blue-600 LITERALLY, not var(--accent). The accent token
-   resolves to --blue-500 in the dark theme, and white on --blue-500 measures
-   3.2:1, which fails AA. --blue-600 gives white 5.13:1 in both themes. Same
-   reasoning as the service cards in §5.21.
+   THE FILL IS THE OPPOSITE OF THE CARD'S OWN SURFACE. White was requested for
+   the cards on the ink sections; a white fill on a card that is ALREADY white
+   would be invisible, so the light-surface cards invert the other way and fill
+   with ink. Either way the card flips, which is the point.
+
+   Contrast holds in both directions: --ink on --paper is 19.79:1, and --paper
+   on --ink is the same pair reversed. Both are far past AA, which is why the
+   text can simply swap rather than needing a mid-tone.
 
    150% radius, because a circle must reach the far CORNER, not the far edge —
    at 100% a card's corners would stay unfilled.
@@ -437,7 +441,8 @@ html::-webkit-scrollbar {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-color: var(--blue-600);
+  /* Default: white, for the cards sitting on an ink section. */
+  background-color: var(--paper);
   clip-path: circle(0% at var(--hx, 50%) var(--hy, 50%));
   transition: clip-path 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -446,6 +451,12 @@ html::-webkit-scrollbar {
   .hover-card:hover .hover-card__fill {
     clip-path: circle(150% at var(--hx, 50%) var(--hy, 50%));
   }
+}
+
+/* A card on a light surface flips the other way, or it would fill white on
+   white and show nothing. */
+.hover-card--ink .hover-card__fill {
+  background-color: var(--ink);
 }
 
 /* Keyboard users get the same affordance; from the centre, since there is no

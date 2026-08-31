@@ -23,7 +23,9 @@ import { HoverCard } from '../../components/ui/HoverCard';
  *    the layout read as clipped. The loop is stated by the copy and the arrows
  *    now, not drawn over the content.
  *
- *  · NO RADIUS. Cards and their icon tiles are square.
+ *  · NO RADIUS, and no icon tile. The icon sits inline to the left of the
+ *    stage title; the filled block above it was pure decoration costing ~64px
+ *    of card height, which is what made the cards read as bulky.
  *
  *  · HOVER NO LONGER FLIPS THE SURFACE. Turning one card white while its
  *    neighbours stayed dark broke the grid's read and fought the theme. Hover is
@@ -103,17 +105,24 @@ export function LoopSection() {
                     as="div"
                     className="flex h-full flex-col border border-line-dark bg-punct p-6 [transition:border-color_220ms,box-shadow_220ms,transform_220ms] hover:-translate-y-0.5 hover:border-blue-500/70 hover:shadow-[0_0_0_1px_rgba(77,141,255,0.18),0_14px_40px_-24px_rgba(77,141,255,0.55)]"
                   >
-                    {/* Square tile, matching the square card. */}
-                    <span className="inline-flex size-11 shrink-0 items-center justify-center bg-blue-600 text-paper">
-                      <StageIcon aria-hidden="true" className="size-5" />
-                    </span>
-
-                    <h3 className="mt-5 text-h4 text-onpunct [line-height:var(--lh-heading)]">
-                      <span className="font-mono text-blue-500">{stage.index}.</span>{' '}
-                      {stage.name}
+                    {/*
+                      Icon inline, on the left of the title, with no block
+                      behind it. The filled tile above the heading was costing
+                      roughly 64px of card height for decoration and pushing the
+                      real content down — which is what made the cards bulky.
+                    */}
+                    <h3 className="flex items-center gap-3 text-h4 text-onpunct [line-height:var(--lh-heading)]">
+                      <StageIcon
+                        aria-hidden="true"
+                        className="size-5 shrink-0 text-blue-500"
+                      />
+                      <span>
+                        <span className="font-mono text-blue-500">{stage.index}.</span>{' '}
+                        {stage.name}
+                      </span>
                     </h3>
 
-                    <p className="mt-3 flex-1 text-small text-onpunct-2 [line-height:var(--lh-body)]">
+                    <p className="mt-4 flex-1 text-small text-onpunct-2 [line-height:var(--lh-body)]">
                       {stage.definition}
                     </p>
 
@@ -130,19 +139,6 @@ export function LoopSection() {
                       </ul>
                     )}
                   </HoverCard>
-
-                  {/*
-                    Read -> Make and Run -> Learn. Decorative, so absolute is
-                    right here; it sits in the grid gap and never over content.
-                  */}
-                  {i % 2 === 0 && (
-                    <span
-                      aria-hidden="true"
-                      className="pointer-events-none absolute top-1/2 -right-3 z-10 hidden size-6 -translate-y-1/2 items-center justify-center bg-punct text-blue-500/70 sm:flex lg:-right-4"
-                    >
-                      <ArrowRight className="size-4" />
-                    </span>
-                  )}
                 </li>
               );
             })}

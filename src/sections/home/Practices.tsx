@@ -62,11 +62,12 @@ export function Practices() {
                       as="div"
                       className="flex h-full flex-col border border-hairline bg-base p-6 [transition:border-color_220ms,box-shadow_220ms,transform_220ms] hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_14px_40px_-26px_rgba(11,95,255,0.5)]"
                     >
-                      <span className="icon-tile transition-colors">
-                        <PracticeIcon aria-hidden="true" className="size-5" />
-                      </span>
-
-                      <h3 className="mt-5 text-h4 text-primary transition-colors [line-height:var(--lh-heading)]">
+                      {/* Icon inline on the left, matching the process cards. */}
+                      <h3 className="flex items-center gap-3 text-h4 text-primary [line-height:var(--lh-heading)]">
+                        <PracticeIcon
+                          aria-hidden="true"
+                          className="size-5 shrink-0 text-accent"
+                        />
                         {card.name}
                       </h3>
 

@@ -60,7 +60,7 @@ export function HeroTrustBrands({
         reference. At 1.45rem with a 2.5rem gap the row needed more than the
         ~606px available and NutriPure wrapped to a second line.
       */}
-      <ul className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-5 sm:gap-x-7">
+      <ul className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-5 sm:gap-x-8">
         {brands.map((brand) => {
           const colour = brand.light;
           const head =

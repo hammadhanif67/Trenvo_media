@@ -64,7 +64,7 @@ export function LoopSection() {
 
       <Container className="relative">
         {/* 31% / 69%, as specified. */}
-        <div className="grid gap-14 lg:grid-cols-[31fr_69fr] lg:items-start lg:gap-16">
+        <div className="grid gap-12 lg:grid-cols-[31fr_69fr] lg:items-start lg:gap-16">
           {/* -------- LEFT -------- */}
           <div>
             <Eyebrow className="text-blue-500">{LOOP.eyebrow}</Eyebrow>

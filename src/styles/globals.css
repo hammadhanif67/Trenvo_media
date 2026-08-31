@@ -457,3 +457,89 @@ html::-webkit-scrollbar {
     transition: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   DISCIPLINE CARD — the joined grid, and its hover
+
+   The reference draws these six as one bordered grid with the cells sharing
+   their edges, not as six separate cards floating in gaps. Each cell carries a
+   full border and is pulled a pixel left and up, so adjacent borders collapse
+   into a single hairline. On hover the cell is raised in the stacking order so
+   its blue border draws OVER its neighbours rather than under them.
+
+   The hover is exactly what was specified and nothing more: border to blue, a
+   restrained blue glow, and a 3px lift. No background change, no inversion, no
+   scale, no radius.
+
+   The transition names three properties explicitly. `transition: all` would
+   sweep outline-color in with them and animate the focus ring, which §27.2 #10
+   forbids ("Instant — never animated").
+--------------------------------------------------------------------------- */
+.disc-card {
+  position: relative;
+  margin-left: -1px;
+  margin-top: -1px;
+  transition:
+    transform 250ms ease,
+    border-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+@media (hover: hover) {
+  .disc-card:hover {
+    z-index: 1;
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 30px -18px color-mix(in oklab, var(--accent) 65%, transparent);
+  }
+}
+
+/* Keyboard parity — the same treatment, without needing a pointer. */
+.disc-card:focus-within {
+  z-index: 1;
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 10px 30px -18px color-mix(in oklab, var(--accent) 65%, transparent);
+}
+
+/* The arrow steps to the right; the icon gains a little weight. */
+.disc-card__arrow {
+  transition: transform 250ms ease;
+}
+@media (hover: hover) {
+  .disc-card:hover .disc-card__arrow {
+    transform: translateX(4px);
+  }
+}
+.disc-card:focus-within .disc-card__arrow {
+  transform: translateX(4px);
+}
+
+.disc-card__icon {
+  transition:
+    box-shadow 250ms ease,
+    transform 250ms ease;
+}
+@media (hover: hover) {
+  .disc-card:hover .disc-card__icon {
+    box-shadow: 0 6px 18px -8px color-mix(in oklab, var(--accent) 80%, transparent);
+  }
+}
+
+/* §27.4 — the movement goes; the colour change stays, because it is the
+   affordance rather than the decoration. */
+@media (prefers-reduced-motion: reduce) {
+  .disc-card,
+  .disc-card__arrow,
+  .disc-card__icon {
+    transition: border-color 250ms ease;
+  }
+  .disc-card:hover,
+  .disc-card:focus-within {
+    transform: none;
+  }
+  .disc-card:hover .disc-card__arrow,
+  .disc-card:focus-within .disc-card__arrow {
+    transform: none;
+  }
+}

@@ -40,7 +40,7 @@ export function Testimonials() {
           </div>
 
           {hasTestimonials ? (
-            <ul className="mt-14 grid gap-6 md:grid-cols-3">
+            <ul className="mt-12 grid gap-6 md:grid-cols-3">
               {TESTIMONIALS.map((t) => (
                 <li
                   key={t.id}

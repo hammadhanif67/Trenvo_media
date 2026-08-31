@@ -15,6 +15,7 @@
  *   · og:image is an absolute URL            §21.6 — scrapers ignore relative
  *   · the production origin is configured    §21.1 — never ship a guessed domain
  *   · social profile URLs are configured    never ship a link to a guessed handle
+ *   · every spacing utility is on the scale  §25.1 — off-scale classes are SILENT
  *
  * A link counts as resolved if it points at a built page OR a real file in
  * dist — an earlier version only whitelisted /assets and reported every
@@ -179,6 +180,52 @@ report(
   'social profile URLs are configured',
   placeholderSocial.size > 0
     ? `${placeholderSocial.size} pages still carry PROFILE-NOT-SET — set the real URLs in src/data/navigation.ts SOCIAL_LINKS`
+    : '',
+);
+
+/*
+ * §25.1 — SPACING UTILITIES MUST BE ON THE SCALE.
+ *
+ * globals.css resets `--spacing-*` and redefines only the §25.1 steps, so a
+ * class like `p-7`, `mt-14` or `py-2.5` compiles to NOTHING. It is not an
+ * error, it is not a warning, and the element simply renders with no padding.
+ *
+ * That failed silently three separate times on this project — py-2.5 on the
+ * capability chips, py-1.5 on the stage chips, and p-7 / mt-14 / gap-14 /
+ * size-14 across five files, where a card reported `padding: 0px` on a class
+ * that looked correct. This check reads the SOURCE rather than dist, because by
+ * the time it reaches the CSS the class has already vanished.
+ */
+const SPACING_STEPS = new Set([
+  '0', '1', '2', '3', '4', '5', '6', '8', '10', '12',
+  '16', '20', '24', '32', '40', '50',
+  'px', 'auto', 'full',
+]);
+const SPACING_PROPS =
+  'p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|gap-x|gap-y|space-x|space-y|size|w|h';
+const spacingPattern = new RegExp(
+  `(?<![\\w-])(${SPACING_PROPS})-(\\d+(?:\\.\\d+)?)(?![\\w.-])`,
+  'g',
+);
+
+const offScale = [];
+if (existsSync('src')) {
+  for (const file of walk('src')) {
+    if (!/\.tsx?$/.test(file)) continue;
+    const source = readFileSync(file, 'utf8');
+    for (const match of source.matchAll(spacingPattern)) {
+      if (!SPACING_STEPS.has(match[2])) {
+        offScale.push(`${relative('src', file)}: ${match[0]}`);
+      }
+    }
+  }
+}
+
+report(
+  offScale.length === 0,
+  'every spacing utility is on the §25.1 scale',
+  offScale.length > 0
+    ? `${offScale.length} off-scale class(es) generate no CSS — ${[...new Set(offScale)].slice(0, 6).join(', ')}`
     : '',
 );
 

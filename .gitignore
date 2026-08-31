@@ -12,9 +12,19 @@ dist
 # into public/video/. The COMPRESSED output is committed, so the site builds
 # and deploys from a clean clone without them. The masters are not: binaries
 # this size live in a git history forever and can never really be removed.
-# Keep them in your own storage; drop them back into media-source/ if you ever
+# Keep them in your own storage; drop them back into media-source/
+
+# Hero source images. 8.5MB of 1672px PNGs that `npm run hero-images`
+# compresses into public/hero (largest 1600px AVIF: 67.6KB). The COMPRESSED
+# output is committed, so the site builds from a clean clone without these.
+public/assets/ if you ever
 # need to re-encode.
 media-source/
+
+# Hero source images. 8.5MB of 1672px PNGs that `npm run hero-images`
+# compresses into public/hero (largest 1600px AVIF: 67.6KB). The COMPRESSED
+# output is committed, so the site builds from a clean clone without these.
+public/assets/
 
 # Internal specification and planning documents. These carry Trenvo's business
 # model, positioning and pricing, and this repository is public — so they are

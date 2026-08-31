@@ -14,7 +14,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "video": "node scripts/build-video.mjs"
+    "hero-images": "node scripts/build-hero-images.mjs"
   },
   "dependencies": {
     "framer-motion": "^13.1.1",

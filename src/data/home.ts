@@ -15,16 +15,16 @@ import type { PracticeId } from '../types/content';
 /* -- 01 HERO — wireframe.md §01, master.md §13 §1 -------------------------- */
 
 /**
- * ⚠ The hero background video contradicts the approved documents — §22.2 p6
- * ("no stock"), §27.3 ("looping ambient animation", "anything that moves while
- * the user is reading"), §23.4 ("glows, neon") and §22.1's placement of
- * "dark cinematic video-led" in the price-competitive territory §4.3 rejects.
+ * ⚠ Hero background image system: five photographs, twenty reveal treatments.
  *
- * It was requested explicitly and is built. THIS IS THE OFF SWITCH: set it to
- * false and the documented hero returns exactly as specified, with no other
- * edit anywhere. See implementation.md §5.15.
+ * Replaces the hero video, removed on request. This still contradicts §22.2 p6
+ * and §27.3 ("looping ambient animation", "anything that moves while the user
+ * is reading"), and is a deliberate, requested override.
+ *
+ * THIS IS THE OFF SWITCH: false leaves a still ink hero with no imagery and no
+ * motion, and needs no other edit. See implementation.md §5.23.
  */
-export const HERO_VIDEO_ENABLED = true;
+export const HERO_BACKGROUND = true;
 
 /**
  * ⚠ Hero loop motion beyond §27.2 #1's documented draw: a continuous travel

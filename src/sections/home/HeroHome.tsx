@@ -1,7 +1,7 @@
 import { Button, Container, Section } from '../../components/ui';
 import { LoopDiagram } from '../../components/media/LoopDiagram';
-import { HERO, HERO_VIDEO_ENABLED } from '../../data/home';
-import { HeroBackgroundVideo } from '../../components/media/HeroBackgroundVideo';
+import { HERO, HERO_BACKGROUND } from '../../data/home';
+import { HeroBackground } from '../../components/hero/HeroBackground';
 import { PRIMARY_CTA, SECONDARY_CTA } from '../../data/navigation';
 
 /**
@@ -22,7 +22,7 @@ export function HeroHome() {
       aria-labelledby="hero-heading"
       className="relative overflow-x-clip lg:min-h-[90vh] lg:flex lg:items-center"
     >
-      {HERO_VIDEO_ENABLED && <HeroBackgroundVideo />}
+      {HERO_BACKGROUND && <HeroBackground />}
 
       {/* Above the video layer. The documented hero content is unchanged. */}
       <Container className="relative">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button, Container, Icon, Section } from '../../components/ui';
-import { HeroVisual } from '../../components/hero/HeroVisual';
+import { HeroBackdrop } from '../../components/hero/HeroBackdrop';
 import { HERO_CONTENT } from '../../components/hero/heroContent';
 import { HeroTrustBrands } from '../../components/hero/HeroTrustBrands';
 import { HeroKeyword } from '../../components/hero/HeroKeyword';
@@ -82,8 +82,13 @@ export function HeroHome() {
         published by Navbar from a real measurement), and the content is centred
         in what remains. So the hero owns the first screen at any height, the
         next section starts exactly at the fold, and the type stays large.
+
+        Applied at EVERY breakpoint, not just lg. Once the framed visual was
+        replaced by a full-bleed backdrop the mobile hero got shorter than the
+        viewport, and the dark section below started showing above the fold at
+        1024 and under — measured, then fixed here.
       */
-      className="hero-surface relative flex overflow-x-clip [padding-block:var(--s-12)] lg:min-h-[calc(100dvh-var(--header-h,84px))] lg:items-center lg:[padding-block:var(--s-16)]"
+      className="hero-surface relative flex min-h-[calc(100dvh-var(--header-h,84px))] items-center overflow-x-clip [padding-block:var(--s-12)] lg:[padding-block:var(--s-16)]"
     >
       {/*
         Section publishes its surface from the THEME, so in dark mode it would
@@ -92,6 +97,8 @@ export function HeroHome() {
         to match — §23.2's rule then resolves to --blue-600, the blue that is
         legal on light, exactly as it does in the light theme.
       */}
+      {HERO_BACKGROUND && <HeroBackdrop />}
+
       <SurfaceContext.Provider value="light">
         <Container className="relative">
           {/*
@@ -99,7 +106,12 @@ export function HeroHome() {
           takes slightly more than half so the headline can break where it is
           written to break, and the visual still reads as the larger object.
         */}
-          <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+          {/*
+            One column now. The photograph is the whole hero background, so the
+            copy keeps to the LEFT — the half the backdrop blurs and washes —
+            and the sharp right half is left clear for the picture to read.
+          */}
+          <div className="max-w-[38rem] lg:max-w-[42%]">
             {/* -------- LEFT: content -------- */}
             <div
               className={`[container-type:inline-size] ${curtain ? 'hero-curtain' : ''}`}
@@ -156,15 +168,6 @@ export function HeroHome() {
             */}
               <HeroTrustBrands label={c.trustLabel} brands={c.trustBrands} />
             </div>
-
-            {/* -------- RIGHT: the visual -------- */}
-            {HERO_BACKGROUND && (
-              <div
-                className={`order-last w-full ${curtain ? 'hero-curtain-visual' : ''}`}
-              >
-                <HeroVisual />
-              </div>
-            )}
           </div>
         </Container>
       </SurfaceContext.Provider>

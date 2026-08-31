@@ -40,27 +40,36 @@ import { TESTIMONIALS } from '../../data/testimonials';
  * here needs editing for that to happen.
  */
 
-/** Where the black fill starts, from the edge the pointer crossed. */
-function edgeFromPointer(el: HTMLElement, clientX: number, clientY: number) {
+/**
+ * The fill grows from wherever the pointer actually crossed the edge — every
+ * angle, not four. `--ex`/`--ey` are that point; `--er` is the distance from it
+ * to the FARTHEST corner, which is the radius the circle needs to cover the
+ * whole card from an off-centre start without the overdraw a blanket 150%
+ * would cost.
+ */
+function setFillOrigin(el: HTMLElement, clientX: number, clientY: number) {
   const r = el.getBoundingClientRect();
-  const x = (clientX - r.left) / r.width - 0.5;
-  const y = (clientY - r.top) / r.height - 0.5;
-  return Math.abs(x) > Math.abs(y) ? (x > 0 ? 'right' : 'left') : y > 0 ? 'bottom' : 'top';
+  const x = clientX - r.left;
+  const y = clientY - r.top;
+  const reach = Math.hypot(Math.max(x, r.width - x), Math.max(y, r.height - y));
+  el.style.setProperty('--ex', `${x}px`);
+  el.style.setProperty('--ey', `${y}px`);
+  el.style.setProperty('--er', `${reach}px`);
 }
 
 export function Testimonials() {
   const brands = HERO_CONTENT.trustBrands;
 
   /*
-    The direction is written to a data attribute and the retract is NOT reset on
-    leave, so the fill withdraws to the edge it came from rather than snapping.
-    The pointer position feeds a very small blue highlight — see
-    `.client-card__fill` for how restrained it is kept.
+    The origin is NOT reset on leave, so the circle collapses back to the point
+    it grew from rather than snapping away. The pointer position separately
+    feeds a very small highlight — see `.client-card__fill` for how restrained
+    it is kept.
   */
   const fill = useMemo(
     () => ({
       onPointerEnter: (e: React.PointerEvent<HTMLElement>) => {
-        e.currentTarget.dataset.dir = edgeFromPointer(e.currentTarget, e.clientX, e.clientY);
+        setFillOrigin(e.currentTarget, e.clientX, e.clientY);
       },
       onPointerMove: (e: React.PointerEvent<HTMLElement>) => {
         const el = e.currentTarget;
@@ -164,9 +173,13 @@ export function Testimonials() {
             THE SIXTH TILE IS NOT A CLIENT. There are five real ones and the
             grid wants six; the honest way to square it is to say what this is
             rather than invent a brand to fill the hole.
+
+            It is filled and inverted against the theme — ink on light, paper on
+            dark — so it reads as the one ACTION in the grid rather than a
+            client whose logo failed to load.
           */}
           <li className="flex">
-            <article className="client-card" {...fill}>
+            <article className="client-card client-card--cta" {...fill}>
               <span className="client-card__fill" aria-hidden="true" />
 
               <div className="relative z-10 flex h-full flex-col">
@@ -178,20 +191,22 @@ export function Testimonials() {
                 </div>
 
                 <h3 className="client-card__cta mt-8 text-[1.35rem] font-semibold leading-none tracking-tight">
-                  Start a project
+                  Your brand next
                 </h3>
 
-                <p className="client-card__sector mt-2 text-small">New partnership</p>
+                <p className="client-card__sector mt-2 text-small">
+                  Paid media · Creative · AI video
+                </p>
 
                 <div className="client-card__rule mt-auto border-t pt-5">
                   <p className="client-card__note text-small [line-height:var(--lh-body)]">
-                    A brand joins this grid when the work is live and approved.
+                    Tell us what you sell and who you need to reach.
                   </p>
                   <Link
                     to="/contact"
                     className="client-card__cta mt-3 inline-flex items-center gap-2 text-small font-medium after:absolute after:inset-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                   >
-                    Talk to us
+                    Start a project
                     <ArrowRight aria-hidden="true" className="client-card__arrow size-4" />
                   </Link>
                 </div>

@@ -662,31 +662,27 @@ html::-webkit-scrollbar {
   }
 }
 
+
 /* ---------------------------------------------------------------------------
    .client-card — the client proof grid ("In their words")
 
    SQUARE. No radius anywhere, in any state.
 
-   THE FILL IS DIRECTIONAL. A layer inside the card scales up from the edge the
-   pointer actually crossed: enter from the left and the black arrives from the
-   left. The direction is written to `data-dir` on pointerenter and deliberately
-   NOT cleared on leave, so the fill withdraws to the same edge instead of
-   snapping away.
+   THE FILL IS RADIAL, FROM THE EXACT ENTRY POINT. The first pass snapped the
+   origin to one of four edges; this one takes the pointer's real coordinates,
+   so a cursor crossing a corner starts the fill at that corner and one crossing
+   the middle of an edge starts it there — every angle, not four.
 
-   It is a `transform` on a layer that already covers the card, so nothing
-   animates width, height, top or left, nothing reflows, and the fill cannot
-   escape the square — the card clips it. Content sits above it on z-10 and only
-   changes colour, so the card never moves and contributes no layout shift.
+   `clip-path: circle()` grows from `--ex`/`--ey`, and `--er` is the distance
+   from that point to the FARTHEST corner, computed on entry. That is what makes
+   the circle cover the whole card no matter where it started, without the
+   overdraw a blanket 150% would cost. Nothing animates width, height, top or
+   left, so the card cannot reflow and the fill cannot escape the square.
 
    COLOURS ARE LITERAL, not semantic. --accent resolves to --blue-500 in the
    dark theme and --blue-600 in light; on a black fill only --blue-500 is
-   legible (6.15:1, against 2.9:1 for --blue-600). So the hover state names its
+   legible (6.19:1, against 2.9:1 for --blue-600). So the hover state names its
    colours directly rather than inheriting a token that flips underneath it.
-
-   Measured on the black fill: white 20.4:1, --muted-dark 7.7:1,
-   --blue-500 6.2:1. In the dark theme the card sits on --ink-soft and the fill
-   is --ink, so the state reads as the surface dropping a step, and the border
-   turning accent carries the rest.
 --------------------------------------------------------------------------- */
 
 .client-card {
@@ -700,12 +696,29 @@ html::-webkit-scrollbar {
   border: 1px solid var(--hairline);
   background-color: var(--bg-base);
   padding: var(--s-6);
-  transition: border-color 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 140ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .client-card:hover,
 .client-card:focus-within {
   border-color: var(--blue-500);
+}
+
+/*
+  EVERY DIVIDER SITS ON THE SAME LINE. The footer is pushed down by `mt-auto`,
+  so the cards' bottoms already agreed — but a note that wrapped to two lines
+  made its footer 24px taller and pulled that card's rule 24px above the other
+  five. Reserving two line boxes on every note keeps the whole row level however
+  the copy falls, at any width.
+*/
+.client-card__note {
+  min-height: 3rem; /* two 24px line boxes */
+}
+
+@supports (min-height: 2lh) {
+  .client-card__note {
+    min-height: 2lh;
+  }
 }
 
 /* -- the fill ------------------------------------------------------------- */
@@ -715,41 +728,20 @@ html::-webkit-scrollbar {
   inset: 0;
   z-index: 0;
   background-color: var(--ink);
-  transform: scale(0);
-  transform-origin: center;
-  transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.client-card[data-dir='left'] .client-card__fill {
-  transform: scaleX(0);
-  transform-origin: left center;
-}
-
-.client-card[data-dir='right'] .client-card__fill {
-  transform: scaleX(0);
-  transform-origin: right center;
-}
-
-.client-card[data-dir='top'] .client-card__fill {
-  transform: scaleY(0);
-  transform-origin: center top;
-}
-
-.client-card[data-dir='bottom'] .client-card__fill {
-  transform: scaleY(0);
-  transform-origin: center bottom;
+  clip-path: circle(0px at var(--ex, 50%) var(--ey, 50%));
+  transition: clip-path 480ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .client-card:hover .client-card__fill,
 .client-card:focus-within .client-card__fill {
-  transform: scale(1);
+  clip-path: circle(var(--er, 150%) at var(--ex, 50%) var(--ey, 50%));
 }
 
 /*
   The cursor light. Deliberately small and faint — 220px and 10% of a blue that
   is already dark on black. It is a hint that the surface is live, not a
   spotlight, and it is drawn INSIDE the fill so it can only ever be seen once
-  the card is black.
+  the card is filled.
 */
 .client-card__fill::after {
   content: '';
@@ -758,7 +750,7 @@ html::-webkit-scrollbar {
   opacity: 0;
   background: radial-gradient(
     220px circle at var(--cx, 50%) var(--cy, 50%),
-    rgb(77 141 255 / 0.1),
+    rgb(255 255 255 / 0.08),
     transparent 70%
   );
   transition: opacity 320ms ease;
@@ -809,10 +801,10 @@ html::-webkit-scrollbar {
 }
 
 .client-card__arrow {
-  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* -- content, over the black ---------------------------------------------- */
+/* -- content, over the fill ------------------------------------------------ */
 
 .client-card:hover .client-card__num,
 .client-card:focus-within .client-card__num {
@@ -849,40 +841,102 @@ html::-webkit-scrollbar {
   transform: translateX(4px);
 }
 
-/*
-  §27.4 — the state still has to be obvious without motion, so the fill stays
-  and only the travel goes: it appears at full size instead of sweeping in.
-*/
-@media (prefers-reduced-motion: reduce) {
-  .client-card,
-  .client-card__fill,
-  .client-card__fill::after,
-  .client-card__num,
-  .client-card__label,
-  .client-card__sector,
-  .client-card__note,
-  .client-card__cta,
-  .client-card__mark,
-  .client-card__rule,
-  .client-card__arrow {
-    transition: none;
-  }
+/* ---------------------------------------------------------------------------
+   THE SIXTH TILE — the invitation, not a client
 
-  .client-card .client-card__fill,
-  .client-card[data-dir] .client-card__fill {
-    transform: scale(1);
-    opacity: 0;
-  }
+   It is filled by default and inverted against the theme: ink in the light
+   theme, paper in the dark one. That is what separates it from the five client
+   cards at a glance without a second colour or a badge — it reads as the one
+   action in the grid rather than a client whose logo failed to load.
 
-  .client-card:hover .client-card__fill,
-  .client-card:focus-within .client-card__fill {
-    opacity: 1;
-  }
+   Its fill is --blue-600 rather than ink, because a black card cannot animate
+   to black. Everything on it turns white, which is 5.13:1 on that blue; the
+   secondary grey would be 2.09:1 there, so it is not used on this tile.
+--------------------------------------------------------------------------- */
 
-  .client-card:hover .client-card__arrow,
-  .client-card:focus-within .client-card__arrow {
-    transform: none;
-  }
+.client-card--cta {
+  background-color: var(--ink);
+  border-color: var(--ink);
+}
+
+.client-card--cta .client-card__num {
+  color: var(--blue-500);
+}
+
+.client-card--cta .client-card__label,
+.client-card--cta .client-card__sector,
+.client-card--cta .client-card__note {
+  color: var(--muted-dark);
+}
+
+.client-card--cta .client-card__cta {
+  color: var(--paper);
+}
+
+.client-card--cta .client-card__rule {
+  border-color: color-mix(in oklab, var(--paper) 22%, transparent);
+}
+
+:root[data-theme='dark'] .client-card--cta {
+  background-color: var(--paper);
+  border-color: var(--paper);
+}
+
+:root[data-theme='dark'] .client-card--cta .client-card__num {
+  color: var(--blue-600);
+}
+
+:root[data-theme='dark'] .client-card--cta .client-card__label,
+:root[data-theme='dark'] .client-card--cta .client-card__sector,
+:root[data-theme='dark'] .client-card--cta .client-card__note {
+  color: var(--muted);
+}
+
+:root[data-theme='dark'] .client-card--cta .client-card__cta {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .client-card--cta .client-card__rule {
+  border-color: color-mix(in oklab, var(--ink) 18%, transparent);
+}
+
+.client-card--cta .client-card__fill {
+  background-color: var(--blue-600);
+}
+
+.client-card--cta:hover,
+.client-card--cta:focus-within {
+  border-color: var(--blue-600);
+}
+
+.client-card--cta:hover .client-card__num,
+.client-card--cta:hover .client-card__label,
+.client-card--cta:hover .client-card__sector,
+.client-card--cta:hover .client-card__note,
+.client-card--cta:hover .client-card__cta,
+.client-card--cta:focus-within .client-card__num,
+.client-card--cta:focus-within .client-card__label,
+.client-card--cta:focus-within .client-card__sector,
+.client-card--cta:focus-within .client-card__note,
+.client-card--cta:focus-within .client-card__cta,
+:root[data-theme='dark'] .client-card--cta:hover .client-card__num,
+:root[data-theme='dark'] .client-card--cta:hover .client-card__label,
+:root[data-theme='dark'] .client-card--cta:hover .client-card__sector,
+:root[data-theme='dark'] .client-card--cta:hover .client-card__note,
+:root[data-theme='dark'] .client-card--cta:hover .client-card__cta,
+:root[data-theme='dark'] .client-card--cta:focus-within .client-card__num,
+:root[data-theme='dark'] .client-card--cta:focus-within .client-card__label,
+:root[data-theme='dark'] .client-card--cta:focus-within .client-card__sector,
+:root[data-theme='dark'] .client-card--cta:focus-within .client-card__note,
+:root[data-theme='dark'] .client-card--cta:focus-within .client-card__cta {
+  color: var(--paper);
+}
+
+.client-card--cta:hover .client-card__rule,
+.client-card--cta:focus-within .client-card__rule,
+:root[data-theme='dark'] .client-card--cta:hover .client-card__rule,
+:root[data-theme='dark'] .client-card--cta:focus-within .client-card__rule {
+  border-color: color-mix(in oklab, var(--paper) 34%, transparent);
 }
 
 /* ---------------------------------------------------------------------------
@@ -895,15 +949,14 @@ html::-webkit-scrollbar {
    it happens.
 
    Left to run together, the 140ms colour change finishes long before the 480ms
-   sweep, so text turns white while the far edge of the card is still white —
-   white on white. The fix is to make the colour LAG the fill: the sweep uses a
-   strong ease-out and is about 85% across by 230ms, so the flip is delayed to
-   land inside that last stretch and completes at 370ms, while the fill is
-   between roughly 85% and 97% covered.
+   sweep, so text turns white while the far side of the card is still light —
+   white on white. The fix is to make the colour LAG the fill: the circle uses a
+   strong ease-out and has covered most of the card by 230ms, so the flip is
+   delayed to land inside that last stretch and completes at 370ms.
 
-   The mismatch is therefore bounded to a narrow strip at the trailing edge for
-   about 140ms, rather than the whole card for half a second. On the way out
-   there is no delay: the retract uncovers fastest at the start, so the colours
+   The mismatch is therefore bounded to whatever the circle has not reached yet
+   for about 140ms, rather than the whole card for half a second. On the way out
+   there is no delay: the circle collapses fastest at the start, so the colours
    go back immediately and stay ahead of it.
 --------------------------------------------------------------------------- */
 
@@ -930,7 +983,26 @@ html::-webkit-scrollbar {
   transition-delay: 230ms;
 }
 
+/*
+  §27.4 — the state still has to be obvious without motion, so the fill stays
+  and only the travel goes: it appears at full size instead of sweeping in, and
+  the colours change with it rather than on a delay.
+*/
 @media (prefers-reduced-motion: reduce) {
+  .client-card,
+  .client-card__fill,
+  .client-card__fill::after,
+  .client-card__num,
+  .client-card__label,
+  .client-card__sector,
+  .client-card__note,
+  .client-card__cta,
+  .client-card__mark,
+  .client-card__rule,
+  .client-card__arrow {
+    transition: none;
+  }
+
   .client-card:hover
     :where(
       .client-card__num,
@@ -952,5 +1024,10 @@ html::-webkit-scrollbar {
       .client-card__rule
     ) {
     transition-delay: 0ms;
+  }
+
+  .client-card:hover .client-card__arrow,
+  .client-card:focus-within .client-card__arrow {
+    transform: none;
   }
 }

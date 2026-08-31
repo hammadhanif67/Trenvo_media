@@ -6,11 +6,8 @@ import { Problem } from '../sections/home/Problem';
 import { LoopSection } from '../sections/home/LoopSection';
 import { Practices } from '../sections/home/Practices';
 import { Specialists } from '../sections/home/Specialists';
-import { HowItStarts } from '../sections/home/HowItStarts';
-import { Metrics } from '../sections/home/Metrics';
-import { Teardowns } from '../sections/home/Teardowns';
 import { Work } from '../sections/home/Work';
-import { Fit } from '../sections/home/Fit';
+import { Testimonials } from '../sections/home/Testimonials';
 import { Faq } from '../sections/home/Faq';
 import { Close } from '../sections/home/Close';
 
@@ -41,11 +38,8 @@ export function Home() {
       <LoopSection />
       <Practices />
       <Specialists />
-      <HowItStarts />
-      <Metrics />
-      <Teardowns />
       <Work />
-      <Fit />
+      <Testimonials />
       <Faq />
       <Close />
     </>

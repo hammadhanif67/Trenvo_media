@@ -1,73 +1,116 @@
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
-import { Container, Eyebrow, Heading, Icon, Section } from '../../components/ui';
-import { PRACTICES } from '../../data/home';
+import { Button, Container, Eyebrow, Heading, Icon, Section } from '../../components/ui';
 import { Reveal } from '../../components/motion/Reveal';
+import { PRACTICE_NAV } from '../../data/navigation';
+import { PRACTICES } from '../../data/home';
 
 /**
- * 04 THE THREE PRACTICES — wireframe.md §04. Light (--surface).
+ * 04 SERVICES — wireframe.md §04, master.md §6.2, §9.5
  *
- * wireframe.md §04: "Three equal cards. SERVICES APPEAR AS LISTS INSIDE
- * PRACTICES — NEVER AS EIGHT SEPARATE CARDS." That reframe is §34.1(1), "worth
- * more than every visual decision in this document".
+ * Rebuilt to the reference: a claim on the left, service cards on the right,
+ * each card listing the routed services inside that practice.
  *
- * Card order: practice name (mono eyebrow) -> the question it owns (H3) ->
- * service list -> hairline -> one mechanism line -> link.
- *
- * Hover: "blue rule extends along the card's top edge, 180ms. No lift, no
- * shadow" (§27.2 #4). The capability list is text, not links — D6.
+ * The card lists are REAL LINKS to real service pages, which is what makes this
+ * section useful rather than decorative — and is the internal linking the SEO
+ * brief asks for, with the service name as the anchor text rather than "read
+ * more". `PRACTICE_NAV` is the same source the header menu uses, so a service
+ * can never appear here and be missing from the menu.
  */
 export function Practices() {
   return (
-    <Section tone="surface" aria-labelledby="practices-heading">
+    <Section tone="paper" aria-labelledby="practices-heading">
       <Container>
         <Reveal>
-          <Eyebrow className="text-secondary">{PRACTICES.eyebrow}</Eyebrow>
-          <Heading level={2} size="h2" id="practices-heading" className="mt-3">
-            {PRACTICES.headline}
-          </Heading>
+          <div className="grid gap-12 lg:grid-cols-[20rem_1fr] lg:gap-16">
+            {/* -------- LEFT: the claim -------- */}
+            <div>
+              <Eyebrow className="text-accent">{PRACTICES.eyebrow}</Eyebrow>
 
-          <div className="mt-16 grid gap-6 lg:grid-cols-3">
-            {PRACTICES.cards.map((card) => (
-              <article
-                key={card.id}
-                className="group relative flex flex-col border border-hairline bg-base [padding:var(--card-pad)]"
+              <Heading
+                level={2}
+                size="h2"
+                id="practices-heading"
+                className="mt-4 text-primary"
               >
-                {/* §27.2 #4 — the blue rule extends on hover. Transform only. */}
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-blue-600 transition-transform duration-[180ms] group-hover:scale-x-100"
-                />
+                Media.
+                <br />
+                <span className="text-accent">Studio.</span>
+              </Heading>
 
-                <p className="font-mono text-label uppercase [letter-spacing:var(--tracking-label)] text-secondary">
-                  {card.name}
-                </p>
+              <p className="mt-5 max-w-[34ch] text-body text-secondary [line-height:var(--lh-body)]">
+                Strategy meets execution. Media that performs, creative that
+                converts, and one team accountable for both.
+              </p>
 
-                <h3 className="mt-3 text-h3 font-semibold text-primary [letter-spacing:var(--tracking-heading)] [line-height:var(--lh-heading)]">
-                  {card.question}
-                </h3>
+              <div className="mt-8">
+                <Button href="/services" variant="secondary">
+                  Explore services
+                </Button>
+              </div>
+            </div>
 
-                <ul className="mt-6 space-y-2">
-                  {card.capabilities.map((capability) => (
-                    <li key={capability} className="text-body text-secondary">
-                      {capability}
-                    </li>
-                  ))}
-                </ul>
+            {/* -------- RIGHT: one card per practice -------- */}
+            <ul className="grid gap-6 sm:grid-cols-2">
+              {PRACTICES.cards.map((card) => {
+                const nav = PRACTICE_NAV.find((p) => p.id === card.id);
+                return (
+                  <li
+                    key={card.id}
+                    className="flex h-full flex-col border border-hairline bg-base [padding:var(--card-pad)]"
+                  >
+                    <h3 className="text-h4 text-primary [line-height:var(--lh-heading)]">
+                      {card.name}
+                    </h3>
 
-                <hr className="mt-8 w-12 border-0 border-t border-hairline" />
+                    <p className="mt-2 text-small text-secondary [line-height:var(--lh-body)]">
+                      {card.question}
+                    </p>
 
-                <p className="mt-6 flex-1 text-body text-primary">{card.mechanism}</p>
+                    {/* Routed services are links; capabilities without a page are text. */}
+                    <ul className="mt-6 flex-1 space-y-2">
+                      {card.capabilities.map((capability) => {
+                        const service = nav?.services.find(
+                          (s) => s.label === capability,
+                        );
+                        return (
+                          <li key={capability} className="flex items-start gap-2">
+                            <span
+                              aria-hidden="true"
+                              className="mt-2 size-1 shrink-0 rounded bg-accent"
+                            />
+                            {service ? (
+                              <Link
+                                to={service.href}
+                                className="text-small text-primary underline-offset-4 hover:text-accent-strong hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                              >
+                                {capability}
+                              </Link>
+                            ) : (
+                              <span className="text-small text-secondary">
+                                {capability}
+                              </span>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
 
-                <Link
-                  to={card.cta.href}
-                  className="mt-8 inline-flex items-center gap-2 text-body text-accent-strong [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                >
-                  {card.cta.label}
-                  <Icon icon={ArrowRight} />
-                </Link>
-              </article>
-            ))}
+                    <p className="mt-6 border-t border-hairline pt-4 text-small text-secondary [line-height:var(--lh-body)]">
+                      {card.mechanism}
+                    </p>
+
+                    <Link
+                      to={card.cta.href}
+                      className="mt-5 inline-flex items-center gap-2 text-small font-medium text-accent-strong [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                    >
+                      {card.cta.label}
+                      <Icon icon={ArrowRight} />
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </Reveal>
       </Container>

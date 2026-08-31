@@ -1,73 +1,135 @@
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
-import { Container, Eyebrow, Heading, Icon, Section } from '../../components/ui';
+import { Button, Container, Eyebrow, Heading, Icon, Section } from '../../components/ui';
 import { WORK } from '../../data/work';
-import { WORK_SECTION } from '../../data/home';
-import { Reveal } from '../../components/motion/Reveal';
 
 /**
- * 09 WORK — wireframe.md §09. Light (--paper).
+ * 09 RESULTS — wireframe.md §09, master.md §19, §20.3
  *
- * EMPTY-STATE RULE, verbatim from wireframe.md §09: "if there is genuinely
- * nothing to show at launch, THIS SECTION IS REMOVED ENTIRELY. No placeholders,
- * no stock, no 'coming soon'." §13 §9: "A missing section is invisible; a fake
- * one is fatal."
+ * ⚠ THE REFERENCE SHOWS "+187%", "+203%", "+152%" ON THREE CASE-STUDY CARDS.
+ * None of those is built. `WORK` is empty: no case study has been supplied, so
+ * there is no result to report and inventing one is forbidden by §2.8 and by
+ * the standing instruction on this project. §20.3 is blunt about it — "a
+ * missing section is invisible; a fake one is fatal."
  *
- * Cards are labelled PROJECT, never RESULT, until real measured results exist
- * (§19.3). The discriminated union in types/content.ts makes rendering a metric
- * on a project a compile error rather than a review catch.
+ * What ships instead is the LAYOUT with its result slots visibly empty and
+ * labelled as unpublished. That satisfies the brief's "clearly marked and easy
+ * to replace" without a single fabricated number ever reaching a visitor.
+ *
+ * TO POPULATE: add entries to `data/work.ts`. The cards below are replaced by
+ * real ones automatically, and §19.3's discriminated union makes attaching a
+ * metric to a project a compile error rather than a review catch.
  */
+
+/** Shown only while `WORK` is empty. Carries no numbers, by design. */
+const AWAITING = [
+  {
+    id: 'a',
+    sector: 'Paid social',
+    label: 'Meta Ads engagement',
+  },
+  {
+    id: 'b',
+    sector: 'Paid search',
+    label: 'Google Ads account build',
+  },
+  {
+    id: 'c',
+    sector: 'Creative production',
+    label: 'Performance video engagement',
+  },
+];
+
 export function Work() {
-  if (WORK.length === 0) return null;
+  const hasWork = WORK.length > 0;
 
   return (
-    <Section tone="paper" aria-labelledby="work-heading">
+    <Section tone="ink" aria-labelledby="work-heading">
       <Container>
-        <Reveal>
-          <Eyebrow className="text-secondary">{WORK_SECTION.eyebrow}</Eyebrow>
-          <Heading level={2} size="h2" id="work-heading" className="mt-3">
-            {WORK_SECTION.headline}
-          </Heading>
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <Eyebrow className="text-blue-500">Case studies</Eyebrow>
+            <Heading
+              level={2}
+              size="h2"
+              id="work-heading"
+              className="mt-4 max-w-[22ch] text-onpunct [text-wrap:balance]"
+            >
+              Work we can show, when there is work to show.
+            </Heading>
+          </div>
 
-          {/* wireframe.md §09 — horizontal scroller with scroll-snap, keyboard
-            navigable. The progress rail arrives with SnapScroller at the motion
-            pass (§27.2 #7); the scroll region itself is usable now. */}
-          {/*
-          wireframe.md §09 requires this scroller to be keyboard-navigable, and
-          a scrollable region must be focusable for that to be true. jsx-a11y
-          flags a bare tabIndex on a <ul>; role="region" with a name is what
-          makes it legitimate rather than a stray tab stop — the container is a
-          real landmark a keyboard user scrolls, not a fake control.
-        */}
-          <ul
-            className="mt-16 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4"
-            role="region"
-            tabIndex={0}
-            aria-label="Selected work"
-          >
+          <div className="shrink-0">
+            <Button href="/work" surface="dark" variant="secondary">
+              View all case studies
+            </Button>
+          </div>
+        </div>
+
+        {hasWork ? (
+          <ul className="mt-14 grid gap-6 md:grid-cols-3">
             {WORK.map((item) => (
-              <li key={item.slug} className="w-80 shrink-0 snap-start">
-                <article className="flex h-full flex-col border border-hairline [padding:var(--card-pad)]">
-                  {/* §19.3 — the label is PROJECT until results are real. */}
-                  <p className="font-mono text-label uppercase [letter-spacing:var(--tracking-label)] text-secondary">
-                    {item.kind === 'result' ? 'Result' : 'Project'}
+              <li key={item.slug}>
+                <Link
+                  to={`/work/${item.slug}`}
+                  className="group flex h-full flex-col border border-line-dark [padding:var(--card-pad)] [transition:background-color_180ms,border-color_180ms] hover:border-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                >
+                  {/*
+                    §19.3 — the card reads PROJECT unless the study carries
+                    measured metrics. The kind discriminator is what decides it,
+                    so a project can never be dressed as a result here.
+                  */}
+                  <p className="font-mono text-label uppercase tracking-[var(--tracking-label)] text-blue-500">
+                    {item.kind === 'result' ? 'Results' : 'Project'}
                   </p>
-                  <h3 className="mt-4 flex-1 text-h4 text-primary [line-height:var(--lh-heading)]">
+                  <h3 className="mt-3 text-h4 text-onpunct [line-height:var(--lh-heading)]">
                     {item.context}
                   </h3>
-                </article>
+                  <p className="mt-3 flex-1 text-small text-onpunct-2 [line-height:var(--lh-body)]">
+                    {item.diagnosis}
+                  </p>
+                  <span className="mt-6 inline-flex items-center gap-2 text-small text-blue-500">
+                    Read the project <Icon icon={ArrowRight} />
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>
+        ) : (
+          <>
+            <ul className="mt-14 grid gap-6 md:grid-cols-3">
+              {AWAITING.map((slot) => (
+                <li
+                  key={slot.id}
+                  className="flex h-full flex-col border border-dashed border-line-dark [padding:var(--card-pad)]"
+                >
+                  <p className="font-mono text-label uppercase tracking-[var(--tracking-label)] text-onpunct-2">
+                    {slot.sector}
+                  </p>
 
-          <Link
-            to={WORK_SECTION.cta.href}
-            className="mt-8 inline-flex items-center gap-2 text-body text-accent-strong [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-          >
-            {WORK_SECTION.cta.label}
-            <Icon icon={ArrowRight} />
-          </Link>
-        </Reveal>
+                  <p className="mt-6 text-h2 text-onpunct-2/40" aria-hidden="true">
+                    &mdash;
+                  </p>
+
+                  <p className="mt-2 text-small text-onpunct-2 [line-height:var(--lh-body)]">
+                    {slot.label}
+                  </p>
+
+                  <p className="mt-6 border-t border-line-dark pt-4 font-mono text-label uppercase tracking-[var(--tracking-label)] text-onpunct-2">
+                    Not yet published
+                  </p>
+                </li>
+              ))}
+            </ul>
+
+            <p className="mt-8 max-w-[62ch] text-small text-onpunct-2 [line-height:var(--lh-body)]">
+              We publish a project once the client has approved it and the
+              numbers can be traced to a source outside the ad platform. Until
+              then these stay empty rather than carrying a figure nobody can
+              check.
+            </p>
+          </>
+        )}
       </Container>
     </Section>
   );

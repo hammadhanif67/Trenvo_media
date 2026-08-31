@@ -45,14 +45,43 @@ export const HERO = {
 
 export const PROBLEM = {
   eyebrow: 'The problem',
-  headline: 'Two vendors. One funnel. Nobody owns the number.',
-  /** §13 §2: "each written as a quotation the visitor has heard before". */
-  voices: [
-    { source: 'The media buyer says', quote: 'The creative is fatigued.' },
-    { source: 'The creative team says', quote: 'The targeting is wrong.' },
-    { source: 'The developer says', quote: 'Nobody told us the page was for ads.' },
+  /** `accent` is the word painted blue in the headline. */
+  headline: 'Two vendors. One funnel.',
+  headlineAccent: 'Nobody',
+  headlineRest: 'owns the number.',
+  lead: 'Paid media and creative production usually sit with different suppliers. That is where performance stalls and budget quietly leaks.',
+  /**
+   * §13 §2 asked for these as quotations the visitor has already heard. They
+   * are now named problems with the quotation kept underneath, which reads as
+   * diagnosis rather than as three disconnected complaints.
+   */
+  cards: [
+    {
+      id: 'cost',
+      title: 'Duplicated cost',
+      body: 'Two suppliers research the same audience, build the same assets twice, and bill for both.',
+      quote: 'The creative is fatigued.',
+      source: 'The media buyer says',
+    },
+    {
+      id: 'visibility',
+      title: 'No shared view',
+      body: 'Each side reports on its own numbers. Nobody is looking at the one number that decides whether the spend worked.',
+      quote: 'The targeting is wrong.',
+      source: 'The creative team says',
+    },
+    {
+      id: 'ownership',
+      title: 'Nobody owns it',
+      body: 'When results drop, each supplier can point at the other and both can be right. The account stalls while the argument runs.',
+      quote: 'That is not our half of the funnel.',
+      source: 'And so it goes',
+    },
   ],
-  closing: 'Both are correct. That is the problem.',
+  closing: {
+    title: 'Both are correct. That is the problem.',
+    body: 'Trenvo runs the media and the creative as one system, with one owner and one number to answer for.',
+  },
 };
 
 /* -- 03 THE LOOP — wireframe.md §03, master.md §6.3, §13 §3 ---------------- */
@@ -159,6 +188,45 @@ export const PRACTICES = {
 };
 
 /* -- 05 SPECIALISTS — wireframe.md §05, master.md §13 §5 ------------------- */
+
+/**
+ * The principles grid. Every one is grounded in something the site already
+ * documents or commits to elsewhere — there is no badge, award, partnership or
+ * certification here, because Trenvo holds none and inventing one is the single
+ * thing this project must never do.
+ */
+export const PRINCIPLES = [
+  {
+    id: 'revenue',
+    title: 'Revenue focused',
+    body: 'The target is contribution margin, reconciled against a source outside the ad platform — not the number the platform reports to itself.',
+  },
+  {
+    id: 'data',
+    title: 'Data driven',
+    body: 'Decisions come from account structure, creative performance by hook and hold, and measurement integrity. Not from opinion.',
+  },
+  {
+    id: 'creative',
+    title: 'Creative that converts',
+    body: 'Variants differ by hypothesis, not by filter. Every cut exists to answer a question the last round raised.',
+  },
+  {
+    id: 'testing',
+    title: 'Continuous testing',
+    body: 'The loop runs continuously rather than in campaign bursts, so what failed is retired and what worked briefs the next cycle.',
+  },
+  {
+    id: 'reporting',
+    title: 'Transparent reporting',
+    body: 'You see the same numbers we do, with the boundary of each discipline published so you know who owns what.',
+  },
+  {
+    id: 'specialists',
+    title: 'Named specialists',
+    body: 'Six disciplines, and you will know the name of every person who touches your account. No anonymous pool, no silent handovers.',
+  },
+];
 
 export const SPECIALISTS_SECTION = {
   eyebrow: 'The difference',

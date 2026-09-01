@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { Container, Eyebrow, Heading, Rule, Section } from '../components/ui';
 import { DISCIPLINES } from '../data/disciplines';
 import { HIRING_STANDARD } from '../data/process';
+import { SOCIAL_LINKS } from '../data/navigation';
 import { CONTACT_EMAIL } from '../lib/site';
 import { Seo } from '../components/Seo';
 import { breadcrumbSchema } from '../lib/schema';
@@ -12,9 +13,19 @@ import { breadcrumbSchema } from '../lib/schema';
  * The footer's Company column links here, and a footer link that 404s is worse
  * than no link — so the page exists and says something true.
  *
- * ⚠ NO VACANCY IS ADVERTISED, because none has been supplied. Listing an
- * opening that does not exist wastes a real person's application, and a
- * "we're always hiring" page with no roles is the same lie in softer words.
+ * ⚠ NO VACANCY IS RESTATED HERE, and that is deliberate.
+ *
+ * This page used to assert "There is no open vacancy listed today." That was
+ * written when no role data had been supplied, and it had since become FALSE:
+ * the company's LinkedIn page carries live hiring posts (a Paid Digital
+ * Marketing Internship, a Video Editor (AI-Savvy), and a Creative Graphic
+ * Designer / Video Editor). A careers page that denies openings the company is
+ * publicly advertising costs it real applicants.
+ *
+ * The fix is not to mirror the vacancy list here, which would go stale the same
+ * way. It is to point at the surface where roles are actually posted. Listing an
+ * opening that does not exist wastes a real person's application; denying one
+ * that does is the same failure pointed the other way.
  *
  * What this page does instead is publish the hiring STANDARD — which is already
  * documented, is genuinely unusual, and is the thing a good specialist actually
@@ -49,6 +60,9 @@ const WHAT_IT_IS_LIKE = [
 ];
 
 export function Careers() {
+  /* Undefined if the LinkedIn entry is ever removed; the block unmounts. */
+  const linkedIn = SOCIAL_LINKS.find((social) => social.label === 'LinkedIn');
+
   return (
     <>
       <Seo
@@ -67,8 +81,8 @@ export function Careers() {
             We hire specialists, and we do not move them off their craft.
           </Heading>
           <p className="mt-6 max-w-[54ch] text-lead text-onpunct-2 [line-height:var(--lh-body)]">
-            There is no open vacancy listed today. The standard below is what we hire
-            against whenever there is, and it does not change between roles.
+            Open roles are posted on our LinkedIn page. The standard below is what we
+            hire against whenever there is one, and it does not change between roles.
           </p>
         </Container>
       </Section>
@@ -180,6 +194,48 @@ export function Careers() {
             We read every one, and we reply even when the answer is no. If there is no
             open role in your discipline we will say that rather than leave it open.
           </p>
+
+          {/*
+            Roles are advertised on LinkedIn, so that is where a candidate should
+            look for what is actually open right now. Linking to the profile rather
+            than restating a vacancy list here means this page cannot go stale
+            against it — which is the failure it had before, claiming no openings
+            while the LinkedIn page carried live hiring posts.
+
+            Derived from SOCIAL_LINKS so it cannot drift from the footer, and it
+            simply does not render if the LinkedIn entry is ever removed.
+          */}
+          {linkedIn && (
+            <p className="mt-6 text-body text-primary [line-height:var(--lh-body)]">
+              Current openings are posted on{' '}
+              <a
+                href={linkedIn.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="text-accent-strong underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              >
+                our LinkedIn page
+                {/*
+                  An sr-only SUFFIX, not an aria-label.
+
+                  The footer's social links use aria-label because they contain
+                  only an icon and have no visible text to override. This one is
+                  a text link, and an aria-label like "Trenvo Media on LinkedIn"
+                  would REPLACE the accessible name with a string that does not
+                  contain the visible words "our LinkedIn page" — which breaks
+                  WCAG 2.5.3 Label in Name for anyone driving the page by voice,
+                  because saying "click our LinkedIn page" would no longer match.
+
+                  Appending inside the link keeps the visible text at the start
+                  of the accessible name and still warns that focus is about to
+                  move to another tab (WCAG 3.2.5).
+                */}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+              . An introduction is worth sending either way — we keep them on file
+              against the discipline you practise.
+            </p>
+          )}
         </Container>
       </Section>
     </>

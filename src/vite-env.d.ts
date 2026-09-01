@@ -16,3 +16,20 @@ interface ImportMetaEnv {
   readonly VITE_ANALYTICS_SITE_ID?: string;
   readonly VITE_CONTACT_ENDPOINT?: string;
 }
+
+/**
+ * Router hydration state that vite-react-ssg emits inline into every
+ * prerendered page, just before the closing tag of #root.
+ *
+ * src/main.tsx feeds it to createBrowserRouter so the router is initialized on
+ * the first render pass. Without it the router must resolve the loaders the
+ * library injects, renders nothing meanwhile, and hydration mismatches into a
+ * duplicated application tree. See the header of src/main.tsx.
+ */
+interface Window {
+  __staticRouterHydrationData?: {
+    loaderData?: Record<string, unknown>;
+    actionData?: Record<string, unknown> | null;
+    errors?: Record<string, unknown> | null;
+  };
+}

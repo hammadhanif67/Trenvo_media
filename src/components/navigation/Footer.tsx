@@ -140,8 +140,26 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* -------- LINK COLUMNS -------- */}
-          <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {/*
+            -------- LINK COLUMNS --------
+
+            ⚠ `grid-cols-2` FROM THE SMALLEST WIDTH, NOT FROM `sm`.
+
+            These four columns previously collapsed to ONE below 640px, which
+            made the footer 1821px tall at 320px — 2.3 full screens of stacked
+            links. Two of those columns are Media and Creative, carrying the
+            same six service links as the Services dropdown.
+
+            The reported symptom was that after the content ended the page
+            "started again" with the navigation repeated. Nothing was actually
+            duplicated: one <header>, one <main>, one <footer>, verified. It was
+            this — two and a bit screens of navigation-shaped links immediately
+            after the footer began, reading as a second page.
+
+            Two columns from 320px halves that block without removing a single
+            link. Nothing here is deleted; only the wrapping changes.
+          */}
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 lg:grid-cols-4">
             {/* Services grouped by practice — §21.4, wireframe.md §12. */}
             {PRACTICE_NAV.map((practice) => (
               <FooterColumn

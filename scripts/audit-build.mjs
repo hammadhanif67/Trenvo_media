@@ -106,6 +106,7 @@ const titles = new Map();
 const descriptions = new Map();
 const placeholderOrigin = new Set();
 const routesWithSocial = new Set();
+const noindexedContent = [];
 const missingMeta = [];
 
 for (const file of htmlFiles) {
@@ -191,6 +192,26 @@ for (const file of htmlFiles) {
 
   const isNoindex = /<meta[^>]+name="robots"[^>]+content="[^"]*noindex/i.test(html);
 
+  /*
+    DYNAMIC CONTENT ROUTES MUST BE INDEXABLE.
+
+    /teardowns/:slug and /work/:slug had no ROUTE_SEO entry, so getRouteSeo()
+    fell through to NOT_FOUND_SEO and every published teardown and case study
+    would have shipped `noindex`. The sitemap generator then drops the URL.
+
+    The checks below could not catch that: "every indexable route is in the
+    sitemap" SKIPS noindex pages, so a page that had wrongly removed itself
+    passed vacuously. An absence-based test cannot detect an absence.
+
+    This is the positive version. It is vacuous while both collections are
+    empty and activates the moment content is published — which is when it
+    matters. scripts/check-dynamic-seo.mjs guards the same invariant BEFORE any
+    content exists, by testing the SEO module directly with fixtures.
+  */
+  if (isNoindex && /^\/(teardowns|work)\/.+/.test(route)) {
+    noindexedContent.push(route);
+  }
+
   /* -- Metadata completeness on every INDEXABLE route ---------------------- */
   const title = head.match(/<title[^>]*>([^<]*)<\/title>/)?.[1] ?? '';
   const description = head.match(/name="description" content="([^"]*)"/)?.[1] ?? '';
@@ -272,6 +293,13 @@ report(
   missingMeta.length === 0,
   'every indexable route carries full metadata',
   missingMeta.join(' | '),
+);
+report(
+  noindexedContent.length === 0,
+  'every published teardown and case study is indexable',
+  noindexedContent.length > 0
+    ? `${noindexedContent.join(', ')} — shipped noindex; see the dynamic-route block in src/data/seo.ts`
+    : '',
 );
 
 const duplicateTitles = [...titles.entries()].filter(([, routes]) => routes.length > 1);

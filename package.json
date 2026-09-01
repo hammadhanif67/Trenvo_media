@@ -15,8 +15,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "hero-images": "node scripts/build-hero-images.mjs",
-    "verify": "npm run typecheck && npm run lint && npm run build && npm run audit",
-    "fonts": "node scripts/sync-fonts.mjs"
+    "verify": "npm run typecheck && npm run lint && npm run build && npm run audit && npm run check:seo",
+    "fonts": "node scripts/sync-fonts.mjs",
+    "check:seo": "node scripts/check-dynamic-seo.mjs"
   },
   "dependencies": {
     "framer-motion": "^13.1.1",

@@ -138,15 +138,39 @@ export function Problem() {
               where the loop is actually explained; this only shows that the
               four sit on one line rather than in separate contracts.
             */}
+            {/*
+              ⚠ THIS ROW OVERFLOWED THE VIEWPORT ON PHONES.
+
+              It is a nowrap flex row of fixed-width columns, and it sits in a
+              grid track. A grid item defaults to `min-width: auto`, so the
+              track cannot shrink below the row's intrinsic width and the whole
+              card grows instead. Measured at 320px: the row demanded 316px
+              (4 x w-16 + 3 connectors + gaps) inside a 275px content box, so
+              the card reported scrollWidth 340 against clientWidth 275 and the
+              last stage was clipped 44px past the right edge.
+
+              It did not show up as a horizontal scrollbar because globals.css
+              sets `html { overflow-x: clip }` — which suppresses the scrollport
+              rather than the overflow. The symptom was silently truncated text
+              instead, which is exactly what the reported screenshot shows.
+
+              Two changes, both scoped to small screens:
+                · `min-w-0` lets the grid track shrink to the space available
+                  rather than being pinned to the row's intrinsic width
+                · the columns step down one size below `sm`, which brings the
+                  requirement to 252px and fits 320px with room to spare
+
+              Desktop is untouched: `sm:w-20` still governs from 640px up.
+            */}
             <ul
               aria-hidden="true"
-              className="flex items-start justify-center gap-2 border-t border-accent/20 pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-12"
+              className="flex min-w-0 items-start justify-center gap-2 border-t border-accent/20 pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-12"
             >
               {PROBLEM.closing.chain.map((step, i) => {
                 const ChainIcon = CHAIN_ICONS[i] ?? Search;
                 return (
                   <li key={step} className="flex items-start">
-                    <div className="flex w-16 flex-col items-center gap-2 sm:w-20">
+                    <div className="flex w-12 flex-col items-center gap-2 sm:w-20">
                       <span className="inline-flex size-12 items-center justify-center rounded-full border border-accent/30 bg-base text-accent">
                         <ChainIcon className="size-5" />
                       </span>

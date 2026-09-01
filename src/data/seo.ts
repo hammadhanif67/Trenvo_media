@@ -1,5 +1,7 @@
-import type { SeoMeta } from '../types/content';
+import type { CaseStudy, SeoMeta, Teardown } from '../types/content';
 import { SERVICES } from './services';
+import { TEARDOWNS } from './teardowns';
+import { WORK } from './work';
 
 /* ---------------------------------------------------------------------------
    PER-ROUTE SEO — master.md §21.2.
@@ -21,7 +23,14 @@ import { SERVICES } from './services';
 
    `noindex` marks routes that must not be indexed but must still be crawlable
    so their links pass (robots `noindex, follow`). They are also excluded from
-   the sitemap — see scripts/routes.mjs.
+   the sitemap by scripts/generate-sitemap.mjs, which reads the emitted meta tag.
+
+   ⚠ ABSENCE OF AN ENTRY MEANS noindex. getRouteSeo() falls back to
+   NOT_FOUND_SEO for any unknown path, and that fallback is `noindex: true` by
+   design — an invented URL must never be indexable. The consequence is that
+   ANY new routed page must be represented here, including dynamically
+   generated ones. See the dynamic-route block below for the defect this caused
+   and scripts/check-dynamic-seo.mjs for the regression check that now guards it.
 --------------------------------------------------------------------------- */
 
 export interface RouteSeo extends SeoMeta {
@@ -146,6 +155,66 @@ for (const service of SERVICES) {
     ...service.seo,
     ogTitle: service.name,
   };
+}
+
+/* ---------------------------------------------------------------------------
+   DYNAMIC CONTENT ROUTES — /teardowns/:slug and /work/:slug
+
+   ⚠ THE BUG THIS FIXES. These two collections were the only routed pages with
+   no entry in ROUTE_SEO, so getRouteSeo() fell through to NOT_FOUND_SEO — which
+   carries `noindex: true`, because it exists to describe a 404.
+
+   The detail pages pass their own title, description and ogTitle, so nothing
+   looked wrong: the <title> was right, the canonical was right, the Article and
+   BreadcrumbList schemas were right. But `noindex` is NOT passed by those pages,
+   so `noindex ?? route.noindex` resolved to the 404's `true`, and every
+   published teardown and case study would have shipped:
+
+       <meta name="robots" content="noindex, follow">
+
+   scripts/generate-sitemap.mjs then drops any page carrying that tag, so the
+   URL would have been excluded from the sitemap as well. The content engine —
+   the site's only proof asset — would have been invisible to search from the
+   moment it was published, and nothing in the build would have said so: the
+   audit's "every indexable route is in the sitemap" check skips noindex pages,
+   so it passed vacuously.
+
+   THE FIX is the pattern the service pages already use: derive an entry from
+   the same data the page renders from. No slug is hard-coded, the entries
+   appear the moment real content is added, and a slug that does not exist in
+   the data still has no entry — so an invented URL keeps falling through to
+   NOT_FOUND_SEO and stays noindex, which is exactly what it should do.
+
+   Both loops are no-ops while the arrays are empty. That is the correct state
+   today, and it is why this fix has to land BEFORE the first teardown rather
+   than after it.
+--------------------------------------------------------------------------- */
+
+/** Metadata for one published teardown. Indexable by omission of `noindex`. */
+export function teardownRouteSeo(teardown: Teardown): RouteSeo {
+  return {
+    title: `${teardown.subject} | ${SITE}`,
+    description: teardown.summary,
+    // §21.6 — the og:title mirrors the H1, which on a teardown is its subject.
+    ogTitle: teardown.subject,
+  };
+}
+
+/** Metadata for one published case study. Indexable by omission of `noindex`. */
+export function caseStudyRouteSeo(study: CaseStudy): RouteSeo {
+  return {
+    title: `${study.context} | ${SITE}`,
+    description: study.diagnosis,
+    ogTitle: study.context,
+  };
+}
+
+for (const teardown of TEARDOWNS) {
+  ROUTE_SEO[`/teardowns/${teardown.slug}`] = teardownRouteSeo(teardown);
+}
+
+for (const study of WORK) {
+  ROUTE_SEO[`/work/${study.slug}`] = caseStudyRouteSeo(study);
 }
 
 /**

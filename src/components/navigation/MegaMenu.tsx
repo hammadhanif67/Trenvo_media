@@ -182,6 +182,18 @@ export function MegaMenu({ onDark }: MegaMenuProps) {
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
+        /*
+          `aria-haspopup="true"` tells a screen-reader user that activating this
+          reveals something, BEFORE they activate it. aria-expanded alone only
+          reports the current state and leaves them to infer the rest.
+
+          The value is the generic `true` rather than `menu`: `menu` would
+          promise the application-style keyboard semantics of role="menu", where
+          Tab does not move between items. This panel is navigation containing
+          links and Tab works normally inside it, so announcing `menu` would
+          describe behaviour it does not have.
+        */
+        aria-haspopup="true"
         onClick={() => {
           clearIntent();
           setOpen((v) => !v);

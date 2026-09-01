@@ -38,9 +38,26 @@ export interface Discipline {
 export interface Service {
   slug: string;
   name: string; // capability name — searchable
+  /**
+   * THE CANONICAL TAXONOMY LIVES HERE.
+   *
+   * Practice membership was previously a separate `SERVICE_PRACTICE` lookup in
+   * data/services.ts AND a hand-written column list in data/navigation.ts AND a
+   * third `capabilities` array in data/home.ts. Three lists, maintained by
+   * hand, and they had already drifted: the homepage advertised "AI UGC Ads",
+   * "Short-Form Video Ads" and "Motion Design" as capabilities while the menu
+   * showed none of them and only some had pages.
+   *
+   * Putting the practice on the service makes the service array the single
+   * source. Navigation columns, homepage practice cards and the /services grid
+   * are all derived from it, so they cannot contradict each other again.
+   */
+  practice: PracticeId;
   outcome: string; // what changes for the client
   situation: string; // what is true in 2026
   mechanisms: string[]; // 5–7 technical lines
+  /** §17.2 Tier 3 — the contextual CTA shown on this service's page. */
+  cta: string;
   disciplineIds: string[];
   connectsTo: PracticeId[];
   faqs: Faq[];
@@ -142,16 +159,56 @@ export interface Practice {
  */
 export interface Teardown {
   slug: string;
+  /** The headline. What the piece is called. */
   subject: string;
+  /** One sentence for the index card and the meta description. */
+  summary: string;
+  /**
+   * The company or the category the subject belongs to.
+   *
+   * ⚠ A teardown analyses a REAL, PUBLICLY VISIBLE ad. Naming the advertiser is
+   * therefore fair comment on published material. If a subject cannot be named
+   * — because it came from a client account rather than an ad library — it must
+   * be anonymised to a CATEGORY here and `observedAt` must say so. What must
+   * never happen is a named company that did not run the ad described.
+   */
+  category: string;
   disciplineId: string;
-  observedAt: string; // §14 — "where it was observed"
+  /** §14 — "where it was observed". A public, checkable source. */
+  observedAt: string;
+  /** The commercial problem the ad is trying to solve. */
+  problem: string;
+  /** §14 — what was actually seen in the creative. Description, not judgement. */
   observation: string;
-  hypothesis: string;
-  whatWeWouldTest: string;
+  /** The specialist's read: what is happening and why. Stated so it can be wrong. */
+  analysis: string;
+  /** §14 — "what we would test": the specific change, not best practices. */
+  whatWeWouldChange: string;
+  /** Why that change, and what it is a bet on. */
+  why: string;
+  /** §14 — "how we would measure it": the metric that would settle it. */
   howWeWouldMeasure: string;
+  /**
+   * What we expect to move, stated as a DIRECTION and a mechanism.
+   *
+   * ⚠ NEVER A NUMBER. We do not have the advertiser's data, so a percentage
+   * here would be invented. "We would expect hook rate to move before CPA
+   * does" is a defensible claim; "we would expect a 30% lift" is not.
+   */
+  expectedImpact: string;
+  /**
+   * §14: "That limits paragraph is not a disclaimer — it is a credibility
+   * device. Stating what you cannot know is the clearest signal that everything
+   * else you said, you do know."
+   */
   limits: string;
-  serviceSlug: string; // §14 — "related service"
-  datePublished: string; // §21.5 — Article
+  /** §14 — "related service". Must be a slug in data/services.ts. */
+  serviceSlug: string;
+  /** Slugs of other teardowns worth reading next. Validated at build time. */
+  relatedSlugs?: string[];
+  /** §21.5 — Article. ISO date, YYYY-MM-DD. */
+  datePublished: string;
+  dateModified?: string;
 }
 
 /**
@@ -196,12 +253,52 @@ export interface MeasurementDefinition {
  */
 interface CaseStudyBase {
   slug: string;
+
+  /**
+   * ⚠ THE CLIENT'S REAL NAME, published with their permission — or an honest
+   * anonymisation.
+   *
+   * "A DTC supplement brand" is a legitimate entry when the client will not be
+   * named; a made-up brand name is not, and neither is a composite assembled
+   * from several accounts (§19.3 bars the "representative example client"
+   * outright). If it is anonymised, `anonymised` must be true so the page can
+   * say so rather than letting the reader assume a named client.
+   */
+  client: string;
+  anonymised?: boolean;
+
+  /** What the client was trying to achieve. One sentence. */
+  objective: string;
+  /** Where things stood when the engagement began. No invented baseline. */
+  startingPoint: string;
+
+  /** §19.2 blocks 1-3. */
   context: string;
   diagnosis: string;
   hypothesis: string;
+
+  /** What was decided, and what was actually made. */
+  strategy: string;
+  /** §19.2 block 4 — "the actual creative, the actual page. Shown, not described." */
   built: MediaItem[];
+  /** How the media was structured and run against the hypothesis. */
+  media: string;
+  /** §19.2 block 5 — the test design. */
   testDesign: string;
+  /** How the outcome was measured, and against what source of truth. */
+  measurement: string;
+  /** How long the work covered, e.g. "March – August 2026". */
+  timeframe: string;
+  /** Platforms and tooling actually used. */
+  tools: string[];
+
+  /** Which disciplines did the work. Must match ids in data/disciplines.ts. */
   disciplineIds: string[];
+  /** Service slugs used, so the study can link back into the taxonomy. */
+  serviceSlugs: string[];
+  /** ISO date, YYYY-MM-DD. Feeds Article schema and the sitemap lastmod. */
+  datePublished: string;
+
   quote?: Testimonial;
 }
 

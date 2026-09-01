@@ -1,4 +1,4 @@
-import type { TrustBrand } from './heroContent';
+import type { Client } from '../../data/clients';
 
 /* ---------------------------------------------------------------------------
    CLIENT WORDMARKS
@@ -15,9 +15,16 @@ import type { TrustBrand } from './heroContent';
    themes (implementation.md §5.27), so the brands sit on white either way and
    the light values are always the correct ones. `dark` is kept on the data for
    the day this row appears on a dark surface elsewhere.
+
+   ⚠ THIS RENDERS NOTHING TODAY. `CLIENTS` in data/clients.ts is gated behind
+   PUBLISH_CLIENTS, which is false: the row was showing five names with no case
+   study, no quote and no engagement behind any of them, which is unsupported
+   proof whatever the underlying relationships are. The heading is part of the
+   block, so it disappears with the names rather than standing over an empty
+   row. Read the header of data/clients.ts before opening the gate.
 --------------------------------------------------------------------------- */
 
-const FACE: Record<TrustBrand['face'], string> = {
+const FACE: Record<Client['face'], string> = {
   script: 'font-serif italic',
   serif: 'font-serif',
   sans: 'font-sans',
@@ -41,19 +48,20 @@ function HealthifyMark() {
   );
 }
 
-export function HeroTrustBrands({
-  label,
-  brands,
-}: {
-  label: string;
-  brands: TrustBrand[];
-}) {
-  // No clients, no block — removing the data removes the row entirely.
-  if (brands.length === 0) return null;
+export function HeroTrustBrands({ clients }: { clients: Client[] }) {
+  // No publishable clients, no block. The heading goes with them.
+  if (clients.length === 0) return null;
 
   return (
     <div className="mt-12">
-      <p className="text-small text-primary">{label}</p>
+      {/*
+        The heading only ever appears above real, permitted names with something
+        behind them — see the three conditions in data/clients.ts. "Trusted by"
+        over an empty or unsupported row is the classic fabricated social-proof
+        pattern, and the build audit fails if this string reaches the HTML while
+        the gate is shut.
+      */}
+      <p className="text-small text-primary">Trusted by growth-focused brands</p>
 
       {/*
         STRICTLY ONE LINE. `flex-wrap` let the row break whenever the copy
@@ -64,7 +72,7 @@ export function HeroTrustBrands({
         forcing an overflow.
       */}
       <ul className="mt-5 flex flex-nowrap items-center gap-x-3 sm:gap-x-5 lg:gap-x-6">
-        {brands.map((brand) => {
+        {clients.map((brand) => {
           const colour = brand.light;
           const head =
             brand.splitAt != null ? brand.name.slice(0, brand.splitAt) : brand.name;

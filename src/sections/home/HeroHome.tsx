@@ -4,37 +4,39 @@ import { Button, Container, Icon, Section } from '../../components/ui';
 import { HeroBackdrop } from '../../components/hero/HeroBackdrop';
 import { HERO_CONTENT } from '../../components/hero/heroContent';
 import { HeroTrustBrands } from '../../components/hero/HeroTrustBrands';
-import { HeroKeyword } from '../../components/hero/HeroKeyword';
 import { SurfaceContext } from '../../components/ui/surface';
 import { HERO_BACKGROUND } from '../../data/home';
+import { track } from '../../lib/analytics';
 
 /**
- * 01 HERO — rebuilt to the reference mockups in public/assets
- * ("Manage Content 1 (1)" light, "Manage Content 1 (2)" dark).
+ * 01 HERO
  *
- * ⚠ THREE DEPARTURES FROM THE APPROVED DOCUMENTS, all recorded in
- * implementation.md §5.24:
+ * ⚠ THE H1 IS STATIC AND ALWAYS COMPLETE.
  *
- *  1. THE LOOP DIAGRAM IS GONE from the hero. wireframe.md §01 and master.md
- *     §13 §1 put it here and §26.2 calls it the central visual device. Removed
- *     on request. It still carries /services, which is where the method is
- *     actually explained, so the component is not dead.
+ * It used to be a fixed lead followed by a forever-looping typewriter, which
+ * meant the rendered heading spent most of its life reading "Turn Attention
+ * Into Growth With" and stopping mid-sentence. That is what arrived in a
+ * screenshot, what a crawler's rendered snapshot could catch, and what a
+ * visitor read on arrival. The full reasoning is in heroContent.ts.
  *
- *  2. THE HERO IS NO LONGER ALWAYS DARK. §22.2 principle 7 counts the hero as
- *     one of four punctuation sections. `tone="paper"` makes it follow the
- *     theme instead — white in light, ink-soft in dark — which is what both
- *     reference mockups show and what the owner asked for when the black
- *     navbar in light theme was reported.
+ * The heading now renders one sentence, in two spans so the second can carry
+ * the accent colour. There is no aria-hidden mirror and no sr-only duplicate,
+ * because the visible text and the accessible name are finally the same string
+ * — which is what they should always have been.
  *
- *  3. THE CLIENT ROW NAMES FIVE BRANDS. I flagged it as fabricated proof when
- *     it first appeared in the reference; the owner then asked for it again by
- *     name, so it is built on that assertion. §2.8 and the audit's `trusted by`
- *     rule were both written to stop INVENTED proof, not to stop a real client
- *     list — the audit rule is narrowed accordingly, not deleted. The full
- *     record is in heroContent.ts and implementation.md §5.25.
+ * MOTION: one entrance curtain, 1.4s, then the class is removed and nothing in
+ * the hero moves again. §27.3 rules out "anything that moves while the user is
+ * reading", and a looping headline is the clearest possible violation of it.
+ * The curtain is pure CSS and ships in the HTML, so it plays with no JavaScript
+ * and is disabled entirely under `prefers-reduced-motion` (see globals.css).
  *
- * Copy lives in heroContent.ts; nothing here is hard-coded.
+ * ⚠ TWO STANDING DEPARTURES FROM THE APPROVED DOCUMENTS, both still in force:
+ *  1. The loop diagram is not in the hero (removed on request); /services still
+ *     carries it, which is where the method is actually explained.
+ *  2. The hero is not always dark. `tone="paper"` makes it follow the theme,
+ *     which is what the reference mockups show.
  */
+
 /** Longest delay (450ms) plus the longest run (820ms), plus a little slack. */
 const CURTAIN_TOTAL_MS = 1400;
 
@@ -42,18 +44,15 @@ export function HeroHome() {
   const c = HERO_CONTENT;
 
   /*
-    The curtain runs on every page load, which is what "on refresh" means here.
-
-    The class ships IN THE HTML rather than being added on mount, for two
-    reasons: adding it later costs a frame in which the content is visible
-    un-animated, which reads as a flicker; and shipping it means the entrance
-    still plays with no JavaScript at all, since it is pure CSS.
+    The curtain runs on every page load. The class ships IN THE HTML rather than
+    being added on mount: adding it later costs a frame in which the content is
+    visible un-animated, which reads as a flicker, and shipping it means the
+    entrance still plays with no JavaScript at all.
 
     JavaScript's only job is to take the class away once the run is over, so
-    nothing is left depending on an animation that has already finished. The
-    timer is a plain setTimeout, which keeps running in a backgrounded tab — so
-    even if the animation itself never plays, the class is gone and the content
-    sits in its natural state.
+    nothing is left depending on an animation that has already finished. A plain
+    setTimeout keeps running in a backgrounded tab, so even if the animation
+    never plays the class is gone and the content sits in its natural state.
   */
   const [curtain, setCurtain] = useState(true);
 
@@ -69,27 +68,18 @@ export function HeroHome() {
       aria-labelledby="hero-heading"
       /*
         `hero-surface` pins the semantic colour tokens to their LIGHT values on
-        this element, so the global dark theme cannot reach inside. See the
-        block of the same name in globals.css.
-      */
-      /*
+        this element, so the global dark theme cannot reach inside.
+
         The hero FILLS the first screen rather than being shrunk to fit inside
-        it. Shrinking it was the wrong fix: it made the hero short enough that
-        the dark section below showed above the fold, which is worse than the
-        problem it solved.
-
-        min-height takes the header out of the calculation (--header-h is
+        it. min-height takes the header out of the calculation (--header-h is
         published by Navbar from a real measurement), and the content is centred
-        in what remains. So the hero owns the first screen at any height, the
-        next section starts exactly at the fold, and the type stays large.
-
-        Applied at EVERY breakpoint, not just lg. Once the framed visual was
-        replaced by a full-bleed backdrop the mobile hero got shorter than the
-        viewport, and the dark section below started showing above the fold at
-        1024 and under — measured, then fixed here.
+        in what remains — so the hero owns the first screen at any height and
+        the next section starts exactly at the fold.
       */
       className="hero-surface relative flex min-h-[calc(100dvh-var(--header-h,84px))] items-center overflow-x-clip [padding-block:var(--s-12)] lg:[padding-block:var(--s-16)]"
     >
+      {HERO_BACKGROUND && <HeroBackdrop />}
+
       {/*
         Section publishes its surface from the THEME, so in dark mode it would
         tell Button it is sitting on a dark surface and Button would pick
@@ -97,76 +87,87 @@ export function HeroHome() {
         to match — §23.2's rule then resolves to --blue-600, the blue that is
         legal on light, exactly as it does in the light theme.
       */}
-      {HERO_BACKGROUND && <HeroBackdrop />}
-
       <SurfaceContext.Provider value="light">
         <Container className="relative">
           {/*
-          Two columns from lg up, matching the reference's balance: the copy
-          takes slightly more than half so the headline can break where it is
-          written to break, and the visual still reads as the larger object.
-        */}
-          {/*
-            One column now. The photograph is the whole hero background, so the
-            copy keeps to the LEFT — the half the backdrop blurs and washes —
-            and the sharp right half is left clear for the picture to read.
+            The copy keeps to the LEFT — the half the backdrop blurs and washes
+            — and the sharp right half is left clear for the photograph to read.
           */}
-          <div className="max-w-[38rem] lg:max-w-[42%]">
-            {/* -------- LEFT: content -------- */}
+          <div className="max-w-[38rem] lg:max-w-[46%]">
             <div
               className={`[container-type:inline-size] ${curtain ? 'hero-curtain' : ''}`}
             >
               {/*
-              The clamp measures against the COLUMN (cqi), not the viewport:
-              against the viewport a 96px display size rendered ~12 characters
-              per line in a half-width column (implementation.md §5.19).
-
-              TWO clamps, because the column changes meaning at lg. Below lg the
-              layout is one column, so the container is the FULL width and a
-              single cqi scale made 768px render 55px — larger than the 40px at
-              1024px, where the column is half the grid.
-            */}
+                The clamp measures against the COLUMN (cqi), not the viewport:
+                against the viewport a 96px display size rendered ~12 characters
+                per line in a half-width column. TWO clamps, because the column
+                changes meaning at lg — below lg the layout is one column, so
+                the container is the full width.
+              */}
               <h1
                 id="hero-heading"
-                className="font-sans font-bold text-primary [font-size:clamp(2.5rem,1rem+3.8cqi,3.5rem)] lg:[font-size:clamp(2.75rem,1rem+6cqi,4.75rem)] [letter-spacing:-0.035em] [line-height:0.96]"
+                className="font-sans font-bold text-primary [font-size:clamp(2.5rem,1rem+3.8cqi,3.5rem)] lg:[font-size:clamp(2.5rem,1rem+5.4cqi,4.25rem)] [letter-spacing:-0.035em] [line-height:1.02] [text-wrap:balance]"
               >
-                {/*
-                The heading's accessible name: stable, complete, and naming all
-                three keywords. Everything visible below it is aria-hidden, so a
-                screen reader hears this once instead of hearing the animation
-                spell itself out.
-              */}
-                <span className="sr-only">{c.titleSpoken}</span>
-
-                <span aria-hidden="true">
-                  <span className="block">{c.titleLead}</span>
-                  <HeroKeyword words={c.keywords} className="block text-accent" />
-                </span>
+                <span className="block">{c.titleLead}</span>
+                <span className="block text-accent">{c.titleAccent}</span>
               </h1>
 
               <p className="mt-6 max-w-[46ch] text-lead text-secondary [letter-spacing:0.005em] [line-height:1.5]">
                 {c.description}
               </p>
 
-              {/* §17.3 — the one place two conversion CTAs share a viewport. */}
+              {/* §17.3 — one of the two places two conversion CTAs share a
+                  viewport. Distinct in hierarchy: solid blue vs. outlined. */}
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <Button href={c.primaryCta.href}>
+                <Button
+                  href={c.primaryCta.href}
+                  onClick={() =>
+                    track('cta_click', { location: 'hero', label: c.primaryCta.label })
+                  }
+                >
                   <span className="inline-flex items-center gap-2">
                     {c.primaryCta.label}
                     <Icon icon={ArrowRight} />
                   </span>
                 </Button>
-                <Button href={c.secondaryCta.href} variant="secondary">
+                <Button
+                  href={c.secondaryCta.href}
+                  variant="secondary"
+                  onClick={() =>
+                    track('cta_click', { location: 'hero', label: c.secondaryCta.label })
+                  }
+                >
                   {c.secondaryCta.label}
                 </Button>
               </div>
 
               {/*
-              The client row from the reference. Names supplied by the owner —
-              see the note in heroContent.ts. Emptying `trustBrands` removes the
-              whole block, heading included.
-            */}
-              <HeroTrustBrands label={c.trustLabel} brands={c.trustBrands} />
+                THE THREE PILLARS replace the "Trusted by" client row that stood
+                here. They make the same compositional weight do honest work:
+                every line is a statement about how Trenvo is organised, which is
+                true today and needs no client to verify.
+
+                dl/dt/dd rather than a list of divs — each is genuinely a term
+                and its definition, and the markup should say so.
+              */}
+              <dl className="mt-10 grid gap-x-6 gap-y-4 border-t border-hairline pt-6 sm:grid-cols-3">
+                {c.pillars.map((pillar) => (
+                  <div key={pillar.label}>
+                    <dt className="font-mono text-label uppercase [letter-spacing:var(--tracking-label)] text-accent">
+                      {pillar.label}
+                    </dt>
+                    <dd className="mt-2 text-small text-secondary [line-height:var(--lh-body)]">
+                      {pillar.body}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+
+              {/*
+                Returns automatically when data/clients.ts opens its gate.
+                Renders nothing — heading included — while `clients` is empty.
+              */}
+              <HeroTrustBrands clients={c.clients} />
             </div>
           </div>
         </Container>

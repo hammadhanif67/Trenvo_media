@@ -23,6 +23,90 @@
 @import 'tailwindcss';
 @import './tokens.css';
 
+/* ---------------------------------------------------------------------------
+   THE BRAND FONT — self-hosted, and now actually loading.
+
+   THE BUG THIS FIXES. `--font-sans` has always listed 'Geist' first, but NO
+   @font-face rule existed anywhere in the project. A font-family name with no
+   source behind it is simply skipped, so every page silently rendered in the
+   fallback — Inter if the visitor happened to have it installed, otherwise
+   Segoe UI or Helvetica. The brand typeface had never loaded on any machine
+   that had not installed it manually.
+
+   THE FILES. Geist and Geist Mono ship as VARIABLE woff2 in the `geist` npm
+   package (SIL Open Font License 1.1, licence copied to public/fonts/). They
+   are copied into public/fonts by scripts/sync-fonts.mjs at build time, so the
+   binaries are a build artefact rather than something checked in and left to
+   rot at whatever version it was copied at.
+
+   WHY VARIABLE, AND WHY ONE FILE PER FAMILY. §24.3 ships four weights (400,
+   500, 600, 700). Four static cuts would be four requests and roughly 4x60kB;
+   one variable file covers the whole 100-900 axis in 69kB and is a single
+   request. `font-weight: 100 900` on the @font-face is what tells the browser
+   the file is variable — without that range it is treated as a single weight
+   and every other weight is synthesised.
+
+   font-display: swap. Text is readable immediately in the fallback and
+   re-renders when Geist arrives. `optional` would be better for CLS but means
+   many first-time visitors never see the brand face at all; `block` hides the
+   text entirely for up to three seconds, which is worse than a reflow. swap
+   plus the metric overrides below gets both.
+--------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/geist-variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/geist-mono-variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+   THE METRIC-MATCHED FALLBACK — this is what stops the layout shifting.
+
+   `font-display: swap` means the page paints in the fallback and then swaps.
+   If the fallback's metrics differ from Geist's, every line of text changes
+   width and height at the swap and the whole page reflows — which is a
+   Cumulative Layout Shift on a font load, one of the most common and most
+   avoidable causes of a poor CLS score.
+
+   These overrides re-scale the LOCAL fallback so its line box matches Geist's
+   as closely as a metrics-only match can. The numbers are Geist's own metrics
+   expressed against the fallback's units-per-em, so the fallback occupies the
+   same vertical space and approximately the same horizontal space; the swap
+   then changes letterforms without moving anything.
+
+   `size-adjust` is the horizontal part and is the one that matters most for
+   line breaks. It is deliberately conservative: over-correcting makes the
+   fallback look wrong in its own right on the many visits where the font is
+   already cached and the fallback is never seen at all.
+*/
+@font-face {
+  font-family: 'Geist Fallback';
+  src: local('Segoe UI'), local('Helvetica Neue'), local('Arial'), local('Roboto');
+  size-adjust: 100.5%;
+  ascent-override: 95%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Geist Mono Fallback';
+  src: local('Consolas'), local('Menlo'), local('DejaVu Sans Mono'), local('Courier New');
+  size-adjust: 96%;
+  ascent-override: 95%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
 @theme inline {
   /* -- Colour --------------------------------------------------- IMPLIED - */
   /* master.md §23.4 prohibits "Purple, teal, coral, or any second accent".   */
@@ -53,6 +137,7 @@
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-hairline: var(--hairline);
+  --color-error: var(--error);
 
   --color-blue-50: var(--blue-50);
   --color-blue-500: var(--blue-500);
@@ -82,15 +167,22 @@
 
   /* -- Typefaces ------------------------------------------------ IMPLIED - */
   /* master.md §24.1 names exactly two faces and explicitly rejects serifs.   */
-  /* Stacks transcribed verbatim from that table.                             */
-  /* Geist is self-hosted (§31.5). No @font-face is declared yet: the font    */
-  /* files are a Phase 4 deliverable (implementation.md Part 8, P4), so the   */
-  /* fallback stack is what currently renders.                                */
+  /* Geist is self-hosted (§31.5) and now genuinely loads — see the           */
+  /* @font-face block above for what was wrong and how it is fixed.           */
+  /*                                                                          */
+  /* The metric-matched fallback comes SECOND, ahead of the real system       */
+  /* fonts: it is those same system fonts re-scaled to Geist's metrics, so    */
+  /* the swap when Geist arrives changes letterforms without moving the       */
+  /* layout. The plain names stay at the end for the case where the           */
+  /* @font-face overrides are unsupported.                                    */
   --font-*: initial;
 
   --font-sans:
-    'Geist', Inter, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    'Geist', 'Geist Fallback', Inter, -apple-system, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  --font-mono:
+    'Geist Mono', 'Geist Mono Fallback', 'JetBrains Mono', ui-monospace, 'SF Mono',
+    Menlo, monospace;
 
   /* -- Font weights -------------------------------------------- REQUIRED - */
   /* master.md §24.3: 400, 500, 600, 700. "No other weights ship."            */
@@ -204,6 +296,44 @@ html {
 
 html::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
+}
+
+/* ---------------------------------------------------------------------------
+   ANCHOR TARGETS UNDER THE STICKY HEADER
+
+   THE BUG. The header is `position: sticky` and roughly 84px tall. Jumping to
+   any in-page anchor — /about#specialists, the error-summary links in the lead
+   form, the skip link, a shared deep link — scrolls the target to y=0, which is
+   BEHIND the header. The visitor lands on a heading they cannot see and has to
+   scroll back up to work out where they were sent.
+
+   THE FIX. `scroll-margin-top` tells the browser to stop short by that much.
+   It is applied to every element with an id rather than to a hand-maintained
+   list of anchor targets, because the bug is a property of the sticky header
+   and applies to anything the page can be sent to.
+
+   --header-h is published by Navbar from a REAL measurement (a ResizeObserver
+   on the header element), so this stays correct when the browser's font size is
+   larger or the header wraps at a narrow width. The fallback covers the first
+   paint, before the measurement lands.
+
+   The extra --s-4 is breathing room: landing with the heading flush against the
+   header underside reads as clipped even though nothing is hidden.
+--------------------------------------------------------------------------- */
+[id] {
+  scroll-margin-top: calc(var(--header-h, 84px) + var(--s-4));
+}
+
+/*
+   The scroll-behavior that makes an in-page jump legible rather than an
+   instant teleport — and §27.4's requirement that it does not, for anyone who
+   has asked for less motion. A smooth scroll across a long page is exactly the
+   kind of large-area movement that triggers vestibular symptoms.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 /* ---------------------------------------------------------------------------

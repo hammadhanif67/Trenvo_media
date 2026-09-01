@@ -12,11 +12,37 @@
     <link rel="icon" href="/brand/icon-192.png" sizes="192x192" type="image/png" />
     <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
 
+    <!--
+      PRELOAD THE PRIMARY FACE. Geist is only discovered when the CSS that
+      references it has been downloaded and parsed, which puts the font request
+      two round trips behind the HTML. Preloading starts it in parallel with the
+      stylesheet, which is the difference between the swap landing before first
+      paint and landing a beat after it.
+
+      ONLY THE SANS. Geist Mono is used for eyebrows, labels and numerals — real
+      text, but never the largest text on screen and never the LCP element.
+      Preloading both would make them compete for the same early bandwidth and
+      delay the one that matters. Mono loads normally.
+
+      `crossorigin` is REQUIRED even for a same-origin font: fonts are always
+      fetched in CORS mode, and a preload without it is a second, separate
+      request that the font fetch cannot reuse — the file downloads twice.
+    -->
+    <link
+      rel="preload"
+      href="/fonts/geist-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
     <!-- master.md §21.6. §21.6 wants per-template cards carrying the page's H1
          in the display face; those are generated at the SEO milestone. This is
          the default so a shared link is not blank meanwhile — the reversed
          lockup on flat --ink, making no claim. twitter:card per §21.6. -->
-    <meta property="og:type" content="website" />
+    <!-- og:type is emitted per route by components/Seo.tsx (article for a
+         teardown, website elsewhere), so it is NOT set here — two og:type tags
+         let the scraper pick, and they pick the wrong one. -->
     <meta property="og:site_name" content="Trenvo Media" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />

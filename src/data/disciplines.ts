@@ -1,7 +1,7 @@
 import type { Discipline } from '../types/content';
 
 /* ---------------------------------------------------------------------------
-   THE SIX DISCIPLINES — master.md §10.3.
+   THE SEVEN DISCIPLINES — master.md §10.3.
 
    ⚠ §10.3 lists NINE. The three Engineering roles — UI/UX Designer, Frontend
    Engineer and Conversion Specialist — are removed with the Engineering
@@ -15,7 +15,8 @@ import type { Discipline } from '../types/content';
 
    Practice assignment follows wireframe.md §05's lattice, which is the approved
    IA authority (implementation.md §1.3) was Media 2 / Studio 4 / Engineering 3.
-   With Engineering removed the lattice is Media 2 / Studio 4.
+   With Engineering removed, and the Measurement Analyst added alongside
+   the `measurement` service, the lattice is Media 3 / Studio 4.
 
    No person is named here and none may be invented (§10.2). Real specialists
    arrive in data/specialists.ts when they exist (§10.5).
@@ -45,6 +46,25 @@ export const DISCIPLINES: Discipline[] = [
       'Feed strategy',
     ],
     doesNotOwn: ['Creative production', 'Meta accounts'],
+  },
+  {
+    /**
+     * Added with the `measurement` service. The site already claimed
+     * "Measurement & attribution" as a Media capability on the homepage and
+     * already describes reconciling against a source outside the ad platform
+     * on /process — so the discipline was being asserted without a boundary
+     * published for it, which is the one thing §10.3 says must never happen.
+     */
+    id: 'measurement-analyst',
+    title: 'Measurement Analyst',
+    practice: 'media',
+    owns: [
+      'Conversion and event definitions',
+      'Server-side and first-party signal integrity',
+      'Platform-to-business reconciliation',
+      'Creative attribute reporting',
+    ],
+    doesNotOwn: ['Bid and budget decisions', 'Creative production', 'Finance systems'],
   },
   {
     id: 'performance-creative-strategist',

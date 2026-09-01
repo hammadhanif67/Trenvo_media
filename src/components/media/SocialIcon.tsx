@@ -3,17 +3,22 @@ import { BRAND_PATHS } from './brandMarks';
 /* ---------------------------------------------------------------------------
    SOCIAL ICONS
 
-   lucide-react removed its brand glyphs, so the four marks are inlined here as
+   lucide-react removed its brand glyphs, so the marks are inlined here as
    single-path SVGs. They are used nominatively — to point at Trenvo's own
    profiles on those platforms — which is what these marks are for. No
    partnership, endorsement or verification is implied or stated anywhere.
+
+   The union is deliberately WIDER than what currently renders: only the
+   platforms with a verified profile appear in the footer (see SOCIAL_LINKS in
+   data/navigation.ts), and the extra marks are here so adding a real profile
+   later is a one-line data edit rather than an icon hunt.
 
    §30.6 — every one is aria-hidden. The accessible name lives on the link in
    Footer.tsx, so assistive technology hears "Trenvo Media on LinkedIn" rather
    than a shape.
 --------------------------------------------------------------------------- */
 
-export type SocialName = 'LinkedIn' | 'Instagram' | 'YouTube' | 'X';
+export type SocialName = 'LinkedIn' | 'Instagram' | 'Facebook' | 'YouTube' | 'X';
 
 /*
   The paths moved to brandMarks.ts. YouTube is used both here and in the

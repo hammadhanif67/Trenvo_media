@@ -1,6 +1,8 @@
+import { useLocation } from 'react-router';
 import { Button, Container, Heading, Section } from '../../components/ui';
 import type { SectionTone } from '../../components/ui';
 import { PRIMARY_CTA, SECONDARY_CTA } from '../../data/navigation';
+import { track } from '../../lib/analytics';
 
 /**
  * CTA SECTION — master.md §26.2 (`CTASection`, `tone: ink | paper`).
@@ -23,6 +25,17 @@ export function CtaSection({
   primaryLabel,
 }: CtaSectionProps) {
   const dark = tone === 'ink';
+  const { pathname } = useLocation();
+
+  /*
+    The event NAME distinguishes where the click came from, so a dashboard can
+    tell "the teardown CTA on a service page" from "the teardown CTA on the
+    offer page" without parsing paths. `location` carries the route, which is
+    what makes the row actionable.
+  */
+  const primaryEvent = pathname.startsWith('/services/')
+    ? 'service_cta_click'
+    : 'teardown_cta_click';
 
   return (
     <Section tone={tone} aria-labelledby="cta-heading">
@@ -44,10 +57,25 @@ export function CtaSection({
             </p>
           )}
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <Button href={PRIMARY_CTA.href} variant="primary">
+            <Button
+              href={PRIMARY_CTA.href}
+              variant="primary"
+              onClick={() =>
+                track(primaryEvent, {
+                  location: pathname,
+                  label: primaryLabel ?? PRIMARY_CTA.label,
+                })
+              }
+            >
               {primaryLabel ?? PRIMARY_CTA.label}
             </Button>
-            <Button href={SECONDARY_CTA.href} variant="secondary">
+            <Button
+              href={SECONDARY_CTA.href}
+              variant="secondary"
+              onClick={() =>
+                track('cta_click', { location: pathname, label: SECONDARY_CTA.label })
+              }
+            >
               {SECONDARY_CTA.label}
             </Button>
           </div>

@@ -8,8 +8,12 @@ import { BOUNDARY_LINE } from '../../data/disciplines';
  * SPECIALIST STRIP — master.md §28.2 (`sections/shared/SpecialistStrip`).
  *
  * §14 puts a specialists strip on /services, and §21.4 requires every service
- * page to link to /specialists with a descriptive anchor. This is that link,
- * carrying the boundary line so it says something rather than just pointing.
+ * page to link to the specialist model with a descriptive anchor. This is that
+ * link, carrying the boundary line so it says something rather than just
+ * pointing.
+ *
+ * The target moved from /specialists to /about#specialists when the two pages
+ * merged — see the header of pages/About.tsx.
  */
 export interface SpecialistStripProps {
   /**
@@ -32,7 +36,7 @@ export function SpecialistStrip({ tone = 'paper' }: SpecialistStripProps) {
             {BOUNDARY_LINE}
           </p>
           <Link
-            to="/specialists"
+            to="/about#specialists"
             className={`inline-flex shrink-0 items-center gap-2 text-body [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 ${dark ? 'text-blue-500 focus-visible:outline-blue-500' : 'text-accent-strong focus-visible:outline-accent'}`}
           >
             The specialists who do the work

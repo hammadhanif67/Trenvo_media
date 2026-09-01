@@ -139,53 +139,25 @@ export const LOOP = {
   ] satisfies LoopStage[],
 };
 
-/* -- 04 THE PRACTICES — wireframe.md §04, master.md §6.2, §9.5 ------------ */
+/* -- 04 THE PRACTICES - wireframe.md 04, master.md 6.2, 9.5 --------------- */
 
-export interface PracticeCardContent {
-  id: PracticeId;
-  name: string;
-  /** §6.2 — "Owns the question". */
-  question: string;
-  /**
-   * wireframe.md §04's bullet list. NOT all of these are routed pages —
-   * implementation.md §1.4 (D6): measurement & attribution, motion design and
-   * message match and conversion events have no service page, so they render
-   * as text.
-   */
-  capabilities: string[];
-  /** §9.2 — the mechanism line, "where a real practitioner is distinguishable". */
-  mechanism: string;
-  cta: { label: string; href: string };
-}
-
-export const PRACTICES = {
+/**
+ * The `PRACTICES` object that lived here was DELETED.
+ *
+ * It was a THIRD hand-written copy of the service taxonomy, alongside the one
+ * in data/services.ts and the one in data/navigation.ts, and it had drifted
+ * from both. Its `capabilities` arrays advertised "AI UGC Ads", "Short-Form
+ * Video Ads", "Motion Design" and "Measurement & attribution" as things Trenvo
+ * sells; the mega-menu offered none of them, and only some had pages at all. A
+ * visitor read six Creative capabilities on the homepage and found three in
+ * the menu.
+ *
+ * sections/home/Practices.tsx now derives its cards from PRACTICE_NAV, which is
+ * derived from data/services.ts. Only the editorial copy stays here.
+ */
+export const PRACTICES_SECTION = {
   eyebrow: 'What we do',
-  headline: 'Media. Studio.',
-  cards: [
-    {
-      id: 'media',
-      name: 'Media',
-      question: 'Is the money going to the right place?',
-      capabilities: ['Meta Ads', 'Google Ads', 'Measurement & attribution'],
-      mechanism: 'Creative is the only lever left. We pull it hard.',
-      cta: { label: 'Explore Media', href: '/services/meta-ads' },
-    },
-    {
-      id: 'studio',
-      name: 'Studio',
-      question: 'Is there anything worth showing when it gets there?',
-      capabilities: [
-        'Performance Creative',
-        'AI Video Generation',
-        'AI UGC Ads',
-        'Video Editing',
-        'Short-Form Video Ads',
-        'Motion Design',
-      ],
-      mechanism: 'Variants differ by hypothesis, not by filter.',
-      cta: { label: 'Explore Studio', href: '/services/performance-creative' },
-    },
-  ] satisfies PracticeCardContent[],
+  lead: 'Media that performs and creative that converts, with one team accountable for both - and one number they answer for.',
 };
 
 /* -- 05 SPECIALISTS — wireframe.md §05, master.md §13 §5 ------------------- */
@@ -232,7 +204,7 @@ export const PRINCIPLES = [
   },
   {
     id: 'specialists',
-    href: '/specialists',
+    href: '/about#specialists',
     title: 'Named specialists',
     body: 'Six disciplines, and you will know the name of every person who touches your account. No anonymous pool, no silent handovers.',
   },
@@ -243,7 +215,7 @@ export const SPECIALISTS_SECTION = {
   headline:
     'Six disciplines. You will know the name of every person who touches your account.',
   hint: 'Select a discipline to see what it owns — and what it does not.',
-  cta: { label: 'How we assign specialists', href: '/specialists' },
+  cta: { label: 'How we assign specialists', href: '/about#specialists' },
 };
 
 /* -- 06 HOW A PROJECT STARTS — wireframe.md §06, master.md §13 §6 ---------- */
@@ -352,15 +324,18 @@ export const TEARDOWNS_SECTION = {
 /* -- 09 WORK — wireframe.md §09 ------------------------------------------- */
 
 /**
- * The six case-study categories, supplied by the owner.
+ * The categories work is published under.
  *
- * ⚠ THREE OF THESE HAVE NO SERVICE PAGE: YouTube Ads, Analytics & Tracking and
- * Conversion Optimization are not in `data/services.ts`, and Conversion
- * Optimization was removed along with the Engineering practice (§5.22). They
- * are presented here as the CATEGORIES work would be published under, which is
- * what this section is — not as routed services, because routing them would
- * imply pages that do not exist. If they are services now, they belong in
- * services.ts and in the menu too.
+ * THREE OF THESE USED TO NAME THINGS TRENVO DOES NOT SELL. The list carried
+ * "YouTube Ads", "Analytics & Tracking" and "Conversion Optimization"; none had
+ * a service page, and Conversion Optimization went with the Engineering
+ * practice when it was removed. A homepage section advertising capabilities the
+ * rest of the site does not offer is the same contradiction the taxonomy
+ * consolidation exists to end.
+ *
+ * `serviceSlug` ties each row to a real page in data/services.ts, so every row
+ * is a live link and a slug that stops existing breaks the build via
+ * scripts/validate-routes.mjs rather than shipping as a dead concept.
  *
  * No numbers, no clients, no results: `WORK` is still empty, and the section
  * says so in plain words rather than carrying a figure nobody can check.
@@ -368,33 +343,39 @@ export const TEARDOWNS_SECTION = {
 export const WORK_CATEGORIES = [
   {
     id: 'meta-ads',
+    serviceSlug: 'meta-ads',
     title: 'Meta Ads',
-    body: 'Facebook and Instagram advertising campaigns designed around measurable growth.',
+    body: 'Facebook and Instagram campaigns built around creative volume, signal quality and honest measurement.',
   },
   {
     id: 'google-ads',
+    serviceSlug: 'google-ads',
     title: 'Google Ads',
-    body: 'Search and performance campaigns built around clear acquisition goals.',
+    body: 'Search, PMax and AI Max, constrained and fed rather than left to spend unsupervised.',
   },
   {
-    id: 'youtube-ads',
-    title: 'YouTube Ads',
-    body: 'Video advertising built to reach relevant audiences and support measurable growth.',
+    id: 'measurement',
+    serviceSlug: 'measurement',
+    title: 'Measurement',
+    body: 'Conversion definitions, signal integrity, and platform numbers reconciled against the business.',
   },
   {
-    id: 'creative',
-    title: 'Creative Production',
-    body: 'Performance-focused creative concepts, production and iteration.',
+    id: 'performance-creative',
+    serviceSlug: 'performance-creative',
+    title: 'Performance Creative',
+    body: 'Hooks, angles and testing roadmaps - creative as a hypothesis system rather than a content calendar.',
   },
   {
-    id: 'analytics',
-    title: 'Analytics & Tracking',
-    body: 'Accurate measurement, attribution and reporting, so performance can be understood.',
+    id: 'ai-video',
+    serviceSlug: 'ai-video',
+    title: 'AI Video',
+    body: 'Concept-first AI production, with a human editorial pass on every asset and disclosure as standard.',
   },
   {
-    id: 'conversion',
-    title: 'Conversion Optimization',
-    body: 'Improving landing pages, funnels and user journeys to increase conversions.',
+    id: 'short-form-video-ads',
+    serviceSlug: 'short-form-video-ads',
+    title: 'Short-form Video Ads',
+    body: 'Hook-first, modular production built to deliver the next twenty variants, not the first one.',
   },
 ];
 

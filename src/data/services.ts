@@ -1,46 +1,78 @@
 import type { PracticeId, Service } from '../types/content';
 
 /* ---------------------------------------------------------------------------
-   THE SERVICES — master.md §9.4, §9.3, §18.2, §21.2.
+   THE CANONICAL SERVICE TAXONOMY — one source, six services, two practices.
 
-   ⚠ FIVE, not §9.4's seven. Trenvo sells digital marketing, so the two
-   Engineering services are gone: `web-development` (§5.21) and now
-   `landing-pages` with the Engineering practice itself (§5.22). What remains is
-   Media and Studio — the ads, and the creative that runs in them.
+   ⚠ THIS FILE REPLACED THREE CONFLICTING LISTS.
+
+   Before this, the taxonomy was written down in three places that had already
+   drifted apart:
+
+     · data/services.ts   — five services, plus a separate SERVICE_PRACTICE map
+     · data/navigation.ts — hand-written mega-menu columns
+     · data/home.ts       — PRACTICES[].capabilities, which advertised
+                            "AI UGC Ads", "Short-Form Video Ads", "Motion
+                            Design" and "Measurement & attribution" as things
+                            Trenvo sells, none of which had a page
+
+   A visitor reading the homepage saw six Creative capabilities; the menu showed
+   three; /services showed three. That is the contradiction this file exists to
+   make impossible. PRACTICES below, the navigation, the footer and the
+   homepage cards are all DERIVED from SERVICES, so adding or removing a service
+   updates the menu, the cards, the footer, the /services grid and the sitemap
+   together.
+
+   TWO CHANGES TO THE SET ITSELF:
+
+     · `video-editing` is now `short-form-video-ads`. The old slug named a
+       craft; the new one names what a buyer searches for and what the page
+       actually argues — variant volume for paid social. vercel.json 301s the
+       old path so no inbound link breaks.
+
+     · `measurement` is added. The homepage already listed "Measurement &
+       attribution" as a Media capability and /process already describes
+       reconciling against a source outside the ad platform, so the capability
+       was being claimed with no page standing behind it. It has one now.
 
    Each entry carries what §9.2 requires: "name by capability, describe by
-   outcome, prove by mechanism." The mechanism lines are transcribed from §9.3
-   verbatim — §9.2 calls them "where a real practitioner is distinguishable from
-   a copywriter, and unfakeable by competitors who do not do the work."
-
-   `faqs` is empty on every service. §14 asks for 4–6 service-specific
-   questions, but no document supplies them for any service. They are Phase 5
-   copy; the Questions section unmounts until then rather than inventing
-   answers. Recorded in implementation.md §5.5.
+   outcome, prove by mechanism." The mechanism lines are the part "where a real
+   practitioner is distinguishable from a copywriter".
 --------------------------------------------------------------------------- */
 
-/** Which practice each service belongs to (§9.4, wireframe.md §1.1). */
-export const SERVICE_PRACTICE: Record<string, PracticeId> = {
-  'meta-ads': 'media',
-  'google-ads': 'media',
-  'performance-creative': 'studio',
-  'ai-video': 'studio',
-  'video-editing': 'studio',
-};
+export interface PracticeDefinition {
+  id: PracticeId;
+  /** §6.2 — the practice name as it appears in the mega-menu column head. */
+  name: string;
+  /** §6.2 — the question this practice owns. */
+  question: string;
+  /** One line on what the practice is for. */
+  summary: string;
+}
 
-/** §17.2 Tier 3 — the contextual CTA, per service, from §18.2. */
-export const SERVICE_CTA: Record<string, string> = {
-  'meta-ads': 'Talk to a Meta Ads specialist',
-  'google-ads': 'Talk to a Google Ads specialist',
-  'performance-creative': 'Talk to a creative strategist',
-  'ai-video': 'Talk to a creative strategist',
-  'video-editing': 'Talk to a creative strategist',
-};
+/** The two practices. Every column of links in the site derives from this. */
+export const PRACTICES: PracticeDefinition[] = [
+  {
+    id: 'media',
+    name: 'Media',
+    question: 'Is the money going to the right place?',
+    summary:
+      'Where the budget goes, what the platforms are allowed to do with it, and how we know what came back.',
+  },
+  {
+    id: 'studio',
+    name: 'Creative',
+    question: 'Is there anything worth showing when it gets there?',
+    summary:
+      'The concepts, the production and the variant volume that paid distribution consumes.',
+  },
+];
 
 export const SERVICES: Service[] = [
+  /* -- MEDIA --------------------------------------------------------------- */
   {
     slug: 'meta-ads',
     name: 'Meta Ads',
+    practice: 'media',
     outcome: 'Creative is the only lever left. We pull it hard.',
     situation:
       'Advantage+ took targeting off the table. What is still in your control is how many good ideas you can put in front of the algorithm, how clean your signal is, and how honestly you measure what came back. That is a creative production problem and a data problem — which is why our media specialist sits next to our editors.',
@@ -51,6 +83,7 @@ export const SERVICES: Service[] = [
       'Creative retirement triggers based on hold rate and frequency, not on gut feel',
       'Measurement that separates platform-reported results from observed business results',
     ],
+    cta: 'Talk to a Meta Ads specialist',
     disciplineIds: ['meta-ads-specialist'],
     connectsTo: ['studio'],
     faqs: [],
@@ -63,6 +96,7 @@ export const SERVICES: Service[] = [
   {
     slug: 'google-ads',
     name: 'Google Ads',
+    practice: 'media',
     outcome:
       'Automation decides where the money goes. Someone still has to decide what it is allowed to do.',
     situation:
@@ -71,27 +105,51 @@ export const SERVICES: Service[] = [
       'Conversion definition audited before budget decisions — optimising toward the wrong event is the most expensive error in the account',
       'PMax and AI Max asset groups constrained by brand exclusions, location and text guidelines rather than left open',
       'Search term and query-matching review as an ongoing discipline under automated matching',
-      'Destination pages built by the same team, so post-click performance is a fixable variable rather than a complaint',
+      'Feed and asset quality treated as a bid input, because under automated matching that is what it is',
       'Attribution reconciled against a source of truth outside the ad platform',
     ],
+    cta: 'Talk to a Google Ads specialist',
     disciplineIds: ['google-ads-specialist'],
     connectsTo: ['studio'],
     faqs: [],
     seo: {
       title: 'Google Ads Management | Trenvo Media',
       description:
-        'PMax and AI Max spend with or without supervision. We control what they are allowed to do — and build the destination.',
+        'PMax and AI Max spend with or without supervision. We control what they are allowed to do, and audit what you optimise toward.',
     },
   },
   {
+    slug: 'measurement',
+    name: 'Measurement',
+    practice: 'media',
+    outcome: 'The number you act on should survive being checked.',
+    situation:
+      'Every ad platform reports the results it is responsible for producing, and each one counts the same conversion. Add them up and you have more revenue than the business made. The job is not more dashboards — it is deciding which number you steer by, defining it once, and reconciling the platforms against it rather than against each other.',
+    mechanisms: [
+      'One source of truth agreed before spend decisions — the platform is a reporting input, never the arbiter',
+      'Conversion and event definitions audited end to end, because optimising toward a mis-defined event is the most expensive error in an account',
+      'Server-side and first-party signal integrity checked rather than assumed, on both Meta and Google',
+      'Creative attribute reporting: performance readable by hook, format and concept, which requires the naming convention to exist first',
+      'Incrementality treated honestly — stated as a test with a window and a limit, not as a dashboard column',
+      'Contribution margin as the reported outcome, because that is the number a finance team recognises',
+    ],
+    cta: 'Talk to us about measurement',
+    disciplineIds: ['measurement-analyst'],
+    connectsTo: ['studio'],
+    faqs: [],
+    seo: {
+      title: 'Measurement & Attribution for Paid Media | Trenvo Media',
+      description:
+        'One source of truth, audited conversion definitions, and platform numbers reconciled against the business rather than against each other.',
+    },
+  },
+
+  /* -- CREATIVE ------------------------------------------------------------ */
+  {
     slug: 'performance-creative',
     name: 'Performance Creative',
+    practice: 'studio',
     outcome: 'Creative is a hypothesis system, not a content calendar.',
-    /**
-     * §18.2 supplies this page's primary and secondary messages; §9.3 covers
-     * the strategy layer inside the Studio section. The situation paragraph is
-     * assembled from those documented positions.
-     */
     situation:
       'A content calendar produces things to post. A hypothesis system produces things to learn from. The difference shows up in the account: variants that differ by filter teach you nothing, while variants that differ by hook, offer framing or objection tell you which argument the market actually responds to.',
     mechanisms: [
@@ -101,6 +159,7 @@ export const SERVICES: Service[] = [
       'Performance read by creative attribute, which requires the naming convention to exist first',
       'The brief is the deliverable — the edit executes it, the media buys against it',
     ],
+    cta: 'Talk to a creative strategist',
     disciplineIds: ['performance-creative-strategist'],
     connectsTo: ['media'],
     faqs: [],
@@ -112,7 +171,8 @@ export const SERVICES: Service[] = [
   },
   {
     slug: 'ai-video',
-    name: 'AI Video Production',
+    name: 'AI Video',
+    practice: 'studio',
     outcome: 'Not cheaper videos. More shots on goal.',
     situation:
       'The reason to produce with AI is not that it costs less. It is that a concept can be tested in days instead of quarters, in twelve variants instead of one, before anyone commits a budget to a shoot. We use AI where it makes iteration possible, and people where it makes the work good.',
@@ -123,6 +183,7 @@ export const SERVICES: Service[] = [
       'Disclosure discipline: synthetic presenters and generated footage are labelled to the client, and platform disclosure requirements are respected',
       'Winning AI concepts can be re-produced with live-action when the spend justifies it',
     ],
+    cta: 'Talk to a creative strategist',
     disciplineIds: ['ai-video-producer'],
     connectsTo: ['media'],
     faqs: [],
@@ -133,8 +194,9 @@ export const SERVICES: Service[] = [
     },
   },
   {
-    slug: 'video-editing',
-    name: 'Video Editing',
+    slug: 'short-form-video-ads',
+    name: 'Short-form Video Ads',
+    practice: 'studio',
     outcome: 'The job is not the cut. It is the next twenty cuts.',
     situation:
       'A single good edit is a freelancer purchase. What paid acquisition actually needs is a system that can turn one winning concept into fifteen viable variants — new hooks, new lengths, new aspect ratios, new proof points, new markets — fast enough that the account never runs on fatigued creative.',
@@ -145,13 +207,14 @@ export const SERVICES: Service[] = [
       'Captions and sound treated as performance variables and versioned accordingly',
       'Every asset named to a convention that lets the media specialist read performance by creative attribute',
     ],
+    cta: 'Talk to a creative strategist',
     disciplineIds: ['video-editor', 'motion-designer'],
     connectsTo: ['media'],
     faqs: [],
     seo: {
-      title: 'Performance Video Editing | Trenvo Media',
+      title: 'Short-form Video Ads for Paid Social | Trenvo Media',
       description:
-        'Hook-first, modular editing built to produce the next twenty variants, so your account never runs on fatigued creative.',
+        'Hook-first, modular production built to deliver the next twenty variants, so your account never runs on fatigued creative.',
     },
   },
 ];
@@ -160,11 +223,30 @@ export function getService(slug: string): Service | undefined {
   return SERVICES.find((s) => s.slug === slug);
 }
 
+/** Every service inside a practice, in declaration order. */
+export function servicesInPractice(practice: PracticeId): Service[] {
+  return SERVICES.filter((s) => s.practice === practice);
+}
+
+export function getPractice(id: PracticeId): PracticeDefinition | undefined {
+  return PRACTICES.find((p) => p.id === id);
+}
+
+/**
+ * A service's siblings inside its own practice — the "related service" links
+ * the internal-linking pass requires. Never includes itself.
+ */
+export function relatedServices(slug: string): Service[] {
+  const service = getService(slug);
+  if (!service) return [];
+  return SERVICES.filter((s) => s.practice === service.practice && s.slug !== slug);
+}
+
 /* -- /services overview — master.md §14, §9.5, §11.2 ----------------------- */
 
 export const SERVICES_OVERVIEW = {
   headline: 'Two practices. One loop.',
-  lead: 'Media and Studio are not two departments you brief separately. They are one system with a named specialist on each part.',
+  lead: 'Media and Creative are not two departments you brief separately. They are one system with a named specialist on each part.',
   /** §14 — "Why we do not sell these separately" (the unbundling argument). */
   unbundling: {
     heading: 'Why we do not sell these separately',

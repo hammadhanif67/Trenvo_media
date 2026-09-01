@@ -87,10 +87,45 @@ export default tseslint.config(
         console: 'readonly',
         Buffer: 'readonly',
         __dirname: 'readonly',
+        // WHATWG globals that are built into modern Node and are not imported.
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
+        fetch: 'readonly',
+        TextEncoder: 'readonly',
       },
     },
     // Build scripts are Node programs; a default export is their contract, and
     // console output is their entire purpose.
+    rules: { 'no-console': 'off', 'no-restricted-syntax': 'off' },
+  },
+
+  /*
+    SERVERLESS FUNCTIONS — api/*.js
+    
+    Node runtime, not the browser bundle. They are outside tsconfig's `include`
+    on purpose (adding api/ to the TypeScript program would pull @types/node
+    into a browser build for no benefit), so they need their globals declared
+    here instead.
+
+    A DEFAULT EXPORT IS THE PLATFORM CONTRACT for a serverless handler, so
+    §28.5's "named exports only" — which governs application code — is off for
+    this directory, exactly as it is for the build scripts.
+  */
+  {
+    files: ['api/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        process: 'readonly',
+        console: 'readonly',
+        Buffer: 'readonly',
+        fetch: 'readonly',
+        URL: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+      },
+    },
     rules: { 'no-console': 'off', 'no-restricted-syntax': 'off' },
   },
 );

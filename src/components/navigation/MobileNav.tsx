@@ -12,6 +12,7 @@ import {
   PRACTICE_NAV,
   PRIMARY_CTA,
   PRIMARY_NAV,
+  SECONDARY_CTA,
   type PracticeNav,
 } from '../../data/navigation';
 
@@ -151,6 +152,17 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                     </Link>
                   </li>
                 ))}
+                {/*
+                  Contact is not in PRIMARY_NAV — the desktop header carries it
+                  as the secondary action beside the CTA button. On mobile there
+                  is no such row, so it is listed here explicitly. "Contact must
+                  be reachable in one click" holds on both.
+                */}
+                <li>
+                  <Link to={SECONDARY_CTA.href} onClick={close} className={itemClass}>
+                    Contact
+                  </Link>
+                </li>
                 <li>
                   <Link to={LOOP_LINK.href} onClick={close} className={itemClass}>
                     <span className="font-mono text-label uppercase [letter-spacing:var(--tracking-label)]">
@@ -190,6 +202,13 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           <Button href={PRIMARY_CTA.href} onClick={close} className="w-full">
             {PRIMARY_CTA.label}
           </Button>
+          <Link
+            to={SECONDARY_CTA.href}
+            onClick={close}
+            className="mt-3 flex w-full items-center justify-center text-small text-onpunct-2 [min-height:var(--touch-min)] underline-offset-4 hover:text-onpunct focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+          >
+            {SECONDARY_CTA.label}
+          </Link>
         </div>
       </m.div>
     </SurfaceContext.Provider>

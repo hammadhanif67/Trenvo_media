@@ -1,4 +1,4 @@
-import type { TrustBrand } from '../hero/heroContent';
+import type { Client } from '../../data/clients';
 
 /* ---------------------------------------------------------------------------
    BRAND WORDMARK — one client's name, set as text
@@ -33,13 +33,13 @@ import type { TrustBrand } from '../hero/heroContent';
    `.client-card__mark` in globals.css.
 --------------------------------------------------------------------------- */
 
-const FACE: Record<TrustBrand['face'], string> = {
+const FACE: Record<Client['face'], string> = {
   script: 'font-serif italic',
   serif: 'font-serif',
   sans: 'font-sans',
 };
 
-export function BrandWordmark({ brand }: { brand: TrustBrand }) {
+export function BrandWordmark({ brand }: { brand: Client }) {
   return (
     <span
       className={`client-card__mark ${FACE[brand.face]} text-[1.35rem] font-semibold leading-none tracking-tight`}

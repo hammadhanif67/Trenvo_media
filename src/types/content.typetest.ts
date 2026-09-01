@@ -15,14 +15,30 @@
 import type { CaseStudy, MeasurementDefinition, Metric, Practice } from './content';
 
 const built = [{ src: '', alt: '' }];
+
+/**
+ * Every field CaseStudyBase requires. Kept exhaustive on purpose: adding a
+ * required field to the type breaks this file first, which is where a missing
+ * field should be noticed.
+ */
 const base = {
   slug: '',
+  client: '',
+  objective: '',
+  startingPoint: '',
   context: '',
   diagnosis: '',
   hypothesis: '',
+  strategy: '',
   built,
+  media: '',
   testDesign: '',
+  measurement: '',
+  timeframe: '',
+  tools: [],
   disciplineIds: [],
+  serviceSlugs: [],
+  datePublished: '2026-01-01',
 };
 
 /* -- MUST COMPILE ---------------------------------------------------------- */

@@ -93,6 +93,17 @@
   --accent-strong: var(--blue-700); /* hover, and links in body copy     */
   --hairline: var(--line);
 
+  /*
+    FORM ERROR TEXT — theme-aware, because --neg alone is not.
+
+    --neg (#dc2626) reaches 4.53:1 on --paper and passes. On --ink-soft it
+    falls to roughly 4.0:1 and FAILS WCAG AA for body text, which is precisely
+    the size an inline validation message is set at. The dark theme therefore
+    lightens it rather than reusing --neg, and no component addresses --neg
+    directly for text.
+  */
+  --error: var(--neg);
+
   /* -- master.md §24.3 — tracking ----------------------------------------- */
   /* The four tracking values §24.3 states as single figures.                 */
 
@@ -268,4 +279,7 @@
   --accent: var(--blue-500);
   --accent-strong: var(--blue-500);
   --hairline: var(--line-dark);
+
+  /* ~7.4:1 on --ink-soft. See the note beside --error in the light block. */
+  --error: #fca5a5;
 }

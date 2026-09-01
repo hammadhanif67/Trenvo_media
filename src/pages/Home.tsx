@@ -7,7 +7,7 @@ import { LoopSection } from '../sections/home/LoopSection';
 import { Practices } from '../sections/home/Practices';
 import { Specialists } from '../sections/home/Specialists';
 import { Work } from '../sections/home/Work';
-import { Testimonials } from '../sections/home/Testimonials';
+import { Proof } from '../sections/home/Proof';
 import { Faq } from '../sections/home/Faq';
 import { Close } from '../sections/home/Close';
 
@@ -26,6 +26,12 @@ import { Close } from '../sections/home/Close';
  *
  * Sections 08 and 09 unmount while their data is empty (§20.3). Nothing here
  * renders a placeholder in their place.
+ *
+ * ⚠ `Testimonials` BECAME `Proof`. The old section rendered five client cards
+ * each reading "No quote published yet" plus a sixth tile that was not a client
+ * — six empty proof slots dressed as proof. It is replaced by four things a
+ * reader can actually verify today, and it fills itself with real quotes the
+ * moment data/testimonials.ts holds one. See sections/home/Proof.tsx.
  */
 export function Home() {
   return (
@@ -39,7 +45,7 @@ export function Home() {
       <Practices />
       <Specialists />
       <Work />
-      <Testimonials />
+      <Proof />
       <Faq />
       <Close />
     </>

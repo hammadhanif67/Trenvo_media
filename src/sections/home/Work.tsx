@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { ArrowRight, BarChart3, PenTool, ShoppingCart } from 'lucide-react';
+import { ArrowRight, BarChart3, Clapperboard, PenTool, Sparkles } from 'lucide-react';
 import { Link } from 'react-router';
 import { Button, Container, Eyebrow, Heading, Section } from '../../components/ui';
 import { BrandIcon } from '../../components/media/BrandIcon';
@@ -47,10 +47,10 @@ import { WORK_CATEGORIES } from '../../data/home';
 const ROW_ICONS = [
   { kind: 'brand', name: 'Meta' },
   { kind: 'brand', name: 'GoogleAds' },
-  { kind: 'brand', name: 'YouTube' },
-  { kind: 'lucide', Icon: PenTool },
   { kind: 'lucide', Icon: BarChart3 },
-  { kind: 'lucide', Icon: ShoppingCart },
+  { kind: 'lucide', Icon: PenTool },
+  { kind: 'lucide', Icon: Sparkles },
+  { kind: 'lucide', Icon: Clapperboard },
 ] as const;
 
 export function Work() {
@@ -136,8 +136,16 @@ export function Work() {
               const number = String(i + 1).padStart(2, '0');
               return (
                 <li key={item.id} className="flex">
+                  {/*
+                    EVERY ROW LINKS TO ITS OWN SERVICE PAGE, not all six to
+                    /work. They used to point at /work regardless, so six
+                    distinct rows were six copies of one link — and three of the
+                    rows named things with no page behind them at all. Each row
+                    now carries a `serviceSlug` that must exist in
+                    data/services.ts, checked by scripts/validate-routes.mjs.
+                  */}
                   <Link
-                    to="/work"
+                    to={`/services/${item.serviceSlug}`}
                     className="work-row group relative flex w-full items-start gap-4 lg:items-center border border-line-dark p-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                   >
                     <span className="work-row__icon inline-flex size-12 shrink-0 items-center justify-center border border-line-dark text-blue-500">

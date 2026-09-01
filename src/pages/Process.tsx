@@ -133,7 +133,7 @@ export function Process() {
 
       {/*
         §14 assigns the assignment model and the hiring standard to
-        /specialists, not here. They are linked rather than repeated: duplicate
+        /about#specialists, not here. They are linked rather than repeated: duplicate
         blocks across two routes weaken both and create the duplicate-content
         problem §21.1 exists to avoid.
       */}

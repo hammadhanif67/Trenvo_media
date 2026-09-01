@@ -1,114 +1,85 @@
-import { PRIMARY_CTA } from '../../data/navigation';
+import { PRIMARY_CTA, SECONDARY_CTA } from '../../data/navigation';
+import { CLIENTS } from '../../data/clients';
+import type { Client } from '../../data/clients';
 
 /* ---------------------------------------------------------------------------
    HERO CONTENT — single source for every string in the hero.
 
-   The reference mockups (public/assets/Manage Content 1 (1) and (2)) set the
-   art direction: eyebrow, three-line H1 with the last line in accent, lead
-   paragraph, two CTAs, and a trust block beneath.
+   ⚠ TWO THINGS WERE REMOVED HERE, AND BOTH MATTER.
 
-   ⚠ ONE PART OF THE REFERENCE IS NOT BUILT, DELIBERATELY.
+   1. THE INFINITE TYPEWRITER IS GONE.
 
-   Both mockups end with "Trusted by growth-focused brands" over five named
-   client logos — Soralune, HOLY, Healthify, Glowri, NutriPure — and the laptop
-   shows ROAS 4.6x, Spend $114K, Conversions 657, Revenue $470K.
+      The H1 used to be a fixed lead — "Turn Attention Into Growth With" —
+      followed by a span that typed "AI Video Ads", then "Creative", then "Paid
+      Media", forever. Three consequences, all bad:
 
-   Those are fabricated clients and fabricated results. master.md §2.8 forbids
-   exactly this, the standing instruction on this project forbids it, and
-   `npm run audit` fails the build on fabricated-proof language. A visitor who
-   searched any of those five brand names would find nothing.
+        · The rendered H1 was grammatically incomplete for most of its cycle.
+          Between keywords it read "Turn Attention Into Growth With" and
+          stopped. That is what a visitor sees on arrival, what a screenshot
+          catches, and what a scroll-past leaves behind.
+        · An H1 whose text mutates forever is a permanently animating element
+          inside the LCP candidate, which is the one place §27.3 explicitly
+          rules motion out.
+        · It ran for the entire session. Not an entrance — a loop, running
+          while somebody is trying to read the paragraph beneath it.
 
-   So the trust BLOCK is built — same position, same weight in the composition —
-   and filled with claims Trenvo can actually stand behind: how the team is
-   structured, which is true today and needs no client to verify. When real
-   clients exist and permission is given, `trustItems` is where their names go.
+      The heading is now a complete sentence that never changes. The only
+      motion left in the hero is the one-pass entrance curtain, which finishes
+      in 1.4 seconds and removes itself.
 
-   SEO: the H1 carries the commercial terms a buyer actually searches — AI video
-   ads, creative, paid media, conversion — as a sentence rather than a keyword
-   list. Nothing here is stuffed; every phrase is a thing Trenvo sells.
+   2. THE "TRUSTED BY" CLIENT ROW IS GONE, pending verification.
+
+      It read from five brand names with nothing behind them. The names are
+      preserved in data/clients.ts behind a publication gate; the row returns
+      the moment there is something real to put beneath it. Nothing here needs
+      editing for that — `clients` reads the gated export.
+
+   THE COPY IS THE POSITIONING THE SITE ALREADY EARNS ELSEWHERE: paid media and
+   creative production as one system, with one owner and one number. Every other
+   page argues it; the hero now says it.
+
+   SEO: the H1 carries the commercial terms a buyer actually searches — paid
+   media, creative production, measurement — as a sentence rather than a keyword
+   list. Nothing is stuffed; every phrase names a thing Trenvo sells.
 --------------------------------------------------------------------------- */
 
 export interface HeroContent {
-  /** The fixed half of the H1; the animated keyword follows it. */
-  titleLead: string;
-  /** Typed in and out, in order, forever. */
-  keywords: string[];
   /**
-   * The heading's accessible name. A heading whose text mutates is hostile to a
-   * screen reader, so the animated span is aria-hidden and this stable phrase
-   * is what actually gets announced.
+   * The H1, in two parts so the second can carry the accent colour. Both parts
+   * are static, and concatenating them is always a complete sentence — which
+   * is the property the typewriter could not hold.
    */
-  titleSpoken: string;
+  titleLead: string;
+  titleAccent: string;
   description: string;
+  /** The three things the system covers, stated as claims about ownership. */
+  pillars: { label: string; body: string }[];
   primaryCta: { label: string; href: string };
   secondaryCta: { label: string; href: string };
-  trustLabel: string;
-  trustBrands: TrustBrand[];
-}
-
-/**
- * A client wordmark. `name` and `category` are set exactly as the brand sets
- * them; `face` picks the lettering style so each reads as its own mark rather
- * than as a list in the site's own typeface.
- */
-export interface TrustBrand {
-  name: string;
-  category: string;
-  face: 'script' | 'serif' | 'sans';
-  /** Brand colour on a light surface, and the lighter one dark mode needs. */
-  light: string;
-  dark: string;
-  /** Only Healthify carries a glyph beside the word. */
-  mark?: 'healthify';
-  /** NutriPure sets the first half lighter than the second. */
-  splitAt?: number;
+  /** Empty until data/clients.ts opens its publication gate. */
+  clients: Client[];
 }
 
 export const HERO_CONTENT: HeroContent = {
-  titleLead: 'Turn Attention Into Growth With',
-  keywords: ['AI Video Ads', 'Creative', 'Paid Media'],
-  /*
-    The H1's indexable text. The animated span is aria-hidden, so THIS is what a
-    crawler and a screen reader both read — which is why it names all three
-    services in a full sentence rather than echoing one frame of the animation.
-  */
-  titleSpoken:
-    'Turn attention into growth with AI video ads, creative production and paid media.',
+  titleLead: 'Paid media and creative production,',
+  titleAccent: 'run as one system.',
 
   description:
-    'We combine AI-powered video advertising, creative strategy, and paid media to help ambitious brands capture attention, convert demand, and scale with confidence.',
-
-  primaryCta: { label: 'Start a Project', href: PRIMARY_CTA.href },
-  /*
-    ⚠ /work currently ships an HONEST EMPTY STATE — `WORK` in data/work.ts is an
-    empty array, so the page says plainly what will appear there rather than
-    showing case studies. "Explore Our Work" therefore leads somewhere real but
-    currently empty. Recorded in implementation.md §5.27.
-  */
-  secondaryCta: { label: 'Explore Our Work', href: '/work' },
+    'One team runs the ads, the creative that goes in them, and the measurement that settles what worked — with one owner and one number to answer for. No seam between the media buyer and the studio, because there is nobody on the other side of it.',
 
   /*
-    ⚠ CLIENT NAMES, SUPPLIED BY THE OWNER.
-
-    I flagged this row as fabricated proof when it first appeared in the
-    reference mockups, because nothing in the source documents names a single
-    client and §2.8 forbids inventing one. The owner then asked for it again,
-    explicitly and by name. Whether Trenvo has these five clients and may
-    display them is a fact only the owner holds.
-
-    So it is built on that assertion, and this comment is the record of it.
-    Whether the relationships exist, and whether permission was given, is not
-    something this codebase can verify.
-
-    TO REMOVE: empty this array. The heading and the whole block disappear with
-    it — HeroHome renders nothing when there are no brands.
+    The three pillars name what "one system" actually contains, so the claim is
+    specific rather than a slogan. Media, creative and measurement are the three
+    practices the taxonomy actually ships — see data/services.ts.
   */
-  trustLabel: 'Trusted by growth-focused brands',
-  trustBrands: [
-    { name: 'Soralune', category: 'Hair Oil', face: 'script', light: '#1a7f3c', dark: '#4ade80' },
-    { name: 'HOLY', category: 'Multivitamin', face: 'serif', light: '#1a4fd6', dark: '#7aa2ff' },
-    { name: 'Healthify', category: '', face: 'sans', light: '#0a0a0b', dark: '#ffffff', mark: 'healthify' },
-    { name: 'Glowri', category: 'Skincare', face: 'serif', light: '#1a7f3c', dark: '#4ade80' },
-    { name: 'NutriPure', category: 'Wellness', face: 'sans', light: '#1e5fd0', dark: '#7aa2ff', splitAt: 5 },
+  pillars: [
+    { label: 'Media', body: 'Meta, Google, and what they are allowed to do with your budget.' },
+    { label: 'Creative', body: 'The concepts, the production, and the variant volume paid social eats.' },
+    { label: 'Measurement', body: 'One number, reconciled against something outside the ad platform.' },
   ],
+
+  primaryCta: { label: PRIMARY_CTA.label, href: PRIMARY_CTA.href },
+  secondaryCta: { label: SECONDARY_CTA.label, href: SECONDARY_CTA.href },
+
+  clients: CLIENTS,
 };

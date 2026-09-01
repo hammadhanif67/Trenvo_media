@@ -13,13 +13,12 @@ import { CtaSection } from '../sections/shared/CtaSection';
 import { SpecialistStrip } from '../sections/shared/SpecialistStrip';
 import { Accordion } from '../components/ui/Accordion';
 import { DISCIPLINES } from '../data/disciplines';
-import { PRACTICE_NAV } from '../data/navigation';
-import { SERVICE_CTA, SERVICE_PRACTICE, getService } from '../data/services';
+import { PRACTICE_NAV, PRIMARY_CTA } from '../data/navigation';
+import { getPractice, getService, relatedServices } from '../data/services';
 import { TEARDOWNS } from '../data/teardowns';
 import { NotFound } from './NotFound';
 import { Seo } from '../components/Seo';
 import { serviceSchema, breadcrumbSchema, faqSchema } from '../lib/schema';
-import type { PracticeId } from '../types/content';
 
 /* ---------------------------------------------------------------------------
    SERVICE DETAIL — one component, seven routes, driven by data/services.ts.
@@ -45,11 +44,6 @@ import type { PracticeId } from '../types/content';
    than a menu."
 --------------------------------------------------------------------------- */
 
-const PRACTICE_LABEL: Record<PracticeId, string> = {
-  media: 'Media',
-  studio: 'Studio',
-};
-
 export function ServiceDetail() {
   const { slug } = useParams<{ slug: string }>();
   const service = slug ? getService(slug) : undefined;
@@ -62,8 +56,11 @@ export function ServiceDetail() {
   );
   const relatedTeardowns = TEARDOWNS.filter((t) => t.serviceSlug === service.slug);
 
-  // §9.4 — which of the three practices this service sits in.
-  const practiceLabel = PRACTICE_LABEL[SERVICE_PRACTICE[service.slug] ?? 'media'];
+  // The practice this service sits in — read from the service itself, so the
+  // label, the menu column and the /services grid cannot disagree.
+  const practice = getPractice(service.practice);
+  const practiceLabel = practice?.name ?? 'Services';
+  const siblings = relatedServices(service.slug);
 
   return (
     <>
@@ -90,9 +87,12 @@ export function ServiceDetail() {
           <p className="mt-6 max-w-[46ch] text-lead text-onpunct-2 [line-height:var(--lh-body)]">
             {service.outcome}
           </p>
-          <div className="mt-10">
-            <Button href="/contact" variant="primary">
-              {SERVICE_CTA[service.slug] ?? 'Start a project'}
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+            <Button href={PRIMARY_CTA.href} variant="primary">
+              {PRIMARY_CTA.label}
+            </Button>
+            <Button href="/contact" variant="secondary">
+              {service.cta}
             </Button>
           </div>
         </Container>
@@ -136,7 +136,7 @@ export function ServiceDetail() {
       </Section>
 
       {/* 4 — Who does it. §10.3: the boundary is the argument, so it is
-          printed here rather than only on /specialists. */}
+          printed here rather than only on the About page. */}
       <Section tone="paper" aria-labelledby="who-heading">
         <Container>
           <Heading level={2} size="h2" id="who-heading">
@@ -219,6 +219,40 @@ export function ServiceDetail() {
               );
             })}
           </div>
+
+          {/*
+            INTERNAL LINKING — the sibling services inside this practice, the
+            method page, and the offer. Contextual rather than a link dump: each
+            one is the next thing a reader of THIS page plausibly wants, and
+            each anchor says where it goes (§21.4 bars "click here").
+          */}
+          {siblings.length > 0 && (
+            <div className="mt-12 border-t border-hairline pt-8">
+              <h3 className="font-mono text-label uppercase [letter-spacing:var(--tracking-label)] text-secondary">
+                Also in {practiceLabel}
+              </h3>
+              <ul className="mt-4 flex flex-wrap gap-x-8 gap-y-2">
+                {siblings.map((sibling) => (
+                  <li key={sibling.slug}>
+                    <Link
+                      to={`/services/${sibling.slug}`}
+                      className="inline-flex items-center text-body text-accent-strong [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                    >
+                      {sibling.name}
+                    </Link>
+                  </li>
+                ))}
+                <li>
+                  <Link
+                    to="/process"
+                    className="inline-flex items-center text-body text-accent-strong [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  >
+                    How the loop runs
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
         </Container>
       </Section>
 
@@ -269,7 +303,7 @@ export function ServiceDetail() {
       <CtaSection
         headline="Tell us what you are building."
         body="Send the site, the ad account, and what is not working. You will get a specialist's read, not a sales deck."
-        primaryLabel={SERVICE_CTA[service.slug]}
+        primaryLabel={service.cta}
       />
     </>
   );

@@ -1,6 +1,8 @@
+import { Link } from 'react-router';
 import { Container, Eyebrow, Heading, Section } from '../components/ui';
 import { CtaSection } from '../sections/shared/CtaSection';
 import { WORK } from '../data/work';
+import { TEARDOWNS } from '../data/teardowns';
 import { Seo } from '../components/Seo';
 import { breadcrumbSchema } from '../lib/schema';
 
@@ -55,15 +57,22 @@ export function Work() {
             <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {WORK.map((item) => (
                 <li key={item.slug}>
-                  <article className="flex h-full flex-col border border-hairline [padding:var(--card-pad)]">
-                    {/* §19.3 — PROJECT until real measured results exist. */}
-                    <p className="font-mono text-label uppercase [letter-spacing:var(--tracking-label)] text-secondary">
+                  <Link
+                    to={`/work/${item.slug}`}
+                    className="flex h-full flex-col border border-hairline [padding:var(--card-pad)] hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  >
+                    {/* §19.3 — PROJECT until real measured results exist. The
+                        type, not this line, is what enforces it. */}
+                    <span className="font-mono text-label uppercase [letter-spacing:var(--tracking-label)] text-secondary">
                       {item.kind === 'result' ? 'Result' : 'Project'}
-                    </p>
-                    <h3 className="mt-4 flex-1 text-h4 text-primary [line-height:var(--lh-heading)]">
+                    </span>
+                    <span className="mt-4 flex-1 text-h4 text-primary [line-height:var(--lh-heading)]">
                       {item.context}
-                    </h3>
-                  </article>
+                    </span>
+                    <span className="mt-6 text-small text-secondary">
+                      {item.client} · {item.timeframe}
+                    </span>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -105,19 +114,40 @@ export function Work() {
               </div>
             </div>
 
-            {/* §19.4 — teardowns are the proof mechanism until studies exist. */}
+            {/*
+              §19.4 — teardowns are the proof mechanism until studies exist.
+              This is not a consolation prize: a teardown is checkable against a
+              public subject in a way a case study never is, because the reader
+              can go and look at the ad themselves.
+            */}
             <p className="mt-12 max-w-[62ch] text-body text-primary [line-height:var(--lh-body)]">
               Until there is measured work to show, our published teardowns carry the same
               reasoning against real, public subjects. They are the better test anyway:
               you can check the thinking yourself.
+            </p>
+            <p className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
+              {TEARDOWNS.length > 0 && (
+                <Link
+                  to="/teardowns"
+                  className="inline-flex items-center text-body text-accent-strong [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  Read the published teardowns
+                </Link>
+              )}
+              <Link
+                to="/teardown"
+                className="inline-flex items-center text-body text-accent-strong [min-height:var(--touch-min)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              >
+                Request one on your own account
+              </Link>
             </p>
           </Container>
         </Section>
       )}
 
       <CtaSection
-        headline="Tell us what you are building."
-        body="Send the site, the ad account, and what is not working. You will get a specialist's read, not a sales deck."
+        headline="See the thinking on your own account."
+        body="A specialist reads your ads, your creative and the page they land on, and writes down what they would change and how they would measure it."
       />
     </>
   );

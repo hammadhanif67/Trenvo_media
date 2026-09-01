@@ -10,7 +10,8 @@ import { SurfaceContext } from '../ui/surface';
 import { MegaMenu } from './MegaMenu';
 import { MobileNav } from './MobileNav';
 import { useTheme } from '../../hooks/useTheme';
-import { PRIMARY_CTA, PRIMARY_NAV } from '../../data/navigation';
+import { PRIMARY_CTA, PRIMARY_NAV, SECONDARY_CTA } from '../../data/navigation';
+import { track } from '../../lib/analytics';
 
 /* ---------------------------------------------------------------------------
    NAVBAR — master.md §26.2, §11.2, §15.1
@@ -140,8 +141,42 @@ export function Navbar() {
                 <ThemeToggle onDark={isDark} />
 
                 {/* §17.3 — the persistent header action. */}
-                <div className="hidden lg:block">
-                  <Button href={PRIMARY_CTA.href}>{PRIMARY_CTA.label}</Button>
+                {/*
+                  Contact sits beside the CTA rather than in PRIMARY_NAV, so it
+                  is one click from every page on desktop. The mobile drawer and
+                  the sticky action bar carry it on small screens.
+                */}
+                <div className="hidden items-center gap-2 lg:flex">
+                  <Link
+                    to={SECONDARY_CTA.href}
+                    onClick={() =>
+                      track('nav_cta_click', {
+                        location: 'header',
+                        label: SECONDARY_CTA.label,
+                      })
+                    }
+                    className={cn(
+                      'inline-flex items-center px-2 text-small font-medium',
+                      '[min-height:var(--touch-min)]',
+                      'focus-visible:outline-2 focus-visible:outline-offset-2',
+                      isDark
+                        ? 'text-onpunct-2 hover:text-onpunct focus-visible:outline-blue-500'
+                        : 'text-secondary hover:text-primary focus-visible:outline-accent',
+                    )}
+                  >
+                    Contact
+                  </Link>
+                  <Button
+                    href={PRIMARY_CTA.href}
+                    onClick={() =>
+                      track('nav_cta_click', {
+                        location: 'header',
+                        label: PRIMARY_CTA.label,
+                      })
+                    }
+                  >
+                    {PRIMARY_CTA.label}
+                  </Button>
                 </div>
 
                 <button

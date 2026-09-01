@@ -1,8 +1,10 @@
-import { useRef } from 'react';
-import { Outlet } from 'react-router';
+import { useEffect, useRef } from 'react';
+import { Outlet, useLocation } from 'react-router';
 import { Navbar } from '../components/navigation/Navbar';
 import { Footer } from '../components/navigation/Footer';
+import { MobileActionBar } from '../components/navigation/MobileActionBar';
 import { useRouteTransition } from '../hooks/useRouteTransition';
+import { track } from '../lib/analytics';
 
 /**
  * ROOT LAYOUT — master.md §28.2: "Navbar + Outlet + Footer + skip link".
@@ -19,7 +21,20 @@ import { useRouteTransition } from '../hooks/useRouteTransition';
  */
 export function RootLayout() {
   const mainRef = useRef<HTMLElement>(null);
+  const { pathname } = useLocation();
   useRouteTransition(mainRef);
+
+  /*
+    One `page_view` per route, including client-side navigations — which a
+    server log cannot see, because they never reach the server. Keyed on
+    pathname only: the search string can carry an email address from a mail
+    client's click-through, and that must not reach a collector.
+
+    A no-op unless VITE_ANALYTICS_ENDPOINT is configured. See lib/analytics.ts.
+  */
+  useEffect(() => {
+    track('page_view');
+  }, [pathname]);
 
   return (
     <>
@@ -51,6 +66,15 @@ export function RootLayout() {
       </main>
 
       <Footer />
+
+      {/*
+        The sticky mobile conversion bar. LAST in the DOM on purpose: `sticky
+        bottom-0` on the final element pins it to the viewport while there is
+        page left below, and lets it come to rest naturally at the end rather
+        than floating over the footer. It hides itself on desktop and on the
+        two pages it would be redundant on.
+      */}
+      <MobileActionBar />
     </>
   );
 }

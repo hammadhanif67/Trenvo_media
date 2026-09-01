@@ -5,12 +5,13 @@ import { Logo } from '../media/Logo';
 import { SocialIcon, type SocialName } from '../media/SocialIcon';
 import { cn } from '../../lib/cn';
 import {
+  COMPANY_FACTS,
   COMPANY_NAV,
   CONTACT_EMAIL,
   LEGAL_NAV,
   PRACTICE_NAV,
-  PROOF_NAV,
   REGION_LINE,
+  RESOURCES_NAV,
   SOCIAL_LINKS,
   SOCIAL_NOT_SET,
   type NavLink,
@@ -29,11 +30,15 @@ import {
    columns are generated from PRACTICE_NAV rather than hand-listed: a service
    cannot exist in the menu and be missing here.
 
+   FOUR LINK COLUMNS: Media, Creative, Company, Resources. The first two are
+   DERIVED from data/services.ts via PRACTICE_NAV, so a service cannot exist in
+   the menu and be missing here.
+
    ⚠ NO NEWSLETTER FORM. The reference ends with an email capture. There is no
-   form endpoint on this project (implementation.md launch gates) and no privacy
-   notice written for a mailing list, so a field that looks like it subscribes
-   you would either silently fail or collect an address with nowhere lawful to
-   put it. The contact block links to the real inbox instead. Recorded in §5.30.
+   mailing list, no sequence and no privacy notice written for one, so a field
+   that looks like it subscribes you would collect an address with nowhere
+   lawful to put it. The contact block points at the teardown offer and the real
+   inbox instead — both of which lead somewhere.
 --------------------------------------------------------------------------- */
 
 function FooterColumn({ title, links }: { title: string; links: NavLink[] }) {
@@ -147,24 +152,7 @@ export function Footer() {
             ))}
 
             <FooterColumn title="Company" links={COMPANY_NAV} />
-
-            <div>
-              <h2 className="font-mono text-label uppercase tracking-[var(--tracking-label)] text-blue-500">
-                Resources
-              </h2>
-              <ul className="mt-4 space-y-1">
-                {[...PROOF_NAV, ...LEGAL_NAV].map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      to={link.href}
-                      className="inline-flex items-center text-small text-onpunct-2 [min-height:var(--touch-min)] transition-colors hover:text-onpunct focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <FooterColumn title="Resources" links={RESOURCES_NAV} />
           </div>
         </div>
 
@@ -181,11 +169,49 @@ export function Footer() {
               {CONTACT_EMAIL}
             </a>
             <p className="mt-3 text-small text-onpunct-2">{REGION_LINE}</p>
+
+            {/*
+              COMPANY FACTS, PRINTED ONLY WHEN VERIFIED.
+
+              No registered entity, company number, address or founding year has
+              been supplied to this repository, so none is stated. Each line
+              renders only when COMPANY_FACTS carries a real value — see the
+              note beside it in data/navigation.ts. An invented legal entity or
+              address is the one category of fabrication with legal consequences
+              attached, and a footer is exactly where it would go unchallenged.
+            */}
+            {(COMPANY_FACTS.legalName || COMPANY_FACTS.address) && (
+              <address className="mt-3 text-small not-italic text-onpunct-2">
+                {COMPANY_FACTS.legalName && <span className="block">{COMPANY_FACTS.legalName}</span>}
+                {COMPANY_FACTS.registration && (
+                  <span className="block">{COMPANY_FACTS.registration}</span>
+                )}
+                {COMPANY_FACTS.address && (
+                  <span className="block">
+                    {[
+                      COMPANY_FACTS.address.street,
+                      COMPANY_FACTS.address.locality,
+                      COMPANY_FACTS.address.region,
+                      COMPANY_FACTS.address.postalCode,
+                      COMPANY_FACTS.address.country,
+                    ]
+                      .filter(Boolean)
+                      .join(', ')}
+                  </span>
+                )}
+              </address>
+            )}
           </div>
 
           <p className="max-w-[38ch] text-small text-onpunct-2 [line-height:var(--lh-body)]">
-            Email reaches a specialist, not a form queue. Tell us what is not
-            working and you will get a read on it.
+            Email reaches a specialist, not a queue. Or{' '}
+            <Link
+              to="/teardown"
+              className="text-blue-500 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+            >
+              ask for a free teardown
+            </Link>{' '}
+            and get a written read on your ads before anything is asked of you.
           </p>
         </div>
 
@@ -193,7 +219,8 @@ export function Footer() {
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
           <p className="text-small text-onpunct-2">
-            © {new Date().getFullYear()} Trenvo Media. All rights reserved.
+            © {COMPANY_FACTS.founded ? `${COMPANY_FACTS.founded}–` : ''}
+            {new Date().getFullYear()} Trenvo Media. All rights reserved.
           </p>
           <ul className="flex flex-wrap items-center gap-6">
             {LEGAL_NAV.map((link) => (
